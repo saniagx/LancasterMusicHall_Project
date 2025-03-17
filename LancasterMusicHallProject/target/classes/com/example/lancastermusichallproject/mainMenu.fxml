@@ -21,22 +21,22 @@
                             <Font name="System Bold" size="16.0" />
                         </font>
                     </Button>
-                    <Button layoutX="75.0" layoutY="160.0" mnemonicParsing="false" onAction="#__" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Usage Chart">
+                    <Button layoutX="75.0" layoutY="160.0" mnemonicParsing="false" onAction="#usageChartButton" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Usage Chart">
                         <font>
                             <Font name="System Bold" size="16.0" />
                         </font>
                     </Button>
-                    <Button layoutX="75.0" layoutY="220.0" mnemonicParsing="false" onAction="#Diary" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Diary">
+                    <Button layoutX="75.0" layoutY="220.0" mnemonicParsing="false" onAction="#diaryButton" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Diary">
                         <font>
                             <Font name="System Bold" size="16.0" />
                         </font>
                     </Button>
-                    <Button layoutX="75.0" layoutY="280.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Daily Sheet">
+                    <Button layoutX="75.0" layoutY="280.0" mnemonicParsing="false" onAction="#dailySheetButton" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Daily Sheet">
                         <font>
                             <Font name="System Bold" size="16.0" />
                         </font>
                     </Button>
-                    <Button layoutX="75.0" layoutY="340.0" mnemonicParsing="false" onAction="#Logout" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Log Out">
+                    <Button layoutX="75.0" layoutY="340.0" mnemonicParsing="false" onAction="#logoutButton" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Log Out">
                         <font>
                             <Font name="System Bold" size="16.0" />
                         </font>

@@ -3,12 +3,15 @@ package com.example.lancastermusichallproject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import java.io.IOException;
+
 public class loginController {
 
-    @FXML
-    void LoginButton(ActionEvent event) {
-        // To do: Compare entered fields for username and password with database values
 
+    //Login button calls mainMenuScreen within Application
+    @FXML
+    void LoginButton(ActionEvent event) throws IOException {
+        Application.mainMenuScreen();
     }
 
 }
