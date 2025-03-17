@@ -1,61 +1,54 @@
 package com.example.lancastermusichallproject;
+import com.example.lancastermusichallproject.ScreenController;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import java.io.IOException;
+
 public class Application extends javafx.application.Application {
-    static Stage stage; //global stage variable
-    @Override
-    public void start(Stage stage) throws IOException {
-        Application.stage = stage; //initilaising the stage
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-
-        stage.setTitle("Lancaster's Music Hall");
-
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    //calling main menu screen
-    public static void mainMenuScreen() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainMenu.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setScene(scene);
-    }
-
-    public static void usageChartScreen() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("usageChart.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setScene(scene);
-    }
-
-    public static void diaryScreen() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("diary.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setScene(scene);
-    }
-
-    public static void loginScreen() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setScene(scene);
-    }
-
-    //need to create a daily sheet screen
-    public static void dailySheetScreen() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("mainMenu.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setScene(scene);
-    }
+    ///static Stage stage; //global stage variable
+    static ScreenController sc;
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
+    }
+
+    public void start(Stage stage) throws IOException {
+        try {
+            Scene scene = new Scene(new AnchorPane(), 1280, 720);
+            sc = new ScreenController(scene);
+            initializeScreens();
+            ScreenController.loadScreen("Login"); // Login screen is loaded on startup
+
+//            Image LMHlogo = new Image("assets/LMHlogo.png");
+//            stage.getIcons().add(LMHlogo);
+
+            stage.setTitle("Lancaster's Music Hall");
+            stage.setResizable(false);
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void initializeScreens() throws IOException {
+        sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
+        sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
+        sc.addScreen("UsageChart", FXMLLoader.load(getClass().getResource("usageChart.fxml")));
+        sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
     }
 
 }
