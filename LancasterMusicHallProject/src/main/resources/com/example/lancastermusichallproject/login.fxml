@@ -19,7 +19,7 @@
 
                 <ImageView fitHeight="219.0" fitWidth="334.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@assets/LMHLOGO_CROPPED.png" />
+                        <Image url="@assets/LMHLogo.png" />
                     </image>
                 </ImageView>
 
