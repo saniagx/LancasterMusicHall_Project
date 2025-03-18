@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.calendarfx.view.page.MonthPage?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.venueOps.lancastermusichallproject.operations.Calendar"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane maxHeight="720.0" maxWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.Calendar">
+   <children>
+      <AnchorPane layoutX="128.0" layoutY="73.0" maxHeight="576.0" maxWidth="1024.0" prefHeight="576.0" prefWidth="1024.0" style="-fx-background-color: #FFFFFF; -fx-border-radius: 20px; -fx-background-radius: 20px;">
+         <children>
+            <Text layoutX="431.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Calendar">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Text>
+            <Button layoutX="28.0" layoutY="28.0" mnemonicParsing="false" onAction="#BackButton" prefHeight="35.0" prefWidth="165.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Main Menu" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Button>
+            <MonthPage layoutX="289.0" layoutY="103.0" />
+         </children>
+      </AnchorPane>
+   </children>
 </AnchorPane>

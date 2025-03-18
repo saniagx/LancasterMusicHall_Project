@@ -1,12 +1,14 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.fxml.FXML;
 import com.calendarfx.view.CalendarView;
+import javafx.scene.layout.AnchorPane;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Calendar implements ICalendar {
-    @FXML private CalendarView calendarView;
 
     private ArrayList<IEvent> events = new ArrayList<>();
 
@@ -14,7 +16,7 @@ public class Calendar implements ICalendar {
 
     @FXML
     private void initialize() {
-        calendarView = new CalendarView();
+
     }
     /**
      * Adds event to the events ArrayList
@@ -74,4 +76,6 @@ public class Calendar implements ICalendar {
         }
         return true; // Date is available
     }
+
+    public void BackButton() { ScreenController.loadScreen("MainMenu"); }
 }
