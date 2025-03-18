@@ -11,6 +11,7 @@ public class DatabaseConnection {
         String port = "3306";  //MySQL port
         String dbName = "in2033t02";
 
+        // Load dotenv variables
         Dotenv dotenv = Dotenv.load();
         String user = dotenv.get("DB_USERNAME");
         String password = dotenv.get("DB_PASSWORD");
