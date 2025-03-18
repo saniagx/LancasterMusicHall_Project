@@ -9,6 +9,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
+
+import java.sql.Ref;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -27,6 +29,12 @@ public class UsageChart extends Application{
     private GraphicsContext chart_gc;
     private GraphicsContext timeline_gc;
     private int cell_size = 50;
+
+    LocalDate today;
+    LocalDate currentMonday;
+    LocalDate prevMonday;
+    LocalDate nextMonday;
+    List<LocalDate> weekStarts;
 
     public UsageChart() {}
 
@@ -49,8 +57,14 @@ public class UsageChart extends Application{
         chart_gc = chartCanvas.getGraphicsContext2D();
         timeline_gc = timelineCanvas.getGraphicsContext2D();
 
+        today = LocalDate.now();
+        currentMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        prevMonday = currentMonday.minusWeeks(1);
+        nextMonday = currentMonday.plusWeeks(1);
+        weekStarts = List.of(prevMonday, currentMonday, nextMonday);
+
         drawChartBase();
-        drawTimeline(timeline_gc);
+        Refresh();
     }
 
     // Draws Checkerboard Pattern
@@ -67,51 +81,46 @@ public class UsageChart extends Application{
         }
     }
 
-    private void drawTimeline(GraphicsContext gc) {
+    private void drawTimeline() {
+        //timeline_gc.clearRect(0, 0, 1049, 64);
         double dayWidth = cell_size;
 
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, timelineCanvas.getWidth(), 39);
+        timeline_gc.setFill(Color.WHITE);
+        timeline_gc.fillRect(0, 0, timelineCanvas.getWidth(), 39);
         for (int i = 0; i < 22; i++) {
             if (i % 2 == 0) {
-                gc.setFill(Color.LIGHTGRAY);
+                timeline_gc.setFill(Color.LIGHTGRAY);
             } else {
-                gc.setFill(Color.WHITE);
+                timeline_gc.setFill(Color.WHITE);
             }
-            gc.fillRect(cell_size*i, 39, cell_size, 24);
+            timeline_gc.fillRect(cell_size*i, 39, cell_size, 24);
         }
 
         // Draw horizontal separators
-        gc.setStroke(Color.BLACK);
-        gc.strokeLine(0, 0, 1049, 0);
-        gc.strokeLine(0, 39, 1049, 39);
+        timeline_gc.setStroke(Color.BLACK);
+        timeline_gc.strokeLine(0, 0, 1049, 0);
+        timeline_gc.strokeLine(0, 39, 1049, 39);
 
-        // Add labels
-        LocalDate today = LocalDate.now();
-        LocalDate thisMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate lastMonday = thisMonday.minusWeeks(1);
-        LocalDate nextMonday = thisMonday.plusWeeks(1);
-
-        List<LocalDate> weekStarts = List.of(lastMonday, thisMonday, nextMonday);
         for (LocalDate weekStart : weekStarts) {
-            double weekX = ChronoUnit.DAYS.between(lastMonday, weekStart) * dayWidth;
+            //System.out.println(weekStart);
+            double weekX = ChronoUnit.DAYS.between(prevMonday, weekStart) * dayWidth;
 
             // Draw week label
-            gc.setFill(Color.BLACK);
-            gc.fillText(weekStart.toString(), weekX + 5, 34);
+            timeline_gc.setFill(Color.BLACK);
+            timeline_gc.fillText(weekStart.toString(), weekX + 5, 34);
 
             // Draw vertical separator for weeks
-            gc.strokeLine(weekX, 39, weekX, 0);
+            timeline_gc.strokeLine(weekX, 39, weekX, 0);
 
             // Draw days for current and previous week
             for (int j = 0; j < 7; j++) {
                 LocalDate day = weekStart.plusDays(j);
                 double dayX = weekX + (j * dayWidth);
 
-                gc.fillText(String.valueOf(day.getDayOfMonth()), dayX + 5, 59);
+                timeline_gc.fillText(String.valueOf(day.getDayOfMonth()), dayX + 5, 59);
 
                 // Draw vertical separator for days
-                gc.strokeLine(dayX, 64, dayX, 39);
+                timeline_gc.strokeLine(dayX, 64, dayX, 39);
             }
         }
     }
@@ -125,19 +134,29 @@ public class UsageChart extends Application{
         ScreenController.loadScreen("MainMenu");
     }
 
+    public void changeWeek(int weeks) {
+        currentMonday = currentMonday.plusWeeks(weeks);
+        prevMonday = currentMonday.minusWeeks(1);
+        nextMonday = currentMonday.plusWeeks(1);
+        weekStarts = List.of(prevMonday, currentMonday, nextMonday);
+        Refresh();
+    }
+
     public void NextWeek() {
-        // To do: Button that goes to the next week in the timeline
+        changeWeek(1);
     }
 
     public void PrevWeek() {
-        // To do: Button that goes to the previous week in the timeline
+        changeWeek(-1);
     }
 
     public void Today() {
-        // To do: Button that resets timeline to having today in the centre
+        currentMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        changeWeek(0);
     }
 
     public void Refresh() {
-        // To do: Button that fetches from database and redraws bars
+        drawEvents();
+        drawTimeline();
     }
 }
