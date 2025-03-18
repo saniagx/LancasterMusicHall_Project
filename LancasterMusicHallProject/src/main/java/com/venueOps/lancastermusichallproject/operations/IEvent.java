@@ -1,8 +1,6 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 public interface IEvent {
 
@@ -16,14 +14,11 @@ public interface IEvent {
     String getEventType();
     void setEventType(String eventType);
 
-    Date getEventDate();
-    void setEventDate(Date eventDate);
+    LocalDateTime getEventStart();
+    void setEventStart(LocalDateTime eventStart);
 
-    Time getEventStartTime();
-    void setEventStartTime(Time eventStartTime);
-
-    Time getEventEndTime();
-    void setEventEndTime(Time eventEndTime);
+    LocalDateTime getEventEnd();
+    void setEventEnd(LocalDateTime eventEnd);
 
     float getEventPrice();
     void setEventPrice(float eventPrice);

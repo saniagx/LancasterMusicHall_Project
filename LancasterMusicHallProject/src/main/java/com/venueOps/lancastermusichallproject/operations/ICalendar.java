@@ -1,6 +1,6 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface ICalendar {
@@ -32,8 +32,8 @@ public interface ICalendar {
 
     /**
      * Returns true if the date given doesn't have an event booked on that date
-     * @param date SQL data type
+     * @param date LocalDate data type
      * @return Boolean which is true if a date is available to be booked
      */
-    boolean isAvailable(Date date);
+    boolean isAvailable(LocalDate date);
 }

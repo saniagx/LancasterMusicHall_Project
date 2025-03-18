@@ -1,28 +1,26 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDateTime;
 
 public class Event implements IEvent {
     private int eventID;
     private String eventName;
     private String eventType;
-    private Date eventDate;
-    private Time eventStartTime;
-    private Time eventEndTime;
+    private LocalDateTime eventStart;
+    private LocalDateTime eventEnd;
     private float eventPrice;
     private int venueID;
     private String venueName;
     private int seatingConfigID;
 
-    public Event(int eventID, String eventName, String eventType, Date eventDate, Time eventStartTime, Time eventEndTime, float eventPrice, int venueID, String venueName) {
+    public Event(int eventID, String eventName, String eventType, LocalDateTime eventStart, LocalDateTime eventEnd, float eventPrice, int venueID, String venueName) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
-        this.eventDate = eventDate;
-        this.eventStartTime = eventStartTime;
-        this.eventEndTime = eventEndTime;
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
         this.eventPrice = eventPrice;
         this.venueID = venueID;
         this.venueName = venueName;
@@ -48,19 +46,14 @@ public class Event implements IEvent {
     public void setEventType(String eventType) { this.eventType = eventType; }
 
     @Override
-    public Date getEventDate() { return this.eventDate; }
+    public LocalDateTime getEventStart() { return this.eventStart; }
     @Override
-    public void setEventDate(Date eventDate) { this.eventDate = eventDate; }
+    public void setEventStart(LocalDateTime eventStart) { this.eventStart = eventStart; }
 
     @Override
-    public Time getEventStartTime() { return this.eventStartTime; }
+    public LocalDateTime getEventEnd() { return this.eventEnd; }
     @Override
-    public void setEventStartTime(Time eventStartTime) { this.eventStartTime = eventStartTime; }
-
-    @Override
-    public Time getEventEndTime() { return this.eventEndTime; }
-    @Override
-    public void setEventEndTime(Time eventEndTime) { this.eventEndTime = eventEndTime; }
+    public void setEventEnd(LocalDateTime eventEnd) { this.eventEnd = eventEnd; }
 
     @Override
     public float getEventPrice() { return this.eventPrice; }

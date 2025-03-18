@@ -1,13 +1,21 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-import java.sql.Date;
+import javafx.fxml.FXML;
+import com.calendarfx.view.CalendarView;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Calendar implements ICalendar {
+    @FXML private CalendarView calendarView;
+
     private ArrayList<IEvent> events = new ArrayList<>();
 
     public Calendar() {}
 
+    @FXML
+    private void initialize() {
+        calendarView = new CalendarView();
+    }
     /**
      * Adds event to the events ArrayList
      * @param event Event object to be added
@@ -51,14 +59,18 @@ public class Calendar implements ICalendar {
 
     /**
      * Returns true if the date given doesn't have an event booked on that date
-     * @param date SQL data type
+     * @param date LocalDate data type
      * @return Boolean which is true if a date is available to be booked
      */
     @Override
-    public boolean isAvailable(Date date) {
+    public boolean isAvailable(LocalDate date) {
         for (IEvent event : events) {
-            if (event.getEventDate().equals(date))
-                return false; // Date is already booked
+            LocalDate start = event.getEventStart().toLocalDate();
+            LocalDate end = event.getEventEnd().toLocalDate();
+
+            if (!date.isBefore(start) && !date.isAfter(end)) {
+                return false; // Date falls within the event range
+            }
         }
         return true; // Date is available
     }
