@@ -1,7 +1,7 @@
 
 package com.venueOps.lancastermusichallproject;
 
-public class Diary extends Application {
+public class Diary {
 
     public Diary() {}
 

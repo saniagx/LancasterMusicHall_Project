@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-public class UsageChart extends Application{
+public class UsageChart {
 
     @FXML
     private TableView<String> venueTable;
