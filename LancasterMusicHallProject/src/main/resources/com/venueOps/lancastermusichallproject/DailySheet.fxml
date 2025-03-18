@@ -21,7 +21,7 @@
          </font>
       </Text>
       <Button layoutX="163.0" layoutY="124.0" mnemonicParsing="false" onAction="#BackButton" prefHeight="35.0" prefWidth="165.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Main Menu" textFill="WHITE" />
-      <HBox alignment="CENTER" layoutX="163.0" layoutY="183.0" prefHeight="440.0" prefWidth="945.0" spacing="30.0">
+      <HBox alignment="CENTER" layoutX="163.0" layoutY="183.0" prefHeight="200.0" prefWidth="945.0" spacing="30.0">
          <children>
             <VBox prefHeight="440.0" prefWidth="300.0">
                <children>
@@ -117,6 +117,64 @@
                         <Label text="Seating Config:" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="163.0" layoutY="403.0" prefHeight="200.0" prefWidth="945.0" spacing="10.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER" text="Meeting Room 1">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER" text="Meeting Room 2">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="157.5" spacing="10.0">
+               <children>
+                  <Label alignment="TOP_LEFT" text="Meeting Room 3">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER" text="Meeting Room 4">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
+               <children>
+                  <Label text="Meeting Room 5">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
+               <children>
+                  <Label text="Meeting Room 6">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
                </children>
             </VBox>
          </children>
