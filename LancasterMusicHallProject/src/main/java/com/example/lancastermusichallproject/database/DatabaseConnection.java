@@ -1,33 +1,44 @@
 package com.example.lancastermusichallproject.database;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class DatabaseConnection {
-    public static void main(String[] args) {
-        // Database Details
-        String host = "sst-stuproj.city.ac.uk";
-        String port = "3306";  //MySQL port
-        String dbName = "in2033t02";
+    private static Connection connection;
 
-        // Load dotenv variables
-        Dotenv dotenv = Dotenv.load();
-        String user = dotenv.get("DB_USERNAME");
-        String password = dotenv.get("DB_PASSWORD");
-
-        // Connection URL
-        String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName + "?user=" + user + "&password=" + password;
-        System.out.println("Connecting to database...");
+    public static Connection getConnection() {
         try {
-            //connection to the database
-            Connection conn = DriverManager.getConnection(url);
-            System.out.println("Connected to the database!");
+            if (connection == null || connection.isClosed()) {
+                // Database Details
+                String host = "sst-stuproj.city.ac.uk";
+                String port = "3306";
+                String dbName = "in2033t02";
 
-            // Our database operations can go here
+                // Load credentials from .env
+                Dotenv dotenv = Dotenv.load();
+                String user = dotenv.get("DB_USERNAME");
+                String password = dotenv.get("DB_PASSWORD");
 
-            // Closing connection when done
-            conn.close();
+                // Connection
+                String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+                connection = DriverManager.getConnection(url, user, password);
+                System.out.println("Connected to the database");
+            }
+        } catch (SQLException e) {
+            System.err.println("Database connection failed");
+            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
