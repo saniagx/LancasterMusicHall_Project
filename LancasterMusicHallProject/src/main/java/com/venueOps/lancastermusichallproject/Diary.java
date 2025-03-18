@@ -58,10 +58,10 @@ public class Diary {
             return;
         }
 
-        String dateKey = selectedNote.split(":")[0]; // Remove date from list
+        String dateKey = selectedNote.split(":")[0];
         notesMap.remove(dateKey);
 
-        notesListView.getItems().remove(selectedNote);
+        notesListView.getItems().remove(selectedNote); // Remove date from list
     }
 
     // Show alerts for errors (e.g. no date selected, empty note, no note selected to delete, etc.)
