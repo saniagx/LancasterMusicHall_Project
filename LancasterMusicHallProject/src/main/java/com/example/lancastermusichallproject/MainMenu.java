@@ -1,5 +1,7 @@
 package com.example.lancastermusichallproject;
 
+import com.example.lancastermusichallproject.database.DatabaseConnection;
+
 public class MainMenu extends Application {
 
     public MainMenu() {}
@@ -10,9 +12,10 @@ public class MainMenu extends Application {
         ScreenController.loadScreen("Diary");
     }
     public void Logout() {
+        DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");
     }
-
-
-
+    public void DailySheet() {
+        ScreenController.loadScreen("DailySheet");
+    }
 }
