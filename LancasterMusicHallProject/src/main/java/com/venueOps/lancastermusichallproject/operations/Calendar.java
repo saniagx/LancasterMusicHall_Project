@@ -1,14 +1,24 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.view.DetailedWeekView;
+import com.calendarfx.view.MonthView;
 import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.fxml.FXML;
-import com.calendarfx.view.CalendarView;
-import javafx.scene.layout.AnchorPane;
-
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Calendar implements ICalendar {
+    @FXML private Pane calendarContainer;
+    @FXML private Text dateLabel;
+
+    private DetailedWeekView weekView;
+    private MonthView monthView;
+    private com.calendarfx.model.Calendar eventsCalendar;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
     private ArrayList<IEvent> events = new ArrayList<>();
 
@@ -16,8 +26,70 @@ public class Calendar implements ICalendar {
 
     @FXML
     private void initialize() {
+        eventsCalendar = new com.calendarfx.model.Calendar("Events");
+        CalendarSource calendarSource = new CalendarSource("Calendar");
+        calendarSource.getCalendars().add(eventsCalendar);
 
+        weekView = new DetailedWeekView();
+        weekView.getCalendarSources().setAll(calendarSource);
+        weekView.setPrefSize(480, 480);
+
+        monthView = new MonthView();
+        monthView.getCalendarSources().setAll(calendarSource);
+        monthView.setPrefSize(480, 480);
+
+        updateDateLabel();
+
+        // Default to Monthly view
+        calendarContainer.getChildren().setAll(monthView);
     }
+
+    @FXML
+    private void WeeklyView() {
+        calendarContainer.getChildren().setAll(weekView);
+        updateDateLabel();
+    }
+
+    @FXML
+    private void MonthlyView() {
+        calendarContainer.getChildren().setAll(monthView);
+        updateDateLabel();
+    }
+
+    @FXML
+    private void Previous() {
+        if (calendarContainer.getChildren().contains(weekView)) {
+            LocalDate currentStart = weekView.getStartDate();
+            weekView.setDate(currentStart.minusWeeks(1));
+        } else if (calendarContainer.getChildren().contains(monthView)) {
+            LocalDate currentDate = monthView.getDate();
+            monthView.setDate(currentDate.minusMonths(1));
+        }
+        updateDateLabel();
+    }
+
+    @FXML
+    private void Next() {
+        if (calendarContainer.getChildren().contains(weekView)) {
+            LocalDate currentStart = weekView.getStartDate();
+            weekView.setDate(currentStart.plusWeeks(1));
+        } else if (calendarContainer.getChildren().contains(monthView)) {
+            LocalDate currentDate = monthView.getDate();
+            monthView.setDate(currentDate.plusMonths(1));
+        }
+        updateDateLabel();
+    }
+
+    private void updateDateLabel() {
+        LocalDate date;
+        if (calendarContainer.getChildren().contains(weekView)) {
+            date = weekView.getStartDate();
+        } else {
+            date = monthView.getDate();
+        }
+        dateLabel.setText(date.format(dateFormatter));
+    }
+
     /**
      * Adds event to the events ArrayList
      * @param event Event object to be added

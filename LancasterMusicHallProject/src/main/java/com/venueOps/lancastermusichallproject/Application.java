@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Application extends javafx.application.Application {
-    ///static Stage stage; //global stage variable
     static ScreenController sc;
 
     public static void main(String[] args) {
@@ -45,5 +44,4 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
         sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
     }
-
 }
