@@ -1,4 +1,4 @@
-module com.example.lancastermusichallproject {
+module com.venueOps.lancastermusichallproject {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -6,6 +6,6 @@ module com.example.lancastermusichallproject {
     requires java.sql;
     requires java.dotenv;
 
-    opens com.example.lancastermusichallproject to javafx.fxml;
-    exports com.example.lancastermusichallproject;
+    opens com.venueOps.lancastermusichallproject to javafx.fxml;
+    exports com.venueOps.lancastermusichallproject;
 }
