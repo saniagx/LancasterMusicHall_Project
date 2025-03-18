@@ -1,20 +1,12 @@
 package com.example.lancastermusichallproject;
-import com.example.lancastermusichallproject.ScreenController;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-
 import java.io.IOException;
-
-import java.io.IOException;
+import java.net.URL;
 
 public class Application extends javafx.application.Application {
     ///static Stage stage; //global stage variable
@@ -31,8 +23,9 @@ public class Application extends javafx.application.Application {
             initializeScreens();
             ScreenController.loadScreen("Login"); // Login screen is loaded on startup
 
-//            Image LMHlogo = new Image("assets/LMHlogo.png");
-//            stage.getIcons().add(LMHlogo);
+            URL imageUrl = getClass().getResource("assets/LMHLogo.png");
+            Image LMHlogo = new Image(imageUrl.toExternalForm());
+            stage.getIcons().add(LMHlogo);
 
             stage.setTitle("Lancaster's Music Hall");
             stage.setResizable(false);
