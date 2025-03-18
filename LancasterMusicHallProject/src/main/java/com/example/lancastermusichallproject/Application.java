@@ -31,7 +31,7 @@ public class Application extends javafx.application.Application {
             initializeScreens();
             ScreenController.loadScreen("Login"); // Login screen is loaded on startup
 
-//            Image LMHlogo = new Image("assets/LMHlogo.png");
+//            Image LMHlogo = new Image("assets/LMHLogo.png");
 //            stage.getIcons().add(LMHlogo);
 
             stage.setTitle("Lancaster's Music Hall");
