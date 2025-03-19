@@ -135,11 +135,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -154,11 +150,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="157.5" spacing="10.0">
@@ -173,11 +165,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -192,11 +180,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -211,11 +195,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -230,11 +210,7 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Expand Details">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <Button mnemonicParsing="false" text="Expand Details" />
                </children>
             </VBox>
          </children>
