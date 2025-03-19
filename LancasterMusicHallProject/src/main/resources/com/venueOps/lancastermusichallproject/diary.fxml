@@ -25,9 +25,9 @@
          </font>
       </Text>
       <TextArea fx:id="noteTextArea" layoutX="250.0" layoutY="251.0" prefHeight="263.0" prefWidth="604.0" promptText="Notes about upcoming event, meetings and finances...." style="-fx-border-color: #122023;" AnchorPane.bottomAnchor="214.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="426.0" AnchorPane.topAnchor="251.0" />
-      <ImageView fitHeight="91.0" fitWidth="135.0" layoutX="9.0" layoutY="637.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="91.0" fitWidth="135.0" layoutY="652.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../assets/LMHlogo.png" />
+            <Image url="@assets/LMHLOGO_CROPPED.png" />
          </image>
       </ImageView>
       <DatePicker fx:id="datePicker" layoutX="200.0" layoutY="209.0" />
