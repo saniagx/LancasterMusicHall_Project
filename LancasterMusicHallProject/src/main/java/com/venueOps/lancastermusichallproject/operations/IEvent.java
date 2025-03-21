@@ -14,6 +14,9 @@ public interface IEvent {
     String getEventType();
     void setEventType(String eventType);
 
+    String getEventHost();
+    void setEventHost(String eventHost);
+
     LocalDateTime getEventStart();
     void setEventStart(LocalDateTime eventStart);
 
