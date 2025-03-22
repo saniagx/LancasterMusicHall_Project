@@ -59,5 +59,6 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
         sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
         sc.addScreen("EventOverview", FXMLLoader.load(getClass().getResource("eventOverview.fxml")));
+        sc.addScreen("EventSeating", FXMLLoader.load(getClass().getResource("eventSeating.fxml")));
     }
 }
