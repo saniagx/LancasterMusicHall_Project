@@ -36,12 +36,12 @@
                      <Font name="System Bold" size="16.0" />
                   </font>
                </Button>
-               <Button layoutX="77.0" layoutY="387.0" mnemonicParsing="false" onAction="#Logout" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Log Out">
+               <Button layoutX="77.0" layoutY="400.0" mnemonicParsing="false" onAction="#Logout" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Log Out">
                   <font>
                      <Font name="System Bold" size="16.0" />
                   </font>
                </Button>
-               <Button layoutX="77.0" layoutY="332.0" mnemonicParsing="false" onAction="#EventOverview" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Event Overview">
+               <Button layoutX="77.0" layoutY="340.0" mnemonicParsing="false" onAction="#EventOverview" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Event Overview">
                   <font>
                      <Font name="System Bold" size="16.0" />
                   </font>
