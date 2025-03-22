@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class Diary {
 
@@ -70,6 +72,31 @@ public class Diary {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public void viewNote() {
+        String selectedNote = notesListView.getSelectionModel().getSelectedItem();
+
+        if (selectedNote == null) {
+            Alert("Error", "Please select a note to view");
+            return;
+        }
+
+        String dateKey = selectedNote.split(":")[0].trim();
+        String noteText = notesMap.get(dateKey);
+
+        if (noteText == null) {
+            Alert("Error", "No note found for this date");
+            return;
+        }
+
+        // Create a popup to display the note
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("View Note");
+        alert.setHeaderText("Note for " + dateKey);
+        alert.setContentText(noteText);
+        alert.getButtonTypes().setAll(ButtonType.CLOSE);
         alert.showAndWait();
     }
 }
