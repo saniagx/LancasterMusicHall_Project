@@ -8,6 +8,7 @@ public class Event implements IEvent {
     private int eventID;
     private String eventName;
     private String eventType;
+    private String eventHost;
     private LocalDateTime eventStart;
     private LocalDateTime eventEnd;
     private float eventPrice;
@@ -15,10 +16,11 @@ public class Event implements IEvent {
     private String venueName;
     private int seatingConfigID;
 
-    public Event(int eventID, String eventName, String eventType, LocalDateTime eventStart, LocalDateTime eventEnd, float eventPrice, int venueID, String venueName) {
+    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, float eventPrice, int venueID, String venueName) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
+        this.eventHost = eventHost;
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
         this.eventPrice = eventPrice;
@@ -44,6 +46,11 @@ public class Event implements IEvent {
     public String getEventType() { return this.eventType; }
     @Override
     public void setEventType(String eventType) { this.eventType = eventType; }
+
+    @Override
+    public String getEventHost() { return this.eventHost; }
+    @Override
+    public void setEventHost(String eventHost) { this.eventHost = eventHost; }
 
     @Override
     public LocalDateTime getEventStart() { return this.eventStart; }
