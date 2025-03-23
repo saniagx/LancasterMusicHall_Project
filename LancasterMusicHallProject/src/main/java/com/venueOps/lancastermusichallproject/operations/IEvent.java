@@ -1,5 +1,6 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public interface IEvent {
@@ -23,8 +24,8 @@ public interface IEvent {
     LocalDateTime getEventEnd();
     void setEventEnd(LocalDateTime eventEnd);
 
-    float getEventPrice();
-    void setEventPrice(float eventPrice);
+    BigDecimal getEventPrice();
+    void setEventPrice(BigDecimal eventPrice);
 
     int getVenueID();
     void setVenueID(int venueID);

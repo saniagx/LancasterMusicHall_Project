@@ -1,7 +1,6 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Event implements IEvent {
@@ -11,12 +10,12 @@ public class Event implements IEvent {
     private String eventHost;
     private LocalDateTime eventStart;
     private LocalDateTime eventEnd;
-    private float eventPrice;
+    private BigDecimal eventPrice;
     private int venueID;
     private String venueName;
     private int seatingConfigID;
 
-    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, float eventPrice, int venueID, String venueName) {
+    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
@@ -63,9 +62,9 @@ public class Event implements IEvent {
     public void setEventEnd(LocalDateTime eventEnd) { this.eventEnd = eventEnd; }
 
     @Override
-    public float getEventPrice() { return this.eventPrice; }
+    public BigDecimal getEventPrice() { return this.eventPrice; }
     @Override
-    public void setEventPrice(float eventPrice) { this.eventPrice = eventPrice; }
+    public void setEventPrice(BigDecimal eventPrice) { this.eventPrice = eventPrice; }
 
     @Override
     public int getVenueID() { return this.venueID; }
