@@ -1,0 +1,8 @@
+.meeting-scrollpane {
+    -fx-background-color: transparent;
+}
+
+.meeting-scrollpane .viewport {
+    -fx-background-color: lightgrey;
+    -fx-background-radius: 20px;
+}
