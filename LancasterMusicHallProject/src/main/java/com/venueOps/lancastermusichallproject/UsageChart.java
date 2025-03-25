@@ -1,6 +1,5 @@
 package com.venueOps.lancastermusichallproject;
 
-
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import com.venueOps.lancastermusichallproject.operations.Event;
 import javafx.beans.property.SimpleStringProperty;
@@ -8,10 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.DayOfWeek;
@@ -21,18 +18,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class UsageChart {
-
+    // Chart attributes
     @FXML private TableView<String> venueTable;
     @FXML private TableColumn<String, String> venueColumn;
     @FXML private Canvas chartCanvas;
     @FXML private Canvas timelineCanvas;
 
-    // Event Details Pane
+    // Event Details Pane attributes
     @FXML private VBox eventDetails_VBox;
     @FXML private Label eventName_Label;
     @FXML private TextField eventHost_TextField;
@@ -41,11 +37,12 @@ public class UsageChart {
     @FXML private TextField eventTicketSales_TextField;
     @FXML private TextField eventTicketSales_PercentageField;
 
-    private final List<String> venues = List.of("Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");
+    private final List<String> venues = List.of(
+            "Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber"
+    );
     private GraphicsContext chart_gc;
     private GraphicsContext timeline_gc;
     private final int cell_size = 50;
-
     private LocalDate today;
     private LocalDate currentMonday;
     private LocalDate prevMonday;
@@ -81,14 +78,15 @@ public class UsageChart {
         chart_gc = chartCanvas.getGraphicsContext2D();
         timeline_gc = timelineCanvas.getGraphicsContext2D();
 
+        // Setting boundaries of the timeline
         today = LocalDate.now();
         currentMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         prevMonday = currentMonday.minusWeeks(1);
         nextMonday = currentMonday.plusWeeks(1);
         weekStarts = List.of(prevMonday, currentMonday, nextMonday);
 
+        // Handle clicking of bars
         clickableBars = new ArrayList<>();
-
         chartCanvas.setOnMouseClicked(event -> {
             double mouseX = event.getX();
             double mouseY = event.getY();
@@ -103,12 +101,13 @@ public class UsageChart {
                 }
             }
 
-            // If no bar was clicked, clear the event details
+            // No bar clicked, clear details
             if (!found) {
                 clearEventDetails();
             }
         });
 
+        // Draw the screen
         Refresh();
     }
 
@@ -126,8 +125,8 @@ public class UsageChart {
         }
     }
 
+    // Draws the timeline
     private void drawTimeline() {
-        //timeline_gc.clearRect(0, 0, 1049, 64);
         double dayWidth = cell_size;
 
         timeline_gc.setFill(Color.WHITE);
@@ -170,7 +169,7 @@ public class UsageChart {
         }
     }
 
-    // To do: Fetch list of events, draw a bar for each of them
+    // Draw bars for each event
     private void drawEvents() {
         clickableBars.clear();
         drawChartBase();
@@ -183,7 +182,7 @@ public class UsageChart {
                 continue; // Skip if venue is not in the list
             }
 
-            // Calculate the y-position (center the bar in the cell)
+            // Calculate y-position (center the bar in the cell)
             double y = venueIndex * cell_size + 10;
             double barHeight = cell_size - 20;
 
@@ -199,7 +198,7 @@ public class UsageChart {
                 eventEndDate = nextMonday.plusDays(6);
             }
 
-            // Calculate the x-position and width
+            // Calculate x-position and width
             long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
             long duration = ChronoUnit.DAYS.between(eventStartDate, eventEndDate) + 1; // Include the end day
             double x = startOffset * cell_size;
@@ -260,6 +259,7 @@ public class UsageChart {
         return events;
     }
 
+    // Determine colour of an event's bar
     private Color getBarColour(Event event) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime eventStart = event.getEventStart();
@@ -300,6 +300,7 @@ public class UsageChart {
         }
     }
 
+    // Set text fields to the event's information
     private void displayEventDetails(Event event) {
         eventDetails_VBox.setVisible(true);
         eventName_Label.setText(event.getEventName());
@@ -311,6 +312,7 @@ public class UsageChart {
         eventTicketSales_PercentageField.setText(String.format("%.2f", salesPercentage));
     }
 
+    // Hide and reset event detail fields
     private void clearEventDetails() {
         eventDetails_VBox.setVisible(false);
         eventName_Label.setText("");
@@ -320,16 +322,17 @@ public class UsageChart {
         eventTicketSales_TextField.setText("");
     }
 
-    public void BackButton() {
-        ScreenController.loadScreen("MainMenu");
-    }
-
+    // Adjust boundaries of timeline
     public void changeWeek(int weeks) {
         currentMonday = currentMonday.plusWeeks(weeks);
         prevMonday = currentMonday.minusWeeks(1);
         nextMonday = currentMonday.plusWeeks(1);
         weekStarts = List.of(prevMonday, currentMonday, nextMonday);
         Refresh();
+    }
+
+    public void BackButton() {
+        ScreenController.loadScreen("MainMenu");
     }
 
     public void NextWeek() {

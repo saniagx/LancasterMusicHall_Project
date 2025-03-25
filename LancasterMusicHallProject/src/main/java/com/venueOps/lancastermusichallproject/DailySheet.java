@@ -219,6 +219,7 @@ public class DailySheet {
         ScreenController.loadScreen("MainMenu");
     }
 
+    // Display meeting room pane and fill the screen with the list of meetings that occurred in that room
     public void OpenMeetingRoomPane(String venue) {
         meetingRoom_pane.getChildren().clear();
 
@@ -283,12 +284,14 @@ public class DailySheet {
         OpenMeetingRoomPane("Chekhov Chamber");
     }
 
+    // Fetch list of meetings for given venue
     private List<Event> getMeetingEventsForVenue(String venue) {
         return events.stream()
                 .filter(event -> event.getEventType().equals("Meeting") && event.getVenueName().equals(venue))
                 .collect(Collectors.toList());
     }
 
+    // Details of meetings in the meeting pane are shown as a grid
     private GridPane createMeetingGridPane(Event event) {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
