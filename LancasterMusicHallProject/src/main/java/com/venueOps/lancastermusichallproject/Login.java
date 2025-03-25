@@ -29,7 +29,7 @@ public class Login {
     }
 
     private boolean authenticateUser(String username, String password) {
-        String query = "SELECT password FROM users WHERE username = ?";
+        String query = "SELECT password FROM Users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
