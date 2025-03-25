@@ -123,11 +123,11 @@ public class DailySheet {
             if (conn == null) {
                 return events;
             }
-            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, h.company_name AS host_name, v.name as venue_name " +
+            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, e.tickets_sold, h.company_name AS host_name, v.name as venue_name " +
                     "FROM Events e " +
                     "JOIN Hosts h ON e.host_id = h.host_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
-                    "WHERE DATE(e.start) = ?";
+                    "WHERE DATE(e.start) <= ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
             ResultSet rs = pstmt.executeQuery();
@@ -143,8 +143,9 @@ public class DailySheet {
                 BigDecimal price = BigDecimal.valueOf(rs.getDouble("price"));
                 int venueID = rs.getInt("venue_id");
                 String venueName = rs.getString("venue_name");
+                int ticketsSold = rs.getInt("tickets_sold");
 
-                Event event = new Event(eventID, name, type, host, start, end, price, venueID, venueName);
+                Event event = new Event(eventID, name, type, host, start, end, price, venueID, venueName, ticketsSold);
                 events.add(event);
             }
 
