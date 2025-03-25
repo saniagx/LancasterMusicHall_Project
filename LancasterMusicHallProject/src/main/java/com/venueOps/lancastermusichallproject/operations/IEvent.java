@@ -33,6 +33,9 @@ public interface IEvent {
     String getVenueName();
     void setVenueName(String venueName);
 
+    int getTicketsSold();
+    void setTicketsSold(int ticketsSold);
+
     // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
     int getSeatingConfigID();
 }

@@ -13,9 +13,10 @@ public class Event implements IEvent {
     private BigDecimal eventPrice;
     private int venueID;
     private String venueName;
+    private int ticketsSold;
     private int seatingConfigID;
 
-    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName) {
+    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName, int ticketsSold) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
@@ -25,6 +26,7 @@ public class Event implements IEvent {
         this.eventPrice = eventPrice;
         this.venueID = venueID;
         this.venueName = venueName;
+        this.ticketsSold = ticketsSold;
 
         // Store seatingConfigID automatically
         this.seatingConfigID = SeatingConfig.getSeatingConfigID(venueID, eventType);
@@ -75,6 +77,11 @@ public class Event implements IEvent {
     public String getVenueName() { return this.venueName; }
     @Override
     public void setVenueName(String venueName) { this.venueName = venueName; }
+
+    @Override
+    public int getTicketsSold() { return this.ticketsSold; }
+    @Override
+    public void setTicketsSold(int ticketsSold) { this.ticketsSold = ticketsSold; }
 
     // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
     @Override
