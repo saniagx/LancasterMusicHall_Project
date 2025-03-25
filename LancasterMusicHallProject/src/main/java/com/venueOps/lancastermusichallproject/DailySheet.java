@@ -236,13 +236,15 @@ public class DailySheet {
 
         int meetingCounter = 1;
         for (Event meeting : meetingList) {
-            Label meetingLabel = new Label("Meeting " + meetingCounter);
-            meetingLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-padding: 5 0 5 0;");
-            GridPane meetingGrid = createMeetingGridPane(meeting);
-            meetingPane_VBox.getChildren().add(meetingLabel);
-            meetingPane_VBox.getChildren().add(meetingGrid);
+            if (meeting.getEventStart().toLocalDate().equals(date.toLocalDate())) {
+                Label meetingLabel = new Label("Meeting " + meetingCounter);
+                meetingLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-padding: 5 0 5 0;");
+                GridPane meetingGrid = createMeetingGridPane(meeting);
+                meetingPane_VBox.getChildren().add(meetingLabel);
+                meetingPane_VBox.getChildren().add(meetingGrid);
 
-            meetingCounter++;
+                meetingCounter++;
+            }
         }
     }
 
