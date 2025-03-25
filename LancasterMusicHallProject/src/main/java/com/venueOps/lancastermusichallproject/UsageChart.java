@@ -7,9 +7,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.math.BigDecimal;
@@ -17,6 +17,7 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -31,10 +32,19 @@ public class UsageChart {
     @FXML private Canvas chartCanvas;
     @FXML private Canvas timelineCanvas;
 
+    // Event Details Pane
+    @FXML private VBox eventDetails_VBox;
+    @FXML private Label eventName_Label;
+    @FXML private TextField eventHost_TextField;
+    @FXML private TextField eventStart_TextField;
+    @FXML private TextField eventEnd_TextField;
+    @FXML private TextField eventTicketSales_TextField;
+    @FXML private TextField eventTicketSales_PercentageField;
+
     private final List<String> venues = List.of("Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");
     private GraphicsContext chart_gc;
     private GraphicsContext timeline_gc;
-    private int cell_size = 50;
+    private final int cell_size = 50;
 
     private LocalDate today;
     private LocalDate currentMonday;
@@ -42,11 +52,18 @@ public class UsageChart {
     private LocalDate nextMonday;
     private List<LocalDate> weekStarts;
     private ArrayList<Event> events;
+    private List<ClickableBar> clickableBars;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private final Map<Integer, Integer> venueCapacity = Map.of(
+            0, 374,
+            1, 95
+    );
 
     public UsageChart() {}
 
     @FXML
     public void initialize() {
+        eventDetails_VBox.setVisible(false);
         // Setup venue list
         venueColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
         venueColumn.setMaxWidth(120);
@@ -69,6 +86,28 @@ public class UsageChart {
         prevMonday = currentMonday.minusWeeks(1);
         nextMonday = currentMonday.plusWeeks(1);
         weekStarts = List.of(prevMonday, currentMonday, nextMonday);
+
+        clickableBars = new ArrayList<>();
+
+        chartCanvas.setOnMouseClicked(event -> {
+            double mouseX = event.getX();
+            double mouseY = event.getY();
+
+            boolean found = false;
+            for (ClickableBar bar : clickableBars) {
+                if (bar.contains(mouseX, mouseY)) {
+                    Event clickedEvent = bar.getEvent();
+                    displayEventDetails(clickedEvent);
+                    found = true;
+                    break;
+                }
+            }
+
+            // If no bar was clicked, clear the event details
+            if (!found) {
+                clearEventDetails();
+            }
+        });
 
         Refresh();
     }
@@ -133,6 +172,7 @@ public class UsageChart {
 
     // To do: Fetch list of events, draw a bar for each of them
     private void drawEvents() {
+        clickableBars.clear();
         drawChartBase();
 
         for (Event event : events) {
@@ -168,6 +208,11 @@ public class UsageChart {
             // Draw the bar
             chart_gc.setFill(getBarColour(event));
             chart_gc.fillRect(x, y, width, barHeight);
+
+            // Only Main Hall and Small Hall bars are clickable
+            if (venueIndex == 0 || venueIndex == 1) {
+                clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
+            }
         }
     }
 
@@ -216,10 +261,6 @@ public class UsageChart {
     }
 
     private Color getBarColour(Event event) {
-        Map<Integer, Integer> venueCapacity = Map.of(
-                0, 374,
-                1, 95
-        );
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime eventStart = event.getEventStart();
         LocalDateTime eventEnd = event.getEventEnd();
@@ -259,6 +300,26 @@ public class UsageChart {
         }
     }
 
+    private void displayEventDetails(Event event) {
+        eventDetails_VBox.setVisible(true);
+        eventName_Label.setText(event.getEventName());
+        eventHost_TextField.setText(event.getEventHost());
+        eventStart_TextField.setText(event.getEventStart().format(formatter));
+        eventEnd_TextField.setText(event.getEventEnd().format(formatter));
+        eventTicketSales_TextField.setText(event.getTicketsSold() + " / " + venueCapacity.get(event.getVenueID()));
+        double salesPercentage = ((double)event.getTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
+        eventTicketSales_PercentageField.setText(String.format("%.2f", salesPercentage));
+    }
+
+    private void clearEventDetails() {
+        eventDetails_VBox.setVisible(false);
+        eventName_Label.setText("");
+        eventHost_TextField.setText("");
+        eventStart_TextField.setText("");
+        eventEnd_TextField.setText("");
+        eventTicketSales_TextField.setText("");
+    }
+
     public void BackButton() {
         ScreenController.loadScreen("MainMenu");
     }
@@ -288,5 +349,29 @@ public class UsageChart {
         events = getEvents(prevMonday, nextMonday.plusDays(6));
         drawEvents();
         drawTimeline();
+    }
+
+    private static class ClickableBar {
+        private final double x;
+        private final double y;
+        private final double width;
+        private final double height;
+        private final Event event;
+
+        public ClickableBar(double x, double y, double width, double height, Event event) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.event = event;
+        }
+
+        public boolean contains(double mouseX, double mouseY) {
+            return mouseX >= x && mouseX <= (x + width) && mouseY >= y && mouseY <= (y + height);
+        }
+
+        public Event getEvent() {
+            return event;
+        }
     }
 }

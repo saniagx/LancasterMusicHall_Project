@@ -5,8 +5,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -108,7 +113,66 @@
                </children>
             </VBox>
          </children></Pane>
-      <Pane layoutY="516.0" maxHeight="204.0" maxWidth="1280.0" prefHeight="204.0" prefWidth="1280.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000; -fx-border-radius: 1px;" />
+      <Pane fx:id="eventDetails_Pane" layoutY="516.0" maxHeight="204.0" maxWidth="1280.0" prefHeight="204.0" prefWidth="1280.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000; -fx-border-radius: 1px;">
+         <children>
+            <VBox fx:id="eventDetails_VBox" layoutX="440.0" layoutY="2.0" maxHeight="200.0" maxWidth="400.0" prefHeight="200.0" prefWidth="400.0" spacing="5.0">
+               <children>
+                  <Label fx:id="eventName_Label" text="Event Name">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <GridPane prefWidth="400.0" vgap="5.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="132.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="268.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="137.0" text="Host:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="eventHost_TextField" prefWidth="321.0" GridPane.columnIndex="1" />
+                        <Label prefHeight="27.0" prefWidth="133.0" text="Start:" GridPane.rowIndex="1">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="eventStart_TextField" prefWidth="321.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label prefHeight="27.0" prefWidth="133.0" text="End:" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="eventEnd_TextField" prefWidth="268.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label prefHeight="27.0" prefWidth="137.0" text="Ticket Sales:" GridPane.rowIndex="3">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <TextField fx:id="eventTicketSales_TextField" alignment="CENTER" prefHeight="25.0" prefWidth="192.0" />
+                              <TextField fx:id="eventTicketSales_PercentageField" alignment="CENTER" prefHeight="25.0" prefWidth="45.0" />
+                              <Label text="\%">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+         </children></Pane>
       <TableView fx:id="venueTable" layoutY="40.0" maxHeight="476.0" maxWidth="115.0" prefHeight="476.0" prefWidth="115.0">
          <columns>
             <TableColumn fx:id="venueColumn" editable="false" maxWidth="114.0" prefWidth="114.0" text="Venue" />
@@ -119,7 +183,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Canvas fx:id="chartCanvas" height="450.0" layoutX="116.0" layoutY="65.0" width="1049.0" />
+      <Canvas fx:id="chartCanvas" height="450.0" layoutX="116.0" layoutY="64.0" width="1049.0" />
       <Canvas fx:id="timelineCanvas" height="64.0" layoutX="116.0" width="1049.0" />
    </children>
 </AnchorPane>
