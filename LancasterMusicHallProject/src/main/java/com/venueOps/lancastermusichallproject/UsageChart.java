@@ -31,11 +31,10 @@ public class UsageChart {
     // Event Details Pane attributes
     @FXML private VBox eventDetails_VBox;
     @FXML private Label eventName_Label;
-    @FXML private TextField eventHost_TextField;
-    @FXML private TextField eventStart_TextField;
-    @FXML private TextField eventEnd_TextField;
-    @FXML private TextField eventTicketSales_TextField;
-    @FXML private TextField eventTicketSales_PercentageField;
+    @FXML private Label eventHost_Text;
+    @FXML private Label eventStart_Text;
+    @FXML private Label eventEnd_Text;
+    @FXML private Label eventTicketSales_Text;
 
     private final List<String> venues = List.of(
             "Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber"
@@ -111,17 +110,22 @@ public class UsageChart {
         Refresh();
     }
 
-    // Draws Checkerboard Pattern
+    // Draws background
     private void drawChartBase() {
         for (int i = 0; i < 22; i++) {
-            for (int j = 0; j < 9; j++) {
-                if ((i + j) % 2 == 0) {
-                    chart_gc.setFill(Color.WHITE);
-                } else {
-                    chart_gc.setFill(Color.LIGHTGRAY);
-                }
-                chart_gc.fillRect(cell_size*i, cell_size*j, cell_size, cell_size);
+            if (i % 2 == 0) {
+                chart_gc.setFill(Color.WHITE);
+            } else {
+                chart_gc.setFill(Color.LIGHTGRAY);
             }
+            chart_gc.fillRect(cell_size * i, 0, cell_size, cell_size * 9);
+        }
+
+        chart_gc.setStroke(Color.BLACK);
+        chart_gc.setLineWidth(1);
+        for (int j = 0; j <= 9; j++) {
+            double y = cell_size * j;
+            chart_gc.strokeLine(0, y, cell_size * 22, y);
         }
     }
 
@@ -133,9 +137,9 @@ public class UsageChart {
         timeline_gc.fillRect(0, 0, timelineCanvas.getWidth(), 39);
         for (int i = 0; i < 22; i++) {
             if (i % 2 == 0) {
-                timeline_gc.setFill(Color.LIGHTGRAY);
-            } else {
                 timeline_gc.setFill(Color.WHITE);
+            } else {
+                timeline_gc.setFill(Color.LIGHTGRAY);
             }
             timeline_gc.fillRect(cell_size*i, 39, cell_size, 24);
         }
@@ -151,7 +155,7 @@ public class UsageChart {
 
             // Draw week label
             timeline_gc.setFill(Color.BLACK);
-            timeline_gc.fillText(weekStart.toString(), weekX + 5, 34);
+            timeline_gc.fillText(weekStart.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), weekX + 5, 34);
 
             // Draw vertical separator for weeks
             timeline_gc.strokeLine(weekX, 39, weekX, 0);
@@ -304,22 +308,21 @@ public class UsageChart {
     private void displayEventDetails(Event event) {
         eventDetails_VBox.setVisible(true);
         eventName_Label.setText(event.getEventName());
-        eventHost_TextField.setText(event.getEventHost());
-        eventStart_TextField.setText(event.getEventStart().format(formatter));
-        eventEnd_TextField.setText(event.getEventEnd().format(formatter));
-        eventTicketSales_TextField.setText(event.getTicketsSold() + " / " + venueCapacity.get(event.getVenueID()));
+        eventHost_Text.setText(event.getEventHost());
+        eventStart_Text.setText(event.getEventStart().format(formatter));
+        eventEnd_Text.setText(event.getEventEnd().format(formatter));
         double salesPercentage = ((double)event.getTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
-        eventTicketSales_PercentageField.setText(String.format("%.2f", salesPercentage));
+        eventTicketSales_Text.setText(event.getTicketsSold() + " / " + venueCapacity.get(event.getVenueID()) + "\t\t" + String.format("%.2f", salesPercentage) + "%");
     }
 
     // Hide and reset event detail fields
     private void clearEventDetails() {
         eventDetails_VBox.setVisible(false);
         eventName_Label.setText("");
-        eventHost_TextField.setText("");
-        eventStart_TextField.setText("");
-        eventEnd_TextField.setText("");
-        eventTicketSales_TextField.setText("");
+        eventHost_Text.setText("");
+        eventStart_Text.setText("");
+        eventEnd_Text.setText("");
+        eventTicketSales_Text.setText("");
     }
 
     // Adjust boundaries of timeline

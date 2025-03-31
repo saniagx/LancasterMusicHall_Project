@@ -7,8 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,36 +24,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DailySheet {
-
-    // Attributes for 'Used' text objects, unused rooms have strikethrough applied to them
-    @FXML Text mainHall_usedText;
-    @FXML Text smallHall_usedText;
-    @FXML Text rehearsalSpace_usedText;
-    @FXML Text theGreenRoom_usedText;
-    @FXML Text bronteBoardroom_usedText;
-    @FXML Text dickensDen_usedText;
-    @FXML Text poeParlor_usedText;
-    @FXML Text globeRoom_usedText;
-    @FXML Text chekhovChamber_usedText;
-
     // Attributes for grid objects, to be disabled if the corresponding 'Used' attribute is false
     @FXML GridPane mainHall_grid;
     @FXML GridPane smallHall_grid;
     @FXML GridPane rehearsalSpace_grid;
 
     // Attributes for individual fields in the grids, to be set based on the events held
-    @FXML TextField mainHall_who;
-    @FXML TextField mainHall_startTime;
-    @FXML TextField mainHall_endTime;
-    @FXML TextField mainHall_seatingConfig;
-    @FXML TextField smallHall_who;
-    @FXML TextField smallHall_startTime;
-    @FXML TextField smallHall_endTime;
-    @FXML TextField smallHall_seatingConfig;
-    @FXML TextField rehearsalSpace_who;
-    @FXML TextField rehearsalSpace_startTime;
-    @FXML TextField rehearsalSpace_endTime;
-    @FXML TextField rehearsalSpace_seatingConfig;
+    @FXML Label mainHall_who;
+    @FXML Label mainHall_startTime;
+    @FXML Label mainHall_endTime;
+    @FXML Label mainHall_seatingConfig;
+    @FXML Label smallHall_who;
+    @FXML Label smallHall_startTime;
+    @FXML Label smallHall_endTime;
+    @FXML Label smallHall_seatingConfig;
+    @FXML Label rehearsalSpace_who;
+    @FXML Label rehearsalSpace_startTime;
+    @FXML Label rehearsalSpace_endTime;
+    @FXML Label rehearsalSpace_seatingConfig;
 
     // Attributes for the meeting room buttons, to be disabled if corresponding 'Used' attribute is false
     @FXML Button theGreenRoom_button;
@@ -74,7 +60,7 @@ public class DailySheet {
 
     private LocalDateTime date;
     private ArrayList<Event> events;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     public DailySheet() {}
 
@@ -91,16 +77,6 @@ public class DailySheet {
 
     // By default, assumes all venues are unused
     public void disableByDefault() {
-        // Used texts
-        mainHall_usedText.setStrikethrough(true);
-        smallHall_usedText.setStrikethrough(true);
-        rehearsalSpace_usedText.setStrikethrough(true);
-        theGreenRoom_usedText.setStrikethrough(true);
-        bronteBoardroom_usedText.setStrikethrough(true);
-        dickensDen_usedText.setStrikethrough(true);
-        poeParlor_usedText.setStrikethrough(true);
-        globeRoom_usedText.setStrikethrough(true);
-        chekhovChamber_usedText.setStrikethrough(true);
         // Grid panes
         mainHall_grid.setDisable(true);
         smallHall_grid.setDisable(true);
@@ -127,9 +103,10 @@ public class DailySheet {
                     "FROM Events e " +
                     "JOIN Hosts h ON e.host_id = h.host_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
-                    "WHERE DATE(e.start) <= ?";
+                    "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
+            pstmt.setString(2, date.toLocalDate().toString());
             ResultSet rs = pstmt.executeQuery();
 
             // Create event objects and add to array
@@ -162,7 +139,6 @@ public class DailySheet {
         for (Event event : events) {
             switch (event.getVenueID()) {
                 case 0: // Main Hall
-                    mainHall_usedText.setStrikethrough(false);
                     mainHall_grid.setDisable(false);
                     mainHall_who.setText(event.getEventHost());
                     mainHall_startTime.setText(event.getEventStart().format(formatter));
@@ -170,7 +146,6 @@ public class DailySheet {
                     mainHall_seatingConfig.setText(String.valueOf(event.getSeatingConfigID())); // This should probably be replaced with the name of a seating config
                     break;
                 case 1: // Small Hall
-                    smallHall_usedText.setStrikethrough(false);
                     smallHall_grid.setDisable(false);
                     smallHall_who.setText(event.getEventHost());
                     smallHall_startTime.setText(event.getEventStart().format(formatter));
@@ -178,7 +153,6 @@ public class DailySheet {
                     smallHall_seatingConfig.setText(String.valueOf(event.getSeatingConfigID()));
                     break;
                 case 2: // Rehearsal Space
-                    rehearsalSpace_usedText.setStrikethrough(false);
                     rehearsalSpace_grid.setDisable(false);
                     rehearsalSpace_who.setText(event.getEventHost());
                     rehearsalSpace_startTime.setText(event.getEventStart().format(formatter));
@@ -186,27 +160,21 @@ public class DailySheet {
                     rehearsalSpace_seatingConfig.setText(String.valueOf(event.getSeatingConfigID()));
                     break;
                 case 3: // The Green Room
-                    theGreenRoom_usedText.setStrikethrough(false);
                     theGreenRoom_button.setDisable(false);
                     break;
                 case 4: // Bronte Boardroom
-                    bronteBoardroom_usedText.setStrikethrough(false);
                     bronteBoardroom_button.setDisable(false);
                     break;
                 case 5: // Dickens Den
-                    dickensDen_usedText.setStrikethrough(false);
                     dickensDen_button.setDisable(false);
                     break;
                 case 6: // Poe Parlor
-                    poeParlor_usedText.setStrikethrough(false);
                     poeParlor_button.setDisable(false);
                     break;
                 case 7: // Globe Room
-                    globeRoom_usedText.setStrikethrough(false);
                     globeRoom_button.setDisable(false);
                     break;
                 case 8: // Chekhov Chamber
-                    chekhovChamber_usedText.setStrikethrough(false);
                     chekhovChamber_button.setDisable(false);
                     break;
                 default:
@@ -217,6 +185,10 @@ public class DailySheet {
 
     public void BackButton() {
         ScreenController.loadScreen("MainMenu");
+    }
+
+    public void Export() {
+
     }
 
     // Display meeting room pane and fill the screen with the list of meetings that occurred in that room
@@ -232,6 +204,7 @@ public class DailySheet {
         meetingPane_ScrollPane.setFitToWidth(true);
         meetingPane_ScrollPane.setFitToHeight(false);
         meetingPane_VBox.setMaxHeight(Double.MAX_VALUE);
+        meetingPane_VBox.setAlignment(Pos.CENTER_LEFT);
 
         List<Event> meetingList = getMeetingEventsForVenue(venue);
 
@@ -296,15 +269,15 @@ public class DailySheet {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setAlignment(Pos.CENTER_LEFT);
 
         // Meeting Details
         Label whoLabel = new Label("Who:");
-        TextField whoField = new TextField(event.getEventHost());
+        Label whoField = new Label(event.getEventHost());
         Label startLabel = new Label("Start:");
-        TextField startField = new TextField(event.getEventStart().format(formatter));
+        Label startField = new Label(event.getEventStart().format(formatter));
         Label endLabel = new Label("End:");
-        TextField endField = new TextField(event.getEventEnd().format(formatter));
+        Label endField = new Label(event.getEventEnd().format(formatter));
 
         // Add labels to the grid
         gridPane.add(whoLabel, 0, 0);

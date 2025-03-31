@@ -3,7 +3,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -33,11 +32,6 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Text fx:id="mainHall_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="295.0">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Text>
                   <GridPane fx:id="mainHall_grid" prefHeight="120.0" prefWidth="300.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="66.0" />
@@ -54,10 +48,10 @@
                         <Label text="Start Time:" GridPane.rowIndex="1" />
                         <Label text="End Time:" GridPane.rowIndex="2" />
                         <Label text="Seating Config:" GridPane.rowIndex="3" />
-                        <TextField fx:id="mainHall_who" editable="false" GridPane.columnIndex="1" />
-                        <TextField fx:id="mainHall_startTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="mainHall_endTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="mainHall_seatingConfig" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="mainHall_who" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" />
+                        <Label fx:id="mainHall_startTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="mainHall_endTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="mainHall_seatingConfig" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                </children>
@@ -69,31 +63,26 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Text fx:id="smallHall_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="295.0">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Text>
-                  <GridPane fx:id="smallHall_grid">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="88.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0" prefWidth="207.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <GridPane fx:id="smallHall_grid" prefHeight="120.0" prefWidth="300.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="183.0" />
+                     </columnConstraints>
+                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
                      <children>
                         <Label text="Who:" />
                         <Label text="Start Time:" GridPane.rowIndex="1" />
                         <Label text="End Time:" GridPane.rowIndex="2" />
                         <Label text="Seating Config:" GridPane.rowIndex="3" />
-                        <TextField fx:id="smallHall_who" editable="false" prefHeight="25.0" prefWidth="204.0" GridPane.columnIndex="1" />
-                        <TextField fx:id="smallHall_startTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="smallHall_endTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="smallHall_seatingConfig" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="smallHall_who" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" />
+                        <Label fx:id="smallHall_startTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="smallHall_endTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="smallHall_seatingConfig" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                </children>
@@ -105,31 +94,26 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Text fx:id="rehearsalSpace_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="295.0">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Text>
-                  <GridPane fx:id="rehearsalSpace_grid">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="89.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="206.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <GridPane fx:id="rehearsalSpace_grid" prefHeight="120.0" prefWidth="300.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="183.0" />
+                     </columnConstraints>
+                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
                      <children>
                         <Label text="Who:" />
                         <Label text="Start Time:" GridPane.rowIndex="1" />
                         <Label text="End Time:" GridPane.rowIndex="2" />
                         <Label text="Seating Config:" GridPane.rowIndex="3" />
-                        <TextField fx:id="rehearsalSpace_who" editable="false" GridPane.columnIndex="1" />
-                        <TextField fx:id="rehearsalSpace_startTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="rehearsalSpace_endTime" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="rehearsalSpace_seatingConfig" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="rehearsalSpace_who" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" />
+                        <Label fx:id="rehearsalSpace_startTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="rehearsalSpace_endTime" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="rehearsalSpace_seatingConfig" prefHeight="17.0" prefWidth="208.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                </children>
@@ -149,11 +133,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="theGreenRoom_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -163,11 +142,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="bronteBoardroom_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -177,11 +151,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="dickensDen_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -191,11 +160,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="poeParlor_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -205,11 +169,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="globeRoom_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="147.5" spacing="10.0">
@@ -219,11 +178,6 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="chekhovChamber_usedText" strokeType="OUTSIDE" strokeWidth="0.0" text="USED" textAlignment="CENTER" wrappingWidth="147.5">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                      </children>
