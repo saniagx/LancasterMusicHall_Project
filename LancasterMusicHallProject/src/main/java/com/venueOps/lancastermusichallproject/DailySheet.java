@@ -198,6 +198,7 @@ public class DailySheet {
 
     public void Export() {
         try {
+            // Create directory if it doesn't exist
             String directoryPath = "dailySheets";
             File directory = new File(directoryPath);
             if (!directory.exists()) {
@@ -210,7 +211,7 @@ public class DailySheet {
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
 
-            // Add a title
+            // Title
             document.add(new Paragraph("Daily Sheet for " + date.toLocalDate().toString())
                     .setFontSize(16)
                     .setBold());
@@ -279,7 +280,6 @@ public class DailySheet {
                 }
             }
 
-            // Close the document
             document.close();
             System.out.println("PDF exported successfully to " + fileName);
 
