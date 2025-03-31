@@ -4,6 +4,8 @@ module com.venueOps.lancastermusichallproject {
     requires java.sql;
     requires java.dotenv;
     requires com.calendarfx.view;
+    requires kernel;
+    requires layout;
 
     opens com.venueOps.lancastermusichallproject to javafx.fxml;
     opens com.venueOps.lancastermusichallproject.operations to javafx.fxml;

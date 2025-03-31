@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +23,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.UnitValue;
 
 public class DailySheet {
     // Attributes for grid objects, to be disabled if the corresponding 'Used' attribute is false
@@ -188,7 +197,95 @@ public class DailySheet {
     }
 
     public void Export() {
+        try {
+            String directoryPath = "dailySheets";
+            File directory = new File(directoryPath);
+            if (!directory.exists()) {
+                directory.mkdirs();
+                System.out.println("Created directory: " + directory.getAbsolutePath());
+            }
 
+            String fileName = directoryPath + "/DailySheet_" + date.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + ".pdf";
+            PdfWriter writer = new PdfWriter(fileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            // Add a title
+            document.add(new Paragraph("Daily Sheet for " + date.toLocalDate().toString())
+                    .setFontSize(16)
+                    .setBold());
+
+            // Section for Main Hall, Small Hall, and Rehearsal Space
+            for (Event event : events) {
+                int venueID = event.getVenueID();
+                if (venueID == 0 || venueID == 1 || venueID == 2) {
+                    String venueName = event.getVenueName();
+                    document.add(new Paragraph(venueName)
+                            .setFontSize(14)
+                            .setBold()
+                            .setMarginTop(10));
+
+                    // Create a table for the event details
+                    Table table = new Table(UnitValue.createPercentArray(new float[]{20, 80}));
+                    table.setWidth(UnitValue.createPercentValue(100));
+
+                    table.addCell(new Cell().add(new Paragraph("Event Name")));
+                    table.addCell(new Cell().add(new Paragraph(event.getEventName())));
+                    table.addCell(new Cell().add(new Paragraph("Host")));
+                    table.addCell(new Cell().add(new Paragraph(event.getEventHost())));
+                    table.addCell(new Cell().add(new Paragraph("Start Time")));
+                    table.addCell(new Cell().add(new Paragraph(event.getEventStart().format(formatter))));
+                    table.addCell(new Cell().add(new Paragraph("End Time")));
+                    table.addCell(new Cell().add(new Paragraph(event.getEventEnd().format(formatter))));
+                    table.addCell(new Cell().add(new Paragraph("Seating Config")));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(event.getSeatingConfigID()))));
+
+                    document.add(table);
+                }
+            }
+
+            // Section for Meeting Rooms
+            List<String> meetingRooms = List.of("The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");
+            for (String venue : meetingRooms) {
+                List<Event> meetings = getMeetingEventsForVenue(venue);
+                if (!meetings.isEmpty()) {
+                    document.add(new Paragraph(venue)
+                            .setFontSize(14)
+                            .setBold()
+                            .setMarginTop(10));
+
+                    int meetingCounter = 1;
+                    for (Event meeting : meetings) {
+                        if (meeting.getEventStart().toLocalDate().equals(date.toLocalDate())) {
+                            document.add(new Paragraph("Meeting " + meetingCounter)
+                                    .setFontSize(12)
+                                    .setBold());
+
+                            Table table = new Table(UnitValue.createPercentArray(new float[]{20, 80}));
+                            table.setWidth(UnitValue.createPercentValue(100));
+
+                            table.addCell(new Cell().add(new Paragraph("Host")));
+                            table.addCell(new Cell().add(new Paragraph(meeting.getEventHost())));
+                            table.addCell(new Cell().add(new Paragraph("Start Time")));
+                            table.addCell(new Cell().add(new Paragraph(meeting.getEventStart().format(formatter))));
+                            table.addCell(new Cell().add(new Paragraph("End Time")));
+                            table.addCell(new Cell().add(new Paragraph(meeting.getEventEnd().format(formatter))));
+
+
+                            document.add(table);
+                            meetingCounter++;
+                        }
+                    }
+                }
+            }
+
+            // Close the document
+            document.close();
+            System.out.println("PDF exported successfully to " + fileName);
+
+        } catch (Exception e) {
+            System.err.println("Error exporting to PDF: " + e.getMessage());
+        }
     }
 
     // Display meeting room pane and fill the screen with the list of meetings that occurred in that room
