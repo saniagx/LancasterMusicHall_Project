@@ -202,8 +202,8 @@ public class UsageChart {
                 Event event = venueEvents.get(i);
 
                 // Calculate y-position (center the bar in the cell)
-                double y = venueIndex * cell_height + 10;
-                double barHeight = cell_height - 20;
+                double y = venueIndex * cell_height + 25;
+                double barHeight = cell_height - 50;
                 double halfHeight = barHeight / 2;
 
                 // Calculate start and end positions on the x-axis
@@ -244,8 +244,7 @@ public class UsageChart {
                 LocalDate currentDate = eventStartDate;
                 while (!currentDate.isAfter(eventEndDate)) {
                     // Calculate x-position and width
-                    long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
-                    long duration = ChronoUnit.DAYS.between(eventStartDate, eventEndDate) + 1; // Include the end day
+                    long startOffset = ChronoUnit.DAYS.between(prevMonday, currentDate);
                     double x = startOffset * cell_width;
                     double width = cell_width;
 
