@@ -202,8 +202,8 @@ public class UsageChart {
                 Event event = venueEvents.get(i);
 
                 // Calculate y-position (center the bar in the cell)
-                double y = venueIndex * cell_height + 25;
-                double barHeight = cell_height - 50;
+                double y = venueIndex * cell_height + 37.5;
+                double barHeight = cell_height - 75;
                 double halfHeight = barHeight / 2;
 
                 // Calculate start and end positions on the x-axis
@@ -272,10 +272,19 @@ public class UsageChart {
                     chart_gc.setFill(topColor);
                     chart_gc.fillRect(x, y, width, halfHeight); // Top half
 
-                    // Only Main Hall and Small Hall bars are clickable
-                    if (venueIndex == 0 || venueIndex == 1) {
-                        clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
+                    chart_gc.setFill(Color.WHITE);
+                    chart_gc.setFont(new javafx.scene.text.Font(10));
+                    String hostName = event.getEventHost();
+                    // Truncate host name if too long to fit in the bar (50 pixels wide)
+                    if (hostName.length() > 8) {
+                        hostName = hostName.substring(0, 5) + "...";
                     }
+                    // Center the text in the bottom half of the bar
+                    double textX = x + 5; // Small padding from the left
+                    double textY = y + halfHeight + (halfHeight / 2) + 5; // Center vertically in the bottom half
+                    chart_gc.fillText(hostName, textX, textY);
+                    
+                    clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
 
                     currentDate = currentDate.plusDays(1);
                 }
