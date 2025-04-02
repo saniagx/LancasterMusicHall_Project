@@ -271,7 +271,8 @@ public class DailySheet {
                             table.addCell(new Cell().add(new Paragraph(meeting.getEventStart().format(formatter))));
                             table.addCell(new Cell().add(new Paragraph("End Time")));
                             table.addCell(new Cell().add(new Paragraph(meeting.getEventEnd().format(formatter))));
-
+                            table.addCell(new Cell().add(new Paragraph("Seating Config")));
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(meeting.getSeatingConfigID()))));
 
                             document.add(table);
                             meetingCounter++;
@@ -375,6 +376,8 @@ public class DailySheet {
         Label startField = new Label(event.getEventStart().format(formatter));
         Label endLabel = new Label("End:");
         Label endField = new Label(event.getEventEnd().format(formatter));
+        Label seatingLabel = new Label("Seating Config:");
+        Label seatingField = new Label(String.valueOf(event.getSeatingConfigID()));
 
         // Add labels to the grid
         gridPane.add(whoLabel, 0, 0);
@@ -383,6 +386,8 @@ public class DailySheet {
         gridPane.add(startField, 1, 1);
         gridPane.add(endLabel, 0, 2);
         gridPane.add(endField, 1, 2);
+        gridPane.add(seatingLabel, 0, 3);
+        gridPane.add(seatingField, 1, 3);
 
         return gridPane;
     }
