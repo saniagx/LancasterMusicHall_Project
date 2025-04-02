@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UsageChart {
     // Chart attributes
@@ -37,11 +35,12 @@ public class UsageChart {
     @FXML private Label eventTicketSales_Text;
 
     private final List<String> venues = List.of(
-            "Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber"
+            "Main Hall", "Small Hall", "Rehearsal Space"
     );
     private GraphicsContext chart_gc;
     private GraphicsContext timeline_gc;
-    private final int cell_size = 50;
+    private final int cell_height = 150;
+    private final int cell_width = 50;
     private LocalDate today;
     private LocalDate currentMonday;
     private LocalDate prevMonday;
@@ -51,8 +50,8 @@ public class UsageChart {
     private List<ClickableBar> clickableBars;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final Map<Integer, Integer> venueCapacity = Map.of(
-            0, 374,
-            1, 95
+            0, 374, // Main Hall
+            1, 95 // Small Hall
     );
 
     public UsageChart() {}
@@ -69,7 +68,7 @@ public class UsageChart {
         venueTable.setRowFactory(tv -> new TableRow<String>() { // Set row height
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setPrefHeight(cell_size);
+                setPrefHeight(cell_height);
             }
         });
         venueTable.getItems().addAll(venues);
@@ -118,20 +117,20 @@ public class UsageChart {
             } else {
                 chart_gc.setFill(Color.LIGHTGRAY);
             }
-            chart_gc.fillRect(cell_size * i, 0, cell_size, cell_size * 9);
+            chart_gc.fillRect(cell_width * i, 0, cell_width, cell_height * 9);
         }
 
         chart_gc.setStroke(Color.BLACK);
         chart_gc.setLineWidth(1);
-        for (int j = 0; j <= 9; j++) {
-            double y = cell_size * j;
-            chart_gc.strokeLine(0, y, cell_size * 22, y);
+        for (int j = 0; j <= venues.size(); j++) {
+            double y = cell_height * j;
+            chart_gc.strokeLine(0, y, cell_height * 22, y);
         }
     }
 
     // Draws the timeline
     private void drawTimeline() {
-        double dayWidth = cell_size;
+        double dayWidth = cell_width;
 
         timeline_gc.setFill(Color.WHITE);
         timeline_gc.fillRect(0, 0, timelineCanvas.getWidth(), 39);
@@ -141,7 +140,7 @@ public class UsageChart {
             } else {
                 timeline_gc.setFill(Color.LIGHTGRAY);
             }
-            timeline_gc.fillRect(cell_size*i, 39, cell_size, 24);
+            timeline_gc.fillRect(cell_width*i, 39, cell_width, 24);
         }
 
         // Draw horizontal separators
@@ -178,43 +177,109 @@ public class UsageChart {
         clickableBars.clear();
         drawChartBase();
 
+        // Group events by venue
+        Map<Integer, List<Event>> eventsByVenue = new HashMap<>();
+        for (int venueIndex = 0; venueIndex < venues.size(); venueIndex++) {
+            eventsByVenue.put(venueIndex, new ArrayList<>());
+        }
         for (Event event : events) {
-            // Find the venue index (row) in the venues list
-            String venueName = event.getVenueName();
-            int venueIndex = venues.indexOf(venueName);
-            if (venueIndex == -1) {
-                continue; // Skip if venue is not in the list
+            int venueIndex = venues.indexOf(event.getVenueName());
+            if (venueIndex != -1) {
+                eventsByVenue.get(venueIndex).add(event);
             }
+        }
 
-            // Calculate y-position (center the bar in the cell)
-            double y = venueIndex * cell_size + 10;
-            double barHeight = cell_size - 20;
+        // Process each venue
+        for (int venueIndex = 0; venueIndex < venues.size(); venueIndex++) {
+            List<Event> venueEvents = eventsByVenue.get(venueIndex);
+            // Sort events by start date
+            venueEvents.sort(Comparator.comparing(Event::getEventStart));
 
-            // Calculate start and end positions on the x-axis
-            LocalDate eventStartDate = event.getEventStart().toLocalDate();
-            LocalDate eventEndDate = event.getEventEnd().toLocalDate();
+            // Track the base color for consecutive events
+            boolean useDarkBlue = false; // Start with blue, then alternate
 
-            // Ensure event falls within the displayed date range
-            if (eventStartDate.isBefore(prevMonday)) {
-                eventStartDate = prevMonday;
-            }
-            if (eventEndDate.isAfter(nextMonday.plusDays(6))) {
-                eventEndDate = nextMonday.plusDays(6);
-            }
+            for (int i = 0; i < venueEvents.size(); i++) {
+                Event event = venueEvents.get(i);
 
-            // Calculate x-position and width
-            long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
-            long duration = ChronoUnit.DAYS.between(eventStartDate, eventEndDate) + 1; // Include the end day
-            double x = startOffset * cell_size;
-            double width = duration * cell_size;
+                // Calculate y-position (center the bar in the cell)
+                double y = venueIndex * cell_height + 10;
+                double barHeight = cell_height - 20;
+                double halfHeight = barHeight / 2;
 
-            // Draw the bar
-            chart_gc.setFill(getBarColour(event));
-            chart_gc.fillRect(x, y, width, barHeight);
+                // Calculate start and end positions on the x-axis
+                LocalDate eventStartDate = event.getEventStart().toLocalDate();
+                LocalDate eventEndDate = event.getEventEnd().toLocalDate();
 
-            // Only Main Hall and Small Hall bars are clickable
-            if (venueIndex == 0 || venueIndex == 1) {
-                clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
+                // Ensure event falls within the displayed date range
+                if (eventStartDate.isBefore(prevMonday)) {
+                    eventStartDate = prevMonday;
+                }
+                if (eventEndDate.isAfter(nextMonday.plusDays(6))) {
+                    eventEndDate = nextMonday.plusDays(6);
+                }
+
+                // Check if this event is upcoming
+                LocalDateTime now = LocalDateTime.now();
+                boolean isUpcoming = event.getEventStart().isAfter(now);
+
+                // Determine base color
+                Color baseColor;
+                if (isUpcoming) {
+                    baseColor = Color.LIGHTBLUE; // Upcoming events are light blue
+                } else {
+                    // Alternate between blue and dark blue
+                    baseColor = useDarkBlue ? Color.DARKBLUE : Color.BLUE;
+                    // Check if the next event is consecutive
+                    if (i < venueEvents.size() - 1) {
+                        Event nextEvent = venueEvents.get(i + 1);
+                        LocalDate nextStartDate = nextEvent.getEventStart().toLocalDate();
+                        if (eventEndDate.plusDays(1).equals(nextStartDate)) {
+                            useDarkBlue = !useDarkBlue; // Alternate for consecutive events
+                        } else {
+                            useDarkBlue = false; // Reset if not consecutive
+                        }
+                    }
+                }
+
+                LocalDate currentDate = eventStartDate;
+                while (!currentDate.isAfter(eventEndDate)) {
+                    // Calculate x-position and width
+                    long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
+                    long duration = ChronoUnit.DAYS.between(eventStartDate, eventEndDate) + 1; // Include the end day
+                    double x = startOffset * cell_width;
+                    double width = cell_width;
+
+                    // Get ticket sales for this day
+                    int ticketsSold = event.getTicketsSoldForDay(currentDate);
+                    boolean hasTicketSales = ticketsSold > 0;
+
+                    Color topColor = baseColor; // Default to base color if no ticket sales
+                    if (hasTicketSales && (venueIndex == 0 || venueIndex == 1)) { // Main Hall or Small Hall
+                        double salesPercentage = ((double) ticketsSold / (double) venueCapacity.get(venueIndex)) * 100;
+                        if (salesPercentage == 100.0) {
+                            topColor = Color.MEDIUMPURPLE; // Sold out
+                        } else if (salesPercentage >= 75.0) {
+                            topColor = Color.LIGHTGREEN; // >= 75% sold
+                        } else if (salesPercentage >= 50.0) {
+                            topColor = Color.YELLOW; // >= 50% sold
+                        } else {
+                            topColor = Color.RED; // < 50% sold
+                        }
+                    }
+
+                    // Draw the bar: bottom half (base color), top half (ticket sales color)
+                    chart_gc.setFill(baseColor);
+                    chart_gc.fillRect(x, y + halfHeight, width, halfHeight); // Bottom half
+                    chart_gc.setFill(topColor);
+                    chart_gc.fillRect(x, y, width, halfHeight); // Top half
+
+                    // Only Main Hall and Small Hall bars are clickable
+                    if (venueIndex == 0 || venueIndex == 1) {
+                        clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
+                    }
+
+                    currentDate = currentDate.plusDays(1);
+                }
             }
         }
     }
@@ -228,80 +293,56 @@ public class UsageChart {
             if (conn == null) {
                 return events;
             }
-            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, e.tickets_sold, h.company_name AS host_name, v.name as venue_name " +
+            // Fetch events
+            String eventsQuery = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, e.tickets_sold, h.company_name AS host_name, v.name as venue_name " +
                     "FROM Events e " +
                     "JOIN Hosts h ON e.host_id = h.host_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
                     "WHERE e.start <= ? AND e.end >= ?";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, end.toString());
-            pstmt.setString(2, start.toString());
-            ResultSet rs = pstmt.executeQuery();
+            PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
+            eventsStmt.setString(1, end.toString());
+            eventsStmt.setString(2, start.toString());
+            ResultSet eventRs = eventsStmt.executeQuery();
+
+            // Fetch daily ticket sales for each event
+            String salesQuery = "SELECT event_date, tickets_sold FROM DailyTicketSales WHERE event_id = ?";
+            PreparedStatement salesStmt = conn.prepareStatement(salesQuery);
 
             // Create event objects and add to array
-            while (rs.next()) {
-                int eventID = rs.getInt("event_id");
-                String name = rs.getString("name");
-                String type = rs.getString("type");
-                String host = rs.getString("host_name");
-                LocalDateTime startTimestamp = rs.getTimestamp("start").toLocalDateTime();
-                LocalDateTime endTimestamp = rs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(rs.getDouble("price"));
-                int venueID = rs.getInt("venue_id");
-                String venueName = rs.getString("venue_name");
-                int ticketsSold = rs.getInt("tickets_sold");
+            while (eventRs.next()) {
+                int eventID = eventRs.getInt("event_id");
+                String name = eventRs.getString("name");
+                String type = eventRs.getString("type");
+                String host = eventRs.getString("host_name");
+                LocalDateTime startTimestamp = eventRs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime endTimestamp = eventRs.getTimestamp("end").toLocalDateTime();
+                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
+                int venueID = eventRs.getInt("venue_id");
+                String venueName = eventRs.getString("venue_name");
 
-                Event event = new Event(eventID, name, type, host, startTimestamp, endTimestamp, price, venueID, venueName, ticketsSold);
+                // Fetch daily ticket sales for this event
+                Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
+                salesStmt.setInt(1, eventID);
+                ResultSet salesRs = salesStmt.executeQuery();
+                while (salesRs.next()) {
+                    LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
+                    int ticketsSold = salesRs.getInt("tickets_sold");
+                    dailyTicketSales.put(eventDate, ticketsSold);
+                }
+                salesRs.close();
+
+                Event event = new Event(eventID, name, type, host, startTimestamp, endTimestamp, price, venueID, venueName, dailyTicketSales);
                 events.add(event);
             }
 
-            rs.close();
+            eventRs.close();
+            eventsStmt.close();
+            salesStmt.close();
         } catch (SQLException e) {
             System.out.println("Failed to fetch events from database" + e.getMessage());
             return events;
         }
         return events;
-    }
-
-    // Determine colour of an event's bar
-    private Color getBarColour(Event event) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime eventStart = event.getEventStart();
-        LocalDateTime eventEnd = event.getEventEnd();
-        double salesPercentage = 0;
-        if (event.getVenueID() == 0 || event.getVenueID() == 1) {
-            salesPercentage = ((double)event.getTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
-        }
-
-        // Ongoing events are blue
-        if (now.isAfter(eventStart) && now.isBefore(eventEnd)) {
-            return Color.BLUE;
-        }
-
-        // Upcoming events are light blue
-        if (eventStart.isAfter(now)) {
-            return Color.LIGHTBLUE;
-        }
-
-        // Past events below:
-        // Meetings are pink
-        if (event.getEventType().equals("Meeting")) {
-            return Color.PINK;
-        }
-        // Rehearsal events are purple as they don't have capacity
-        if (event.getVenueID() == 2) {
-            return Color.MEDIUMPURPLE;
-        }
-        // Colour of events based on ticket sales
-        if (salesPercentage == 100.0) {
-            return Color.MEDIUMPURPLE; // Sold out
-        } else if (salesPercentage >= 75.0) {
-            return Color.LIGHTGREEN; // >= 75% sold
-        } else if (salesPercentage >= 50.0) {
-            return Color.YELLOW; // >= 50% sold
-        } else {
-            return Color.RED; // < 50% sold
-        }
     }
 
     // Set text fields to the event's information
@@ -311,8 +352,8 @@ public class UsageChart {
         eventHost_Text.setText(event.getEventHost());
         eventStart_Text.setText(event.getEventStart().format(formatter));
         eventEnd_Text.setText(event.getEventEnd().format(formatter));
-        double salesPercentage = ((double)event.getTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
-        eventTicketSales_Text.setText(event.getTicketsSold() + " / " + venueCapacity.get(event.getVenueID()) + "\t\t" + String.format("%.2f", salesPercentage) + "%");
+        double salesPercentage = ((double)event.getTotalTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
+        eventTicketSales_Text.setText(event.getTotalTicketsSold()+ " / " + venueCapacity.get(event.getVenueID()) + "\t\t" + String.format("%.2f", salesPercentage) + "%");
     }
 
     // Hide and reset event detail fields

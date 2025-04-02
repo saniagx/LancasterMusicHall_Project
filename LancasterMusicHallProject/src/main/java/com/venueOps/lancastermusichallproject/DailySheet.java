@@ -108,7 +108,7 @@ public class DailySheet {
             if (conn == null) {
                 return events;
             }
-            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, e.tickets_sold, h.company_name AS host_name, v.name as venue_name " +
+            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, h.company_name AS host_name, v.name as venue_name " +
                     "FROM Events e " +
                     "JOIN Hosts h ON e.host_id = h.host_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
@@ -129,9 +129,8 @@ public class DailySheet {
                 BigDecimal price = BigDecimal.valueOf(rs.getDouble("price"));
                 int venueID = rs.getInt("venue_id");
                 String venueName = rs.getString("venue_name");
-                int ticketsSold = rs.getInt("tickets_sold");
 
-                Event event = new Event(eventID, name, type, host, start, end, price, venueID, venueName, ticketsSold);
+                Event event = new Event(eventID, name, type, host, start, end, price, venueID, venueName, null);
                 events.add(event);
             }
 

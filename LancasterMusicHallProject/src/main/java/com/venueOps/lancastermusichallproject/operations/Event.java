@@ -1,7 +1,10 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Event implements IEvent {
     private int eventID;
@@ -13,10 +16,11 @@ public class Event implements IEvent {
     private BigDecimal eventPrice;
     private int venueID;
     private String venueName;
-    private int ticketsSold;
     private int seatingConfigID;
+    private Map<LocalDate, Integer> dailyTicketSales;
 
-    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart, LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName, int ticketsSold) {
+    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart,
+                 LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
@@ -26,7 +30,7 @@ public class Event implements IEvent {
         this.eventPrice = eventPrice;
         this.venueID = venueID;
         this.venueName = venueName;
-        this.ticketsSold = ticketsSold;
+        this.dailyTicketSales = dailyTicketSales != null ? dailyTicketSales : new HashMap<>();
 
         // Store seatingConfigID automatically
         this.seatingConfigID = SeatingConfig.getSeatingConfigID(venueID, eventType);
@@ -79,13 +83,22 @@ public class Event implements IEvent {
     public void setVenueName(String venueName) { this.venueName = venueName; }
 
     @Override
-    public int getTicketsSold() { return this.ticketsSold; }
+    public Map<LocalDate, Integer> getDailyTicketSales() { return dailyTicketSales; }
     @Override
-    public void setTicketsSold(int ticketsSold) { this.ticketsSold = ticketsSold; }
+    public void setDailyTicketSales(Map<LocalDate, Integer> dailyTicketSales) { this.dailyTicketSales = dailyTicketSales; }
 
     // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
     @Override
     public int getSeatingConfigID() { return seatingConfigID; }
 
+    // Helper for getting ticket sales for specific day
+    public int getTicketsSoldForDay(LocalDate date) {
+        return dailyTicketSales.getOrDefault(date, 0);
+    }
+
+    // Helper for getting total tickets sold for event
+    public int getTotalTicketsSold() {
+        return dailyTicketSales.values().stream().mapToInt(Integer::intValue).sum();
+    }
 }
 

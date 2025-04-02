@@ -1,7 +1,9 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public interface IEvent {
 
@@ -33,8 +35,8 @@ public interface IEvent {
     String getVenueName();
     void setVenueName(String venueName);
 
-    int getTicketsSold();
-    void setTicketsSold(int ticketsSold);
+    Map<LocalDate, Integer> getDailyTicketSales();
+    void setDailyTicketSales(Map<LocalDate, Integer> dailyTicketsSold);
 
     // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
     int getSeatingConfigID();
