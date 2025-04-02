@@ -91,14 +91,31 @@ public class Event implements IEvent {
     @Override
     public int getSeatingConfigID() { return seatingConfigID; }
 
-    // Helper for getting ticket sales for specific day
+    // Get ticket sales for specific day
     public int getTicketsSoldForDay(LocalDate date) {
-        return dailyTicketSales.getOrDefault(date, 0);
+        return dailyTicketSales.getOrDefault(date, -1);
     }
 
     // Helper for getting total tickets sold for event
     public int getTotalTicketsSold() {
-        return dailyTicketSales.values().stream().mapToInt(Integer::intValue).sum();
+        int total = 0;
+        for (Integer tickets : dailyTicketSales.values()) {
+            if (tickets != -1) {
+                total += tickets;
+            }
+        }
+        return total;
+    }
+
+    // Calculate the number of days tickets were being sold
+    public int getDaysWithTicketSales() {
+        int days = 0;
+        for (Integer tickets : dailyTicketSales.values()) {
+            if (tickets != -1) {
+                days++;
+            }
+        }
+        return days;
     }
 }
 

@@ -9,6 +9,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.DayOfWeek;
@@ -32,6 +36,7 @@ public class UsageChart {
     @FXML private Label eventHost_Text;
     @FXML private Label eventStart_Text;
     @FXML private Label eventEnd_Text;
+    @FXML private Label eventTicketSales_Label;
     @FXML private Label eventTicketSales_Text;
 
     private final List<String> venues = List.of(
@@ -250,7 +255,7 @@ public class UsageChart {
 
                     // Get ticket sales for this day
                     int ticketsSold = event.getTicketsSoldForDay(currentDate);
-                    boolean hasTicketSales = ticketsSold > 0;
+                    boolean hasTicketSales = ticketsSold > -1;
 
                     Color topColor = baseColor; // Default to base color if no ticket sales
                     if (hasTicketSales && (venueIndex == 0 || venueIndex == 1)) { // Main Hall or Small Hall
@@ -272,24 +277,40 @@ public class UsageChart {
                     chart_gc.setFill(topColor);
                     chart_gc.fillRect(x, y, width, halfHeight); // Top half
 
-                    chart_gc.setFill(Color.WHITE);
-                    chart_gc.setFont(new javafx.scene.text.Font(10));
-                    String hostName = event.getEventHost();
-                    // Truncate host name if too long to fit in the bar (50 pixels wide)
-                    if (hostName.length() > 8) {
-                        hostName = hostName.substring(0, 5) + "...";
-                    }
-                    // Center the text in the bottom half of the bar
-                    double textX = x + 5; // Small padding from the left
-                    double textY = y + halfHeight + (halfHeight / 2) + 5; // Center vertically in the bottom half
-                    chart_gc.fillText(hostName, textX, textY);
-                    
                     clickableBars.add(new ClickableBar(x, y, width, barHeight, event));
 
                     currentDate = currentDate.plusDays(1);
                 }
+
+                long duration = ChronoUnit.DAYS.between(eventStartDate, eventEndDate) + 1;
+                double totalBarWidth = duration * cell_width;
+
+                long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
+                double x = startOffset * cell_width;
+
+                chart_gc.setFill(Color.WHITE);
+                Font font = Font.font("System", FontWeight.BOLD, 12);
+                chart_gc.setFont(font);
+                String hostName = event.getEventHost();
+                double textWidth = getTextWidth(hostName, font);
+
+                if (textWidth > totalBarWidth + 5) {
+                    int maxChars = (int) (totalBarWidth / 6) -3;
+                    if (maxChars < 1) maxChars = 1;
+                    hostName = hostName.substring(0, maxChars) + "...";
+                }
+
+                double textX = x + 5; // Padding
+                double textY = y + halfHeight + (halfHeight / 2) + 5;
+                chart_gc.fillText(hostName, textX, textY);
             }
         }
+    }
+
+    private double getTextWidth(String text, Font font) {
+        Text tempText = new Text(text);
+        tempText.setFont(font);
+        return tempText.getBoundsInLocal().getWidth();
     }
 
     // Fetches all events for specific time frame
@@ -308,8 +329,8 @@ public class UsageChart {
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
                     "WHERE e.start <= ? AND e.end >= ?";
             PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
-            eventsStmt.setString(1, end.toString());
-            eventsStmt.setString(2, start.toString());
+            eventsStmt.setString(1, end.plusDays(1).toString());
+            eventsStmt.setString(2, start.minusDays(1).toString());
             ResultSet eventRs = eventsStmt.executeQuery();
 
             // Fetch daily ticket sales for each event
@@ -360,8 +381,19 @@ public class UsageChart {
         eventHost_Text.setText(event.getEventHost());
         eventStart_Text.setText(event.getEventStart().format(formatter));
         eventEnd_Text.setText(event.getEventEnd().format(formatter));
-        double salesPercentage = ((double)event.getTotalTicketsSold() / (double)venueCapacity.get(event.getVenueID())) * 100;
-        eventTicketSales_Text.setText(event.getTotalTicketsSold()+ " / " + venueCapacity.get(event.getVenueID()) + "\t\t" + String.format("%.2f", salesPercentage) + "%");
+        if (event.getVenueID() == 2) {
+            eventTicketSales_Label.setVisible(false);
+            eventTicketSales_Text.setVisible(false);
+        } else {
+            eventTicketSales_Label.setVisible(true);
+            eventTicketSales_Text.setVisible(true);
+
+            int totalTicketsSold = event.getTotalTicketsSold();
+            int totalTicketsCapacity = venueCapacity.get(event.getVenueID()) * event.getDaysWithTicketSales();
+
+            double salesPercentage = ((double) totalTicketsSold / totalTicketsCapacity)*100;
+            eventTicketSales_Text.setText(totalTicketsSold + " / " + totalTicketsCapacity + "\t\t" + String.format("%.2f", salesPercentage) + "%");
+        }
     }
 
     // Hide and reset event detail fields

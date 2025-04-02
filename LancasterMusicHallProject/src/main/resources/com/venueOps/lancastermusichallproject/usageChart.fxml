@@ -145,7 +145,7 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="224.0" text="Ticket Sales:" GridPane.rowIndex="3">
+                        <Label fx:id="eventTicketSales_Label" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="224.0" text="Ticket Sales:" GridPane.rowIndex="3">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
