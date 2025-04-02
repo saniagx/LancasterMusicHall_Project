@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            fx:controller="com.venueOps.lancastermusichallproject.operations.AddEvent"
+            prefWidth="800.0" prefHeight="600.0" style="-fx-background-color: #122023;">
+
+    <children>
+        <VBox layoutX="150" layoutY="50" spacing="15" prefWidth="500">
+            <children>
+
+                <Text text="Create New Event" style="-fx-fill: white;">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Text>
+
+                <TextField fx:id="eventNameField" promptText="Event Name" />
+                <TextField fx:id="eventTypeField" promptText="Event Type" />
+                <TextField fx:id="hostField" promptText="Host Name" />
+
+                <DatePicker fx:id="startDatePicker" promptText="Start Date" />
+                <DatePicker fx:id="endDatePicker" promptText="End Date" />
+
+                <TextField fx:id="startTimeField" promptText="Start Time (HH:MM)" />
+                <TextField fx:id="endTimeField" promptText="End Time (HH:MM)" />
+
+                <TextField fx:id="priceField" promptText="Price (£)" />
+                <TextField fx:id="venueIDField" promptText="Venue ID" />
+                <TextField fx:id="venueNameField" promptText="Venue Name" />
+
+                <HBox spacing="10">
+                    <children>
+                        <Button text="Submit" onAction="#handleSubmit" />
+                        <Button text="Cancel" onAction="#handleCancel" />
+                    </children>
+                </HBox>
+
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

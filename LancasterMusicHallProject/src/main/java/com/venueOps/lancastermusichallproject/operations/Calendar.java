@@ -1,99 +1,108 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-import com.calendarfx.model.CalendarSource;
-import com.calendarfx.view.DetailedWeekView;
-import com.calendarfx.view.MonthView;
 import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.fxml.FXML;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import java.time.LocalDateTime;
+
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Calendar implements ICalendar {
-    @FXML private Pane calendarContainer;
-    @FXML private Text dateLabel;
 
-    private DetailedWeekView weekView;
-    private MonthView monthView;
-    private com.calendarfx.model.Calendar eventsCalendar;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+    @FXML private GridPane calendarGrid;
+    @FXML private Label monthYearLabel;
 
-    private ArrayList<IEvent> events = new ArrayList<>();
+    private YearMonth currentYearMonth;
+    private final ArrayList<IEvent> events = new ArrayList<>();
 
-    public Calendar() {}
+    public Calendar() {
+        currentYearMonth = YearMonth.now(); // Start with current month
+    }
 
     @FXML
     private void initialize() {
-        eventsCalendar = new com.calendarfx.model.Calendar("Events");
-        CalendarSource calendarSource = new CalendarSource("Calendar");
-        calendarSource.getCalendars().add(eventsCalendar);
+        updateCalendar();
+    }
 
-        weekView = new DetailedWeekView();
-        weekView.getCalendarSources().setAll(calendarSource);
-        weekView.setPrefSize(480, 480);
-
-        monthView = new MonthView();
-        monthView.getCalendarSources().setAll(calendarSource);
-        monthView.setPrefSize(480, 480);
-
-        updateDateLabel();
-
-        // Default to Monthly view
-        calendarContainer.getChildren().setAll(monthView);
+    public void BackButton() {
+        ScreenController.loadScreen("MainMenu");
     }
 
     @FXML
-    private void WeeklyView() {
-        calendarContainer.getChildren().setAll(weekView);
-        updateDateLabel();
+    private void goToPreviousMonth() {
+        currentYearMonth = currentYearMonth.minusMonths(1);
+        updateCalendar();
     }
 
     @FXML
-    private void MonthlyView() {
-        calendarContainer.getChildren().setAll(monthView);
-        updateDateLabel();
+    private void goToNextMonth() {
+        currentYearMonth = currentYearMonth.plusMonths(1);
+        updateCalendar();
     }
 
-    @FXML
-    private void Previous() {
-        if (calendarContainer.getChildren().contains(weekView)) {
-            LocalDate currentStart = weekView.getStartDate();
-            weekView.setDate(currentStart.minusWeeks(1));
-        } else if (calendarContainer.getChildren().contains(monthView)) {
-            LocalDate currentDate = monthView.getDate();
-            monthView.setDate(currentDate.minusMonths(1));
+    private void updateCalendar() {
+        calendarGrid.getChildren().clear();
+
+        // Update title
+        monthYearLabel.setText(currentYearMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy")));
+
+        LocalDate firstDayOfMonth = currentYearMonth.atDay(1);
+        int dayOfWeek = firstDayOfMonth.getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
+        int daysInMonth = currentYearMonth.lengthOfMonth();
+        int col = dayOfWeek - 1;
+        int row = 1;
+
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate currentDate = currentYearMonth.atDay(day);
+
+            Button dayButton = new Button(String.valueOf(day));
+            dayButton.setPrefSize(100, 75);
+
+            // Highlight todays dat
+            if (currentDate.equals(LocalDate.now())) {
+                dayButton.setStyle("-fx-border-color: #3366FF; -fx-border-width: 2px;");
+            }
+
+            // Color if event exists
+            if (!isAvailable(currentDate)) {
+                dayButton.setStyle("-fx-background-color: #FFDAB9;"); // Peach for event day
+            }
+
+            // Click day to view or add event
+            dayButton.setOnAction(e -> openDayPopup(currentDate));
+
+            calendarGrid.add(dayButton, col, row);
+            col++;
+            if (col > 6) {
+                col = 0;
+                row++;
+            }
         }
-        updateDateLabel();
     }
 
-    @FXML
-    private void Next() {
-        if (calendarContainer.getChildren().contains(weekView)) {
-            LocalDate currentStart = weekView.getStartDate();
-            weekView.setDate(currentStart.plusWeeks(1));
-        } else if (calendarContainer.getChildren().contains(monthView)) {
-            LocalDate currentDate = monthView.getDate();
-            monthView.setDate(currentDate.plusMonths(1));
-        }
-        updateDateLabel();
+    // Method to show popup when clicking a day
+    private void openDayPopup(LocalDate date) {
+        // optional: save clicked date to a shared variable or service for later use
+        // for now, just switch screen
+
+        ScreenController.loadScreen("AddEvent");
     }
 
-    private void updateDateLabel() {
-        LocalDate date;
-        if (calendarContainer.getChildren().contains(weekView)) {
-            date = weekView.getStartDate();
-        } else {
-            date = monthView.getDate();
-        }
-        dateLabel.setText(date.format(dateFormatter));
+    // Refresh Calendar
+    public void refreshCalendar() {
+        updateCalendar();
     }
 
-    /**
-     * Adds event to the events ArrayList
-     * @param event Event object to be added
-     */
+    // Generates unique event ID
+    private int generateEventID() {
+        return events.size() == 0 ? 1 : events.get(events.size() - 1).getEventID() + 1;
+    }
+
+    // Interface Methods from ICalendar
     @Override
     public void addEvent(IEvent event) {
         events.add(event);
@@ -141,13 +150,10 @@ public class Calendar implements ICalendar {
         for (IEvent event : events) {
             LocalDate start = event.getEventStart().toLocalDate();
             LocalDate end = event.getEventEnd().toLocalDate();
-
             if (!date.isBefore(start) && !date.isAfter(end)) {
                 return false; // Date falls within the event range
             }
         }
         return true; // Date is available
     }
-
-    public void BackButton() { ScreenController.loadScreen("MainMenu"); }
 }

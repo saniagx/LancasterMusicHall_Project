@@ -15,7 +15,7 @@ public class Application extends javafx.application.Application {
 
     // Attributes for debugging
     private double startDelay = 1.5; // Adjust this if it's too slow
-    private boolean skipStartup = false; // Or set this to true to skip the startup entirely
+    private boolean skipStartup = true; // Or set this to true to skip the startup entirely
 
     public static void main(String[] args) {
         launch(args);
@@ -51,14 +51,17 @@ public class Application extends javafx.application.Application {
     }
 
     public void initializeScreens() throws IOException {
+        FXMLLoader calendarLoader = new FXMLLoader(getClass().getResource("calendar.fxml"));
+        sc.addScreen("Calendar", calendarLoader.load(), calendarLoader);
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
-        sc.addScreen("Calendar", FXMLLoader.load(getClass().getResource("calendar.fxml")));
         sc.addScreen("UsageChart", FXMLLoader.load(getClass().getResource("usageChart.fxml")));
         sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
         sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
         sc.addScreen("EventOverview", FXMLLoader.load(getClass().getResource("eventOverview.fxml")));
         sc.addScreen("EventSeating", FXMLLoader.load(getClass().getResource("eventSeating.fxml")));
+        sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
     }
+
 }
