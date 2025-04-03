@@ -323,9 +323,9 @@ public class UsageChart {
                 return events;
             }
             // Fetch events
-            String eventsQuery = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, e.tickets_sold, h.company_name AS host_name, v.name as venue_name " +
+            String eventsQuery = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.client_id, e.tickets_sold, c.company_name AS client_name, v.name as venue_name " +
                     "FROM Events e " +
-                    "JOIN Hosts h ON e.host_id = h.host_id " +
+                    "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
                     "WHERE e.start <= ? AND e.end >= ?";
             PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
@@ -342,7 +342,7 @@ public class UsageChart {
                 int eventID = eventRs.getInt("event_id");
                 String name = eventRs.getString("name");
                 String type = eventRs.getString("type");
-                String host = eventRs.getString("host_name");
+                String client = eventRs.getString("client_name");
                 LocalDateTime startTimestamp = eventRs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endTimestamp = eventRs.getTimestamp("end").toLocalDateTime();
                 BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
@@ -360,7 +360,7 @@ public class UsageChart {
                 }
                 salesRs.close();
 
-                Event event = new Event(eventID, name, type, host, startTimestamp, endTimestamp, price, venueID, venueName, dailyTicketSales);
+                Event event = new Event(eventID, name, type, client, startTimestamp, endTimestamp, price, venueID, venueName, dailyTicketSales);
                 events.add(event);
             }
 

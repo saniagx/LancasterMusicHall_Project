@@ -108,9 +108,9 @@ public class DailySheet {
             if (conn == null) {
                 return events;
             }
-            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.host_id, h.company_name AS host_name, v.name as venue_name " +
+            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.client_id, c.company_name AS client_name, v.name as venue_name " +
                     "FROM Events e " +
-                    "JOIN Hosts h ON e.host_id = h.host_id " +
+                    "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
                     "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -123,14 +123,14 @@ public class DailySheet {
                 int eventID = rs.getInt("event_id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
-                String host = rs.getString("host_name");
+                String client = rs.getString("client_name");
                 LocalDateTime start = rs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime end = rs.getTimestamp("end").toLocalDateTime();
                 BigDecimal price = BigDecimal.valueOf(rs.getDouble("price"));
                 int venueID = rs.getInt("venue_id");
                 String venueName = rs.getString("venue_name");
 
-                Event event = new Event(eventID, name, type, host, start, end, price, venueID, venueName, null);
+                Event event = new Event(eventID, name, type, client, start, end, price, venueID, venueName, null);
                 events.add(event);
             }
 
