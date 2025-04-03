@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Event implements IEvent {
+    private int bookingID;
     private int eventID;
     private String eventName;
     private String eventType;
@@ -14,13 +15,15 @@ public class Event implements IEvent {
     private LocalDateTime eventStart;
     private LocalDateTime eventEnd;
     private BigDecimal eventPrice;
+    private double maxDiscount;
     private int venueID;
     private String venueName;
-    private int seatingConfigID;
     private Map<LocalDate, Integer> dailyTicketSales;
+    private int seatingConfigID;
 
-    public Event(int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart,
-                 LocalDateTime eventEnd, BigDecimal eventPrice, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
+    public Event(int bookingID, int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart,
+                 LocalDateTime eventEnd, BigDecimal eventPrice, double maxDiscount, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
+        this.bookingID = bookingID;
         this.eventID = eventID;
         this.eventName = eventName;
         this.eventType = eventType;
@@ -28,15 +31,21 @@ public class Event implements IEvent {
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
         this.eventPrice = eventPrice;
+        this.maxDiscount = maxDiscount;
         this.venueID = venueID;
         this.venueName = venueName;
         this.dailyTicketSales = dailyTicketSales != null ? dailyTicketSales : new HashMap<>();
 
         // Store seatingConfigID automatically
-        this.seatingConfigID = SeatingConfig.getSeatingConfigID(venueID, eventType);
+        this.seatingConfigID = -1; // Needs to be updated to use the new venue map
     }
 
     // Getters and setters for each attribute
+    @Override
+    public int getBookingID() { return this.bookingID; }
+    @Override
+    public void setBookingID(int bookingID) { this.bookingID = bookingID; }
+
     @Override
     public int getEventID() { return this.eventID; }
     @Override
@@ -73,12 +82,17 @@ public class Event implements IEvent {
     public void setEventPrice(BigDecimal eventPrice) { this.eventPrice = eventPrice; }
 
     @Override
-    public int getVenueID() { return this.venueID; }
+    public double getMaxDiscount() { return this.maxDiscount; }
+    @Override
+    public void setMaxDiscount(double maxDiscount) { this.maxDiscount = maxDiscount; }
+
+    @Override
+    public int getVenueID() { return venueID; }
     @Override
     public void setVenueID(int venueID) { this.venueID = venueID; }
 
     @Override
-    public String getVenueName() { return this.venueName; }
+    public String getVenueName() { return venueName; }
     @Override
     public void setVenueName(String venueName) { this.venueName = venueName; }
 

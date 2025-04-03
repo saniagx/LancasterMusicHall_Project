@@ -323,7 +323,7 @@ public class UsageChart {
                 return events;
             }
             // Fetch events
-            String eventsQuery = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.client_id, e.tickets_sold, c.company_name AS client_name, v.name as venue_name " +
+            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
@@ -337,8 +337,8 @@ public class UsageChart {
             String salesQuery = "SELECT event_date, tickets_sold FROM DailyTicketSales WHERE event_id = ?";
             PreparedStatement salesStmt = conn.prepareStatement(salesQuery);
 
-            // Create event objects and add to array
             while (eventRs.next()) {
+                int bookingID = eventRs.getInt("booking_id");
                 int eventID = eventRs.getInt("event_id");
                 String name = eventRs.getString("name");
                 String type = eventRs.getString("type");
@@ -346,6 +346,7 @@ public class UsageChart {
                 LocalDateTime startTimestamp = eventRs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endTimestamp = eventRs.getTimestamp("end").toLocalDateTime();
                 BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
+                double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
 
@@ -360,7 +361,7 @@ public class UsageChart {
                 }
                 salesRs.close();
 
-                Event event = new Event(eventID, name, type, client, startTimestamp, endTimestamp, price, venueID, venueName, dailyTicketSales);
+                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, price, max_discount, venueID, venueName, dailyTicketSales);
                 events.add(event);
             }
 
@@ -381,6 +382,7 @@ public class UsageChart {
         eventHost_Text.setText(event.getEventHost());
         eventStart_Text.setText(event.getEventStart().format(formatter));
         eventEnd_Text.setText(event.getEventEnd().format(formatter));
+
         if (event.getVenueID() == 2) {
             eventTicketSales_Label.setVisible(false);
             eventTicketSales_Text.setVisible(false);

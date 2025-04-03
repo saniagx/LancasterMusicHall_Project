@@ -8,6 +8,9 @@ import java.util.Map;
 public interface IEvent {
 
     // Getters and setters for each attribute
+    int getBookingID();
+    void setBookingID(int bookingID);
+
     int getEventID();
     void setEventID(int eventID);
 
@@ -28,6 +31,9 @@ public interface IEvent {
 
     BigDecimal getEventPrice();
     void setEventPrice(BigDecimal eventPrice);
+
+    double getMaxDiscount();
+    void setMaxDiscount(double maxDiscount);
 
     int getVenueID();
     void setVenueID(int venueID);

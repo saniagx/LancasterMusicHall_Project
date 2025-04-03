@@ -30,7 +30,7 @@
                 <Tab closable="false" text="Meetings" />
               </tabs>
             </TabPane>
-            <Button layoutX="845.0" layoutY="14.0" onAction="#EventOverview" prefHeight="35" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Create Event" textFill="WHITE">
+            <Button layoutX="845.0" layoutY="14.0" onAction="#EventOverview" prefHeight="35" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Create Booking" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

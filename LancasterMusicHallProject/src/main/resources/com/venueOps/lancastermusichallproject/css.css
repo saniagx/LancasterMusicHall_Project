@@ -6,3 +6,12 @@
     -fx-background-color: lightgrey;
     -fx-background-radius: 20px;
 }
+
+.events_list-scrollpane {
+    -fx-background-color: transparent;
+}
+
+.events_list-scrollpane .viewport {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 20px;
+}

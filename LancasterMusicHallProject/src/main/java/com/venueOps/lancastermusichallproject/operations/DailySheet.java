@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -108,33 +110,36 @@ public class DailySheet {
             if (conn == null) {
                 return events;
             }
-            String query = "SELECT e.event_id, e.name, e.type, e.start, e.end, e.price, e.venue_id, e.client_id, c.company_name AS client_name, v.name as venue_name " +
+            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
                     "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
-            pstmt.setString(2, date.toLocalDate().toString());
-            ResultSet rs = pstmt.executeQuery();
+            PreparedStatement eventStmt = conn.prepareStatement(eventQuery);
+            eventStmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
+            eventStmt.setString(2, date.toLocalDate().toString());
+            ResultSet eventRs = eventStmt.executeQuery();
 
             // Create event objects and add to array
-            while (rs.next()) {
-                int eventID = rs.getInt("event_id");
-                String name = rs.getString("name");
-                String type = rs.getString("type");
-                String client = rs.getString("client_name");
-                LocalDateTime start = rs.getTimestamp("start").toLocalDateTime();
-                LocalDateTime end = rs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(rs.getDouble("price"));
-                int venueID = rs.getInt("venue_id");
-                String venueName = rs.getString("venue_name");
+            while (eventRs.next()) {
+                int bookingID = eventRs.getInt("booking_id");
+                int eventID = eventRs.getInt("event_id");
+                String name = eventRs.getString("name");
+                String type = eventRs.getString("type");
+                String client = eventRs.getString("client_name");
+                LocalDateTime start = eventRs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime end = eventRs.getTimestamp("end").toLocalDateTime();
+                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
+                double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
+                int venueID = eventRs.getInt("venue_id");
+                String venueName = eventRs.getString("venue_name");
 
-                Event event = new Event(eventID, name, type, client, start, end, price, venueID, venueName, null);
+                Event event = new Event(bookingID, eventID, name, type, client, start, end, price, max_discount, venueID, venueName, null);
                 events.add(event);
             }
 
-            rs.close();
+            eventRs.close();
+            eventStmt.close();
         } catch (SQLException e) {
             System.out.println("Failed to fetch events from database" + e.getMessage());
             return events;
@@ -186,7 +191,7 @@ public class DailySheet {
                     chekhovChamber_button.setDisable(false);
                     break;
                 default:
-                    throw new Exception("Invalid event ID for " + event.getEventName());
+                    throw new Exception("Invalid venue ID for " + event.getEventName());
             }
         }
     }
