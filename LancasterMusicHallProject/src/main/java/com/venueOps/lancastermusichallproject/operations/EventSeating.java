@@ -1,4 +1,6 @@
-package com.venueOps.lancastermusichallproject;
+package com.venueOps.lancastermusichallproject.operations;
+
+import com.venueOps.lancastermusichallproject.ScreenController;
 
 public class EventSeating {
     public void BackButton() {

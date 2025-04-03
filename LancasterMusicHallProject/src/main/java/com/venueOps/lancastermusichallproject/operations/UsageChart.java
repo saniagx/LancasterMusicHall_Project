@@ -1,7 +1,7 @@
-package com.venueOps.lancastermusichallproject;
+package com.venueOps.lancastermusichallproject.operations;
 
+import com.venueOps.lancastermusichallproject.ScreenController;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
-import com.venueOps.lancastermusichallproject.operations.Event;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;

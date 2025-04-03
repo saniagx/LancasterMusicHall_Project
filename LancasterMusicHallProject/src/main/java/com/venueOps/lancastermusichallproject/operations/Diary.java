@@ -1,5 +1,6 @@
-package com.venueOps.lancastermusichallproject;
+package com.venueOps.lancastermusichallproject.operations;
 
+import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 

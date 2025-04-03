@@ -6,6 +6,7 @@ module com.venueOps.lancastermusichallproject {
     requires com.calendarfx.view;
     requires kernel;
     requires layout;
+    requires ical4j.core;
 
     opens com.venueOps.lancastermusichallproject to javafx.fxml;
     opens com.venueOps.lancastermusichallproject.operations to javafx.fxml;

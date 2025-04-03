@@ -1,6 +1,6 @@
-package com.venueOps.lancastermusichallproject;
+package com.venueOps.lancastermusichallproject.operations;
 
-import com.venueOps.lancastermusichallproject.operations.Event;
+import com.venueOps.lancastermusichallproject.ScreenController;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="720.0" maxWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.UsageChart">
+<AnchorPane maxHeight="720.0" maxWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.UsageChart">
    <children>
       <Pane layoutX="1165.0" maxHeight="517.0" maxWidth="115.0" prefHeight="517.0" prefWidth="115.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #000000; -fx-border-radius: 1px;">
          <children>

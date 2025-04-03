@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.DailySheet">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.DailySheet">
    <children>
       <Rectangle arcHeight="50.0" arcWidth="50.0" fill="WHITE" height="551.0" layoutX="133.0" layoutY="87.0" stroke="BLACK" strokeType="INSIDE" width="1005.0" />
       <Text layoutX="540.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Daily Sheet">
