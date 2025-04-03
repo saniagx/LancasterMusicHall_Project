@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.DayOverview">
+   <children>
+      <AnchorPane layoutX="128.0" layoutY="73.0" prefHeight="576" prefWidth="1024" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
+         <children>
+            <Button layoutX="14.0" layoutY="14.0" onAction="#BackButton" prefHeight="35" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Calendar" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Button>
+            <TabPane layoutY="65.0" prefHeight="511.0" prefWidth="1024.0" style="-fx-background-radius: 20px;" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab closable="false" text="Events" />
+                <Tab closable="false" text="Meetings" />
+              </tabs>
+            </TabPane>
+            <Button layoutX="845.0" layoutY="14.0" onAction="#EventOverview" prefHeight="35" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Create Event" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Button>
+            <Label fx:id="dateLabel" alignment="CENTER" layoutX="302.0" layoutY="-1.0" prefHeight="65.0" prefWidth="420.0" text="Date">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

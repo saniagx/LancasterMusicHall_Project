@@ -24,8 +24,4 @@ public class MainMenu {
     public void DailySheet() {
         ScreenController.loadScreen("DailySheet");
     }
-
-    public void EventOverview() {
-        ScreenController.loadScreen("EventOverview");
-    }
 }

@@ -53,13 +53,17 @@ public class Application extends javafx.application.Application {
     public void initializeScreens() throws IOException {
         FXMLLoader calendarLoader = new FXMLLoader(getClass().getResource("calendar.fxml"));
         sc.addScreen("Calendar", calendarLoader.load(), calendarLoader);
+        FXMLLoader dayOverviewLoader = new FXMLLoader(getClass().getResource("dayOverview.fxml"));
+        sc.addScreen("DayOverview", dayOverviewLoader.load(), dayOverviewLoader);
+        FXMLLoader invoiceLoader = new FXMLLoader(getClass().getResource("invoice.fxml"));
+        sc.addScreen("Invoice", invoiceLoader.load(), invoiceLoader);
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
         sc.addScreen("UsageChart", FXMLLoader.load(getClass().getResource("usageChart.fxml")));
         sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
         sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
-        sc.addScreen("EventOverview", FXMLLoader.load(getClass().getResource("eventOverview.fxml")));
+        sc.addScreen("BookingOverview", FXMLLoader.load(getClass().getResource("bookingOverview.fxml")));
         sc.addScreen("EventSeating", FXMLLoader.load(getClass().getResource("eventSeating.fxml")));
         sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
     }

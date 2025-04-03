@@ -4,7 +4,6 @@ import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import java.time.LocalDateTime;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -60,7 +59,7 @@ public class Calendar implements ICalendar {
             LocalDate currentDate = currentYearMonth.atDay(day);
 
             Button dayButton = new Button(String.valueOf(day));
-            dayButton.setPrefSize(100, 75);
+            dayButton.setPrefSize(114, 85);
 
             // Highlight todays dat
             if (currentDate.equals(LocalDate.now())) {
@@ -89,7 +88,12 @@ public class Calendar implements ICalendar {
         // optional: save clicked date to a shared variable or service for later use
         // for now, just switch screen
 
-        ScreenController.loadScreen("AddEvent");
+        AppData.setSelectedDate(date);
+        DayOverview dayOverviewController = (DayOverview) ScreenController.getController("DayOverview");
+        if (dayOverviewController != null) {
+            dayOverviewController.refresh();
+        }
+        ScreenController.loadScreen("DayOverview");
     }
 
     // Refresh Calendar

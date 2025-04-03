@@ -14,6 +14,45 @@
       <!-- White card in the center -->
       <AnchorPane layoutX="128" layoutY="73" prefHeight="576" prefWidth="1024" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
          <children>
+            <HBox alignment="CENTER" layoutX="100.0" layoutY="90.0" prefHeight="35.0" prefWidth="800.0">
+               <children>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Mon">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Tue">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Wed">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Thu">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Fri">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Sat">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="114.0" text="Sun">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
 
             <!-- Title -->
             <Text layoutX="437.0" layoutY="56.0" text="Calendar">
@@ -30,14 +69,16 @@
             </Button>
 
             <!-- Navigation Controls -->
-            <HBox layoutX="300" layoutY="80" spacing="10" />
+            <HBox alignment="CENTER_RIGHT" layoutX="735.0" layoutY="62.0" prefHeight="25.0" prefWidth="165.0" spacing="10">
+               <children>
+                  <Button onAction="#goToPreviousMonth" text="&lt;" />
+                  <Label fx:id="monthYearLabel" alignment="CENTER" text="Month Year" />
+                  <Button alignment="CENTER_RIGHT" onAction="#goToNextMonth" text="&gt;" />
+               </children></HBox>
 
             <!-- Grid container for calendar -->
-            <GridPane fx:id="calendarGrid" hgap="5" layoutX="100" layoutY="130" prefHeight="400" prefWidth="800" style="-fx-background-color: #f9f9f9;" vgap="5">
+            <GridPane fx:id="calendarGrid" hgap="5" layoutX="100" layoutY="122.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: #f9f9f9;" vgap="5">
             </GridPane>
-            <Button layoutX="768.0" layoutY="87.0" onAction="#goToPreviousMonth" text="&lt;" />
-            <Label fx:id="monthYearLabel" layoutX="803.0" layoutY="87.0" text="Month Year" />
-            <Button layoutX="875.0" layoutY="87.0" onAction="#goToNextMonth" text="&gt;" />
 
          </children>
       </AnchorPane>
