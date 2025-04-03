@@ -1,5 +1,10 @@
 package com.venueOps.lancastermusichallproject.operations;
 
-public class Invoice {
+import com.venueOps.lancastermusichallproject.ScreenController;
 
+public class Invoice {
+    
+    public void BackButton() {
+        ScreenController.loadScreen("DayOverview");
+    }
 }
