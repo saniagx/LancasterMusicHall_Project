@@ -313,68 +313,6 @@ public class UsageChart {
         return tempText.getBoundsInLocal().getWidth();
     }
 
-    // Fetches all events for specific time frame
-    public ArrayList<Event> getEvents(LocalDate start, LocalDate end) {
-        ArrayList<Event> events = new ArrayList<>();
-
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            if (conn == null) {
-                return events;
-            }
-            // Fetch events
-            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
-                    "FROM Events e " +
-                    "JOIN Clients c ON e.client_id = c.client_id " +
-                    "JOIN Venues v ON e.venue_id = v.venue_id " +
-                    "WHERE e.start <= ? AND e.end >= ?";
-            PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
-            eventsStmt.setString(1, end.plusDays(1).toString());
-            eventsStmt.setString(2, start.minusDays(1).toString());
-            ResultSet eventRs = eventsStmt.executeQuery();
-
-            // Fetch daily ticket sales for each event
-            String salesQuery = "SELECT event_date, tickets_sold FROM DailyTicketSales WHERE event_id = ?";
-            PreparedStatement salesStmt = conn.prepareStatement(salesQuery);
-
-            while (eventRs.next()) {
-                int bookingID = eventRs.getInt("booking_id");
-                int eventID = eventRs.getInt("event_id");
-                String name = eventRs.getString("name");
-                String type = eventRs.getString("type");
-                String client = eventRs.getString("client_name");
-                LocalDateTime startTimestamp = eventRs.getTimestamp("start").toLocalDateTime();
-                LocalDateTime endTimestamp = eventRs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
-                double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
-                int venueID = eventRs.getInt("venue_id");
-                String venueName = eventRs.getString("venue_name");
-
-                // Fetch daily ticket sales for this event
-                Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
-                salesStmt.setInt(1, eventID);
-                ResultSet salesRs = salesStmt.executeQuery();
-                while (salesRs.next()) {
-                    LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
-                    int ticketsSold = salesRs.getInt("tickets_sold");
-                    dailyTicketSales.put(eventDate, ticketsSold);
-                }
-                salesRs.close();
-
-                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, price, max_discount, venueID, venueName, dailyTicketSales);
-                events.add(event);
-            }
-
-            eventRs.close();
-            eventsStmt.close();
-            salesStmt.close();
-        } catch (SQLException e) {
-            System.out.println("Failed to fetch events from database" + e.getMessage());
-            return events;
-        }
-        return events;
-    }
-
     // Set text fields to the event's information
     private void displayEventDetails(Event event) {
         eventDetails_VBox.setVisible(true);
@@ -435,7 +373,7 @@ public class UsageChart {
     }
 
     public void Refresh() {
-        events = getEvents(prevMonday, nextMonday.plusDays(6));
+        events = DatabaseConnection.getEventsForUsageChart(prevMonday, nextMonday.plusDays(6));
         drawEvents();
         drawTimeline();
     }
