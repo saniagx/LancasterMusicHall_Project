@@ -5,15 +5,16 @@ import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -35,12 +36,16 @@ public class BookingOverview {
     private ObservableList<String> allCompanies; // Full list from database
     private ObservableList<String> filteredCompanies; // Filtered list for ListView
 
+    // Contract tab attributes
+    @FXML private Text clientText;
+    @FXML private Text venuesText;
+
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @FXML public void initialize() {
         events = new ArrayList<>();
         refresh();
-        
+
         filteredCompanies = FXCollections.observableArrayList();
 
         filteredCompanies.addAll(allCompanies);
@@ -229,10 +234,17 @@ public class BookingOverview {
         ScreenController.loadScreen("DayOverview");
     }
 
+    private BigDecimal getTotalCost() {
+        BigDecimal totalCost = BigDecimal.ZERO;
+        for (IEvent event : events) {
+            totalCost = totalCost.add(event.getEventPrice());
+        }
+        return totalCost;
+    }
+
     public void AddEvent() { ScreenController.loadScreen("AddEvent"); }
 
     public void ClearClientFields() {
-        clientListView.getSelectionModel().clearSelection();
         companyNameField.setText("");
         contactFNameField.setText("");
         contactLNameField.setText("");
@@ -241,6 +253,29 @@ public class BookingOverview {
         addressField.setText("");
         cityField.setText("");
         postcodeField.setText("");
+        clientListView.getSelectionModel().clearSelection();
+        filterCompanies("");
+    }
+
+    public void FillContract() {
+        clientText.setText("This is a booking made on " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " by: \n" +
+                companyNameField.getText() + "\n" + emailField.getText() + "\n");
+
+        StringBuilder venuesTextBuilder = new StringBuilder();
+        venuesTextBuilder.append("The Client agrees to temporarily lease, occupy and make use of the following venue(s):\n");
+        for (IEvent event : events) {
+            String venueName = event.getVenueName();
+            String startDateTime = event.getEventStart().format(formatter);
+            String endDateTime = event.getEventEnd().format(formatter);
+            String eventPrice = event.getEventPrice().toString();
+            venuesTextBuilder.append("- ").append(venueName)
+                    .append(" between ").append(startDateTime)
+                    .append(" and ").append(endDateTime)
+                    .append(" costing: £").append(eventPrice)
+                    .append("\n");
+        }
+        venuesTextBuilder.append("The total cost to be paid is: £").append(getTotalCost().toString());
+        venuesText.setText(venuesTextBuilder.toString());
     }
 
     public void ConfirmBooking() { ScreenController.loadScreen("Invoice"); }

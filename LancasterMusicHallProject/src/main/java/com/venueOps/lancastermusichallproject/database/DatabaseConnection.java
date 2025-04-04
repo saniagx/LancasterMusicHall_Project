@@ -73,7 +73,7 @@ public class DatabaseConnection {
                 return events;
             }
             // Fetch events
-            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
+            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
@@ -95,7 +95,6 @@ public class DatabaseConnection {
                 String client = eventRs.getString("client_name");
                 LocalDateTime startTimestamp = eventRs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime endTimestamp = eventRs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
                 double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
@@ -111,7 +110,7 @@ public class DatabaseConnection {
                 }
                 salesRs.close();
 
-                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, price, max_discount, venueID, venueName, dailyTicketSales);
+                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales);
                 events.add(event);
             }
 
@@ -134,7 +133,7 @@ public class DatabaseConnection {
             if (conn == null) {
                 return events;
             }
-            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
+            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
@@ -153,12 +152,11 @@ public class DatabaseConnection {
                 String client = eventRs.getString("client_name");
                 LocalDateTime start = eventRs.getTimestamp("start").toLocalDateTime();
                 LocalDateTime end = eventRs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
                 double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
 
-                Event event = new Event(bookingID, eventID, name, type, client, start, end, price, max_discount, venueID, venueName, null);
+                Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, null);
                 events.add(event);
             }
 

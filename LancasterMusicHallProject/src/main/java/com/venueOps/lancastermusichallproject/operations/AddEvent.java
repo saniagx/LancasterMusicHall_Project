@@ -119,13 +119,13 @@ public class AddEvent {
             String venueName = venueComboBox.getSelectionModel().getSelectedItem();
             int venueID = venueNametoID.get(venueName);
 
-            BigDecimal price;
+            BigDecimal ticketPrice;
             double maxDiscount;
             if (venueName.equals("Main Hall") || venueName.equals("Small Hall")) {
-                price = new BigDecimal(ticketPriceField.getText());
+                ticketPrice = new BigDecimal(ticketPriceField.getText());
                 maxDiscount = Double.parseDouble(maxDiscountField.getText());
             } else {
-                price = BigDecimal.ZERO;
+                ticketPrice = BigDecimal.ZERO;
                 maxDiscount = 0.0;
             }
 
@@ -137,7 +137,8 @@ public class AddEvent {
                     "temp",
                     LocalDateTime.of(startDate, startTime),
                     LocalDateTime.of(endDate, endTime),
-                    price,
+                    calculateCost(),
+                    ticketPrice,
                     maxDiscount,
                     venueID,
                     venueName,
@@ -176,6 +177,11 @@ public class AddEvent {
             System.err.println("Invalid event type");
             return "N/A";
         }
+    }
+
+    // To be completed, Use Lancaster's Music Hall's rate card
+    private BigDecimal calculateCost() {
+        return BigDecimal.ZERO;
     }
 
     private void showError(String message) {
