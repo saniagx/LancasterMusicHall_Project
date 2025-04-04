@@ -1,9 +1,14 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
+import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -13,24 +18,59 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class BookingOverview {
+    // Events tab attributes
     @FXML private GridPane eventsGridPane;
-
     private ArrayList<IEvent> events;
+
+    // Client Details tab attributes
+    @FXML private TextField companyNameField;
+    @FXML private TextField contactFNameField;
+    @FXML private TextField contactLNameField;
+    @FXML private TextField emailField;
+    @FXML private TextField phoneField;
+    @FXML private TextField addressField;
+    @FXML private TextField cityField;
+    @FXML private TextField postcodeField;
+    @FXML private ListView<String> clientListView;
+    private ObservableList<String> allCompanies; // Full list from database
+    private ObservableList<String> filteredCompanies; // Filtered list for ListView
+
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    public BookingOverview() {
+    @FXML public void initialize() {
         events = new ArrayList<>();
+        refresh();
+        
+        filteredCompanies = FXCollections.observableArrayList();
+
+        filteredCompanies.addAll(allCompanies);
+        clientListView.setItems(filteredCompanies);
+
+        // Changes list view depending on what user types in company name field
+        companyNameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            filterCompanies(newVal);
+        });
+
+        // Fills text fields depending on selected client
+        clientListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                populateFields(newVal);
+            }
+        });
     }
 
     public void refresh() {
-        drawList();
+        drawEventsGrid();
+        allCompanies = DatabaseConnection.getCompanyNames();
+        AppData.setCompanyNames(allCompanies);
+
     }
 
     public void addEventToList(IEvent event) {
         events.add(event);
     }
 
-    private void drawList() {
+    private void drawEventsGrid() {
         eventsGridPane.getChildren().clear();
         eventsGridPane.getColumnConstraints().clear();
         eventsGridPane.getRowConstraints().clear();
@@ -148,7 +188,7 @@ public class BookingOverview {
         deleteButton.setStyle("-fx-background-color: #ff4444; -fx-background-radius: 10px; -fx-text-fill: white; -fx-font-weight: bold;");
         deleteButton.setOnAction(e -> {
             events.remove(event);
-            drawList(); // Redraw grid after removal
+            drawEventsGrid(); // Redraw grid after removal
         });
 
         card.getChildren().addAll(nameLabel, nameLabelValue, typeLabel, typeLabelValue, startLabel, startLabelValue, endLabel,
@@ -156,11 +196,52 @@ public class BookingOverview {
         return card;
     }
 
+    private void filterCompanies(String searchText) {
+        filteredCompanies.clear();
+        if (searchText == null || searchText.isEmpty()) {
+            filteredCompanies.addAll(AppData.getCompanyNames());
+        } else {
+            String lowerSearchText = searchText.toLowerCase();
+            for (String company : AppData.getCompanyNames()) {
+                if (company.toLowerCase().contains(lowerSearchText)) {
+                    filteredCompanies.add(company);
+                }
+            }
+        }
+    }
+
+    private void populateFields(String companyName) {
+        Client client = DatabaseConnection.getClientDetails(companyName);
+        if (client != null) {
+            companyNameField.setText(client.getCompanyName());
+            contactFNameField.setText(client.getContactFirstName());
+            contactLNameField.setText(client.getContactLastName());
+            emailField.setText(client.getEmail());
+            phoneField.setText(client.getPhone());
+            addressField.setText(client.getAddress());
+            cityField.setText(client.getCity());
+            postcodeField.setText(client.getPostcode());
+        }
+    }
+
     public void BackButton() {
+        events.clear();
         ScreenController.loadScreen("DayOverview");
     }
 
     public void AddEvent() { ScreenController.loadScreen("AddEvent"); }
+
+    public void ClearClientFields() {
+        clientListView.getSelectionModel().clearSelection();
+        companyNameField.setText("");
+        contactFNameField.setText("");
+        contactLNameField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+        addressField.setText("");
+        cityField.setText("");
+        postcodeField.setText("");
+    }
 
     public void ConfirmBooking() { ScreenController.loadScreen("Invoice"); }
 }

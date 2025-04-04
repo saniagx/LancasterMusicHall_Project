@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.venueOps.lancastermusichallproject.operations.Client;
 import com.venueOps.lancastermusichallproject.operations.Event;
 import io.github.cdimascio.dotenv.Dotenv;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class DatabaseConnection {
     private static Connection connection;
@@ -166,5 +169,59 @@ public class DatabaseConnection {
             return events;
         }
         return events;
+    }
+
+    // Fetches all company names
+    public static ObservableList<String> getCompanyNames() {
+        ObservableList<String> companies = FXCollections.observableArrayList();
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            if (conn == null) {
+                return companies;
+            }
+            String query = "SELECT company_name FROM Clients";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                companies.add(rs.getString("company_name"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to fetch companies for Client details from database" + e.getMessage());
+            return companies;
+        }
+        return companies;
+    }
+
+    public static Client getClientDetails(String companyName) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            if (conn == null) {
+                return null;
+            }
+            String query = "SELECT c.client_id, c.company_name, c.contact_first_name, c.contact_last_name, c.phone_number, c.email, b.address, b.city, b.postcode " +
+                    "FROM Clients c " +
+                    "JOIN Billing_Info b ON c.client_id = b.client_id " +
+                    "WHERE c.company_name = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, companyName);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Client(
+                        rs.getInt("client_id"),
+                        rs.getString("company_name"),
+                        rs.getString("contact_first_name"),
+                        rs.getString("contact_last_name"),
+                        rs.getString("email"),
+                        rs.getString("phone_number"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("postcode")
+                );
+            }
+        } catch  (SQLException e) {
+            System.out.println("Failed to fetch client details for " + companyName + " from database" + e.getMessage());
+            return null;
+        }
+        return null;
     }
 }
