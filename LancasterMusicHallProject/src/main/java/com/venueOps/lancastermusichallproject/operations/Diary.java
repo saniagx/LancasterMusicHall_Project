@@ -5,12 +5,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 public class Diary {
+    @FXML private Label dateLabel;
 
     @FXML
     private DatePicker datePicker;
@@ -22,12 +24,20 @@ public class Diary {
     private ListView<String> notesListView;
 
     private final Map<String, String> notesMap = new HashMap<>(); // store notes by date
+    private LocalDate date;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
     public Diary() {}
 
+    @FXML
+    public void initialize() {
+        dateLabel.setText("Date");
+    }
+
+
     // Back to Main Menu calls mainMenuScreen within Application
     public void BackButton() {
-        ScreenController.loadScreen("MainMenu");
+        ScreenController.loadScreen("Calendar");
     }
 
     // Add a new note
@@ -99,5 +109,10 @@ public class Diary {
         alert.setContentText(noteText);
         alert.getButtonTypes().setAll(ButtonType.CLOSE);
         alert.showAndWait();
+    }
+
+    public void refresh() {
+        date = AppData.getSelectedDate();
+        dateLabel.setText(date.format(formatter));
     }
 }

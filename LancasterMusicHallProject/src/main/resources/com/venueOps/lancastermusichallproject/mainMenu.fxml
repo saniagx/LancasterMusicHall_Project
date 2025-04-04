@@ -29,11 +29,6 @@
                            <Font name="System Bold" size="16.0" />
                         </font>
                      </Button>
-                     <Button mnemonicParsing="false" onAction="#Diary" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Diary">
-                        <font>
-                           <Font name="System Bold" size="16.0" />
-                        </font>
-                     </Button>
                      <Button mnemonicParsing="false" onAction="#DailySheet" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Daily Sheet">
                         <font>
                            <Font name="System Bold" size="16.0" />

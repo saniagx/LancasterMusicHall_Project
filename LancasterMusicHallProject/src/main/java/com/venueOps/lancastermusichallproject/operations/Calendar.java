@@ -31,6 +31,10 @@ public class Calendar implements ICalendar {
         ScreenController.loadScreen("MainMenu");
     }
 
+    public void NewBooking() { ScreenController.loadScreen("BookingOverview"); }
+
+    public void ViewBookings() {};
+
     @FXML
     private void goToPreviousMonth() {
         currentYearMonth = currentYearMonth.minusMonths(1);
@@ -89,11 +93,11 @@ public class Calendar implements ICalendar {
         // for now, just switch screen
 
         AppData.setSelectedDate(date);
-        DayOverview dayOverviewController = (DayOverview) ScreenController.getController("DayOverview");
-        if (dayOverviewController != null) {
-            dayOverviewController.refresh();
+        Diary diaryController = (Diary) ScreenController.getController("Diary");
+        if (diaryController != null) {
+            diaryController.refresh();
         }
-        ScreenController.loadScreen("DayOverview");
+        ScreenController.loadScreen("Diary");
     }
 
     // Refresh Calendar

@@ -54,8 +54,8 @@ public class Application extends javafx.application.Application {
         // Loaders for screens that require data to be passed between other screens
         FXMLLoader calendarLoader = new FXMLLoader(getClass().getResource("calendar.fxml"));
         sc.addScreen("Calendar", calendarLoader.load(), calendarLoader);
-        FXMLLoader dayOverviewLoader = new FXMLLoader(getClass().getResource("dayOverview.fxml"));
-        sc.addScreen("DayOverview", dayOverviewLoader.load(), dayOverviewLoader);
+        FXMLLoader diaryLoader = new FXMLLoader(getClass().getResource("diary.fxml"));
+        sc.addScreen("Diary", diaryLoader.load(), diaryLoader);
         FXMLLoader invoiceLoader = new FXMLLoader(getClass().getResource("invoice.fxml"));
         sc.addScreen("Invoice", invoiceLoader.load(), invoiceLoader);
         FXMLLoader bookingOverviewLoader = new FXMLLoader(getClass().getResource("bookingOverview.fxml"));
@@ -65,7 +65,6 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
         sc.addScreen("UsageChart", FXMLLoader.load(getClass().getResource("usageChart.fxml")));
-        sc.addScreen("Diary", FXMLLoader.load(getClass().getResource("diary.fxml")));
         sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
         sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
     }

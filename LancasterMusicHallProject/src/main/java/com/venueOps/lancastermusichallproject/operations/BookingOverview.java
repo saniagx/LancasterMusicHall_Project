@@ -231,7 +231,7 @@ public class BookingOverview {
 
     public void BackButton() {
         events.clear();
-        ScreenController.loadScreen("DayOverview");
+        ScreenController.loadScreen("Calendar");
     }
 
     private BigDecimal getTotalCost() {
