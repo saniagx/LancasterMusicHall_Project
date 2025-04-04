@@ -56,7 +56,7 @@
             </HBox>
 
             <!-- Title -->
-            <Text layoutX="437.0" layoutY="53.0" text="Calendar">
+            <Text layoutX="437.0" layoutY="59.0" text="Calendar">
                <font>
                   <Font name="System Bold" size="36.0" />
                </font>
@@ -70,7 +70,7 @@
             </Button>
 
             <!-- Navigation Controls -->
-            <HBox alignment="CENTER" layoutX="842.0" layoutY="95.0" prefHeight="25.0" prefWidth="165.0" spacing="10">
+            <HBox alignment="CENTER" layoutX="848.0" layoutY="95.0" prefHeight="25.0" prefWidth="165.0" spacing="10">
                <children>
                   <Button onAction="#goToPreviousMonth" text="&lt;" />
                   <Label fx:id="monthYearLabel" alignment="CENTER" text="Month Year" />
@@ -80,12 +80,12 @@
             <!-- Grid container for calendar -->
             <GridPane fx:id="calendarGrid" hgap="5" layoutX="37.0" layoutY="125.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: #f9f9f9;" vgap="5">
             </GridPane>
-            <Button layoutX="850.0" layoutY="142.0" onAction="#NewBooking" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="New Booking" textFill="WHITE">
+            <Button layoutX="855.0" layoutY="142.0" onAction="#NewBooking" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="New Booking" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <Button layoutX="850.0" layoutY="189.0" onAction="#ViewBookings" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="View Bookings" textFill="WHITE">
+            <Button layoutX="855.0" layoutY="189.0" onAction="#BackButton" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="View Bookings" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
