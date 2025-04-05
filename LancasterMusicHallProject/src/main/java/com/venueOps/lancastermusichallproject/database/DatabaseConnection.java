@@ -236,7 +236,7 @@ public class DatabaseConnection {
     public static void saveBooking(Booking booking) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            if (conn != null) {
+            if (conn == null) {
                 return;
             }
             conn.setAutoCommit(false);
@@ -246,7 +246,6 @@ public class DatabaseConnection {
 
             // Insert Contract
             int contractID = insertContract(conn, clientID, booking.getTotalPrice(), booking.getSignedDate());
-
             // Insert Booking
             String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -264,10 +263,12 @@ public class DatabaseConnection {
                     throw new SQLException("Failed to retrieve booking_id");
                 }
             }
-
+            System.out.println("here 1");
             // Insert Events
             insertEvents(conn, booking.getEvents(), clientID);
+            System.out.println("here 2");
             conn.commit();
+            System.out.println("here 3");
         } catch (SQLException e) {
             try (Connection conn = DatabaseConnection.getConnection()) {
                 conn.rollback();
@@ -338,27 +339,35 @@ public class DatabaseConnection {
 
     private static void insertEvents(Connection conn, List<IEvent> events, int client_id) throws SQLException {
         String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, start, end, price, ticket_price, venue_id, client_id, seating_config_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
             int eventID = 1;
             for (IEvent event : events) {
-                int seatingConfigID = insertSeatingConfig(conn, event.getSeatingConfig());
-                event.getSeatingConfig().setSeatingConfigID(seatingConfigID); // Update Event with Database assigned Seating Config
+                try {
+                    int seatingConfigID = insertSeatingConfig(conn, event.getSeatingConfig());
+                    event.getSeatingConfig().setSeatingConfigID(seatingConfigID); // Update Event with Database assigned Seating Config
 
-                stmt.setInt(1, event.getBookingID());
-                stmt.setInt(2, eventID++);
-                stmt.setString(3, event.getEventName());
-                stmt.setString(4, event.getEventType());
-                stmt.setTimestamp(5, Timestamp.valueOf(event.getEventStart()));
-                stmt.setTimestamp(6, Timestamp.valueOf(event.getEventEnd()));
-                stmt.setBigDecimal(7, event.getEventPrice());
-                stmt.setBigDecimal(8, event.getTicketPrice());
-                stmt.setInt(9, event.getVenueID());
-                stmt.setInt(10, client_id);
-                stmt.setInt(11, seatingConfigID);
-                stmt.addBatch();
+                    stmt.setInt(1, event.getBookingID());
+                    stmt.setInt(2, eventID++);
+                    stmt.setString(3, event.getEventName());
+                    stmt.setString(4, event.getEventType());
+                    stmt.setTimestamp(5, Timestamp.valueOf(event.getEventStart()));
+                    stmt.setTimestamp(6, Timestamp.valueOf(event.getEventEnd()));
+                    stmt.setBigDecimal(7, event.getEventPrice());
+                    stmt.setBigDecimal(8, event.getTicketPrice());
+                    stmt.setInt(9, event.getVenueID());
+                    stmt.setInt(10, client_id);
+                    stmt.setInt(11, seatingConfigID);
+                    stmt.addBatch();
+                } catch (SQLException e) {
+                    System.err.println("Error inserting event " + event.getEventName() + ": " + e.getMessage());
+                    throw e;
+                }
             }
             stmt.executeBatch();
+        } catch (SQLException e) {
+            System.err.println("Failed to insert events: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -375,6 +384,9 @@ public class DatabaseConnection {
                 return configID;
             }
             throw new SQLException("Failed to retrieve seating_config_id");
+        } catch (SQLException e) {
+            System.err.println("Error inserting Seating Config: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -388,6 +400,9 @@ public class DatabaseConnection {
                 stmt.addBatch();
             }
             stmt.executeBatch();
+        } catch (SQLException e) {
+            System.err.println("Error inserting Restricted Views: " + e.getMessage());
+            throw e;
         }
     }
 }
