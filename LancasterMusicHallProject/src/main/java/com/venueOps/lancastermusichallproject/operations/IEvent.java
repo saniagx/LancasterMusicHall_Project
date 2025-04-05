@@ -47,6 +47,9 @@ public interface IEvent {
     Map<LocalDate, Integer> getDailyTicketSales();
     void setDailyTicketSales(Map<LocalDate, Integer> dailyTicketsSold);
 
+    SeatingConfig getSeatingConfig();
+    void setSeatingConfig(SeatingConfig seatingConfig);
+
     // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
-    int getSeatingConfigID();
+    //int getSeatingConfigID();
 }

@@ -20,10 +20,12 @@ public class Event implements IEvent {
     private int venueID;
     private String venueName;
     private Map<LocalDate, Integer> dailyTicketSales;
-    private int seatingConfigID;
+    //private int seatingConfigID;
+    private SeatingConfig seatingConfig;
 
     public Event(int bookingID, int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart,
-                 LocalDateTime eventEnd, BigDecimal eventPrice, BigDecimal ticketPrice, double maxDiscount, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
+                 LocalDateTime eventEnd, BigDecimal eventPrice, BigDecimal ticketPrice, double maxDiscount, int venueID, String venueName,
+                 Map<LocalDate, Integer> dailyTicketSales, SeatingConfig seatingConfig) {
         this.bookingID = bookingID;
         this.eventID = eventID;
         this.eventName = eventName;
@@ -37,9 +39,10 @@ public class Event implements IEvent {
         this.venueID = venueID;
         this.venueName = venueName;
         this.dailyTicketSales = dailyTicketSales != null ? dailyTicketSales : new HashMap<>();
+        this.seatingConfig = seatingConfig;
 
         // Store seatingConfigID automatically
-        this.seatingConfigID = -1; // Needs to be updated to use the new venue map
+        //this.seatingConfigID = -1;
     }
 
     // Getters and setters for each attribute
@@ -108,9 +111,19 @@ public class Event implements IEvent {
     @Override
     public void setDailyTicketSales(Map<LocalDate, Integer> dailyTicketSales) { this.dailyTicketSales = dailyTicketSales; }
 
-    // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
     @Override
-    public int getSeatingConfigID() { return seatingConfigID; }
+    public SeatingConfig getSeatingConfig() {
+        return seatingConfig;
+    }
+
+    @Override
+    public void setSeatingConfig(SeatingConfig seatingConfig) {
+        this.seatingConfig = seatingConfig;
+    }
+
+    // A setter for SeatingConfigID isn't provided as it is automatically assigned within the Event's constructor
+    //@Override
+    //public int getSeatingConfigID() { return seatingConfigID; }
 
     // Get ticket sales for specific day
     public int getTicketsSoldForDay(LocalDate date) {

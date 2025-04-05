@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.venueOps.lancastermusichallproject.operations.Client;
-import com.venueOps.lancastermusichallproject.operations.Event;
+import com.venueOps.lancastermusichallproject.operations.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -110,7 +110,7 @@ public class DatabaseConnection {
                 }
                 salesRs.close();
 
-                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales);
+                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, null);
                 events.add(event);
             }
 
@@ -133,10 +133,12 @@ public class DatabaseConnection {
             if (conn == null) {
                 return events;
             }
-            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
+            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
+                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.seating_config_id, sc.layout " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
+                    "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
                     "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
             PreparedStatement eventStmt = conn.prepareStatement(eventQuery);
             eventStmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
@@ -155,8 +157,16 @@ public class DatabaseConnection {
                 double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
+                int seatingConfigID = eventRs.getInt("seating_config_id");
+                String layout = eventRs.getString("layout");
 
-                Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, null);
+                // Create minimal seatingConfig object with only layout
+                SeatingConfig seatingConfig = (layout != null)
+                        ? new SeatingConfig(seatingConfigID, 0, layout, null)
+                        : null;
+
+                Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO,
+                        max_discount, venueID, venueName, null, seatingConfig);
                 events.add(event);
             }
 
@@ -221,5 +231,166 @@ public class DatabaseConnection {
             return null;
         }
         return null;
+    }
+
+    public static void saveBooking(Booking booking) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            if (conn == null) {
+                conn.setAutoCommit(false);
+
+                // Upsert Client
+                int clientID = upsertClient(conn, booking.getClient());
+
+                // Insert Contract
+                int contractID = insertContract(conn, clientID, booking.getTotalPrice(), booking.getSignedDate());
+
+                // Insert Booking
+                String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
+                    stmt.setInt(1, contractID);
+                    stmt.setDate(2, Date.valueOf(booking.getStartDate()));
+                    stmt.setDate(3, Date.valueOf(booking.getEndDate()));
+                    stmt.setString(4, booking.getStatus());
+                    stmt.executeUpdate();
+
+                    ResultSet rs = stmt.getGeneratedKeys();
+                    if (rs.next()) {
+                        int bookingId = rs.getInt(1);
+                        booking.setBookingID(bookingId); // Update Booking object with database assigned ID
+                    } else {
+                        throw new SQLException("Failed to retrieve booking_id");
+                    }
+                }
+
+                // Insert Events
+                insertEvents(conn, booking.getEvents(), clientID);
+                conn.commit();
+            }
+        } catch (SQLException e) {
+            try {
+                Connection conn = DatabaseConnection.getConnection();
+                conn.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Failed to roll back: " + ex.getMessage());
+                throw new RuntimeException(ex);
+            }
+            System.out.println("Failed to save booking, rolling back: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static int upsertClient(Connection conn, Client client) throws SQLException {
+        String checkSql = "SELECT client_id FROM Clients WHERE company_name = ? AND email = ?";
+        try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+            checkStmt.setString(1, client.getCompanyName());
+            checkStmt.setString(2, client.getEmail());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next()) {
+                int clientID = rs.getInt("client_id");
+                updateClient(conn, clientID, client);
+                return clientID;
+            } else {
+                return insertClient(conn, client);
+            }
+        }
+    }
+
+    private static int insertClient(Connection conn, Client client) throws SQLException {
+        String insertSql = "INSERT INTO Clients (company_name, contact_first_name, contact_last_name, phone_number, email) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, client.getCompanyName());
+            stmt.setString(2, client.getContactFirstName());
+            stmt.setString(3, client.getContactLastName());
+            stmt.setString(4, client.getPhone());
+            stmt.setString(5, client.getEmail());
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) return rs.getInt(1);
+            throw new SQLException("Failed to retrieve client_id");
+        }
+    }
+
+    private static void updateClient(Connection conn, int clientID, Client client) throws SQLException {
+        String updateSql = "UPDATE Clients SET contact_first_name = ?, contact_last_name = ?, phone_number = ?, email = ? " +
+                "WHERE client_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+            stmt.setString(1, client.getContactFirstName());
+            stmt.setString(2, client.getContactLastName());
+            stmt.setString(3, client.getPhone());
+            stmt.setString(4, client.getEmail());
+            stmt.setInt(5, clientID);
+            stmt.executeUpdate();
+        }
+    }
+
+    private static int insertContract(Connection conn, int clientID, BigDecimal totalPrice, LocalDate signedDate) throws SQLException {
+        String insertSql = "INSERT INTO Contracts (client_id, signed_date, total_price, status) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, clientID);
+            stmt.setDate(2, Date.valueOf(signedDate));
+            stmt.setBigDecimal(3, totalPrice);
+            stmt.setString(4, "Pending");
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) return rs.getInt(1);
+            throw new SQLException("Failed to retrieve contract_id");
+        }
+    }
+
+    private static void insertEvents(Connection conn, List<IEvent> events, int client_id) throws SQLException {
+        String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, start, end, price, ticket_price, venue_id, client_id, seating_config_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+            int eventID = 1;
+            for (IEvent event : events) {
+                int seatingConfigID = insertSeatingConfig(conn, event.getSeatingConfig());
+                event.getSeatingConfig().setSeatingConfigID(seatingConfigID); // Update Event with Database assigned Seating Config
+
+                stmt.setInt(1, event.getBookingID());
+                stmt.setInt(2, eventID++);
+                stmt.setString(3, event.getEventName());
+                stmt.setString(4, event.getEventType());
+                stmt.setTimestamp(5, Timestamp.valueOf(event.getEventStart()));
+                stmt.setTimestamp(6, Timestamp.valueOf(event.getEventEnd()));
+                stmt.setBigDecimal(7, event.getEventPrice());
+                stmt.setBigDecimal(8, event.getTicketPrice());
+                stmt.setInt(9, event.getVenueID());
+                stmt.setInt(10, client_id);
+                stmt.setInt(11, seatingConfigID);
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
+
+    private static int insertSeatingConfig(Connection conn, SeatingConfig seatingConfig) throws SQLException {
+        String insertSql = "INSERT INTO SeatingConfigs (capacity, layout) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, seatingConfig.getCapacity());
+            stmt.setString(2, seatingConfig.getLayout());
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                int configID = rs.getInt(1);
+                insertRestrictedViews(conn, configID, seatingConfig.getRestrictedViews());
+                return configID;
+            }
+            throw new SQLException("Failed to retrieve seating_config_id");
+        }
+    }
+
+    private static void insertRestrictedViews(Connection conn, int seatingConfigId, ObservableList<String> restrictedViews) throws SQLException {
+        if (restrictedViews == null || restrictedViews.isEmpty()) return;
+        String insertSql = "INSERT INTO RestrictedViews (seating_config_id, seat_number) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+            for (String seat : restrictedViews) {
+                stmt.setInt(1, seatingConfigId);
+                stmt.setString(2, seat);
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
     }
 }

@@ -14,9 +14,7 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +104,7 @@ public class AddEvent {
 
                 // Populate row combo boxes on SeatingConfig tab
                 populateRows();
+                updateCapacityLabel();
 
                 // Enable/disable Meeting Room Combo Box
                 boolean isMeetingRoom = meetingRooms.contains(newValue);
@@ -143,6 +142,8 @@ public class AddEvent {
             LocalDate endDate = endDatePicker.getValue();
             LocalTime startTime = LocalTime.of(Integer.parseInt(startTime_HourField.getText()), Integer.parseInt(startTime_MinuteField.getText()));
             LocalTime endTime = LocalTime.of(Integer.parseInt(endTime_HourField.getText()), Integer.parseInt(endTime_MinuteField.getText()));
+            LocalDateTime start = LocalDateTime.of(startDate, startTime);
+            LocalDateTime end = LocalDateTime.of(endDate, endTime);
             String venueName = venueComboBox.getSelectionModel().getSelectedItem();
             int venueID = venueNametoID.get(venueName);
 
@@ -157,19 +158,20 @@ public class AddEvent {
             }
 
             Event newEvent = new Event(
-                    generateBookingID(), // This needs to be the same ID for all events under this booking
+                    0, // Will be replaced with a proper value when booking is confirmed
                     generateEventID(),
                     name,
                     getEventType(venueName),
                     "temp",
-                    LocalDateTime.of(startDate, startTime),
-                    LocalDateTime.of(endDate, endTime),
-                    calculateCost(),
+                    start,
+                    end,
+                    calculateCost(venueName, start, end),
                     ticketPrice,
                     maxDiscount,
                     venueID,
                     venueName,
-                    new HashMap<>() // Pass empty usage map
+                    new HashMap<>(), // Pass empty usage map
+                    new SeatingConfig(generateSeatingConfigID(), capacity, getLayout(), restrictedViews)
             );
 
             // Add to calendar instance
@@ -187,12 +189,20 @@ public class AddEvent {
         }
     }
 
-    private int generateBookingID() {
+    private int generateEventID() {
         return (int) (System.currentTimeMillis() % 100000);
     }
 
-    private int generateEventID() {
+    private int generateSeatingConfigID() {
         return (int) (System.currentTimeMillis() % 100000);
+    }
+
+    private String getLayout() {
+        if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall") && layoutComboBox.getSelectionModel().getSelectedItem().equals("Dinner")) {
+            return "Dinner with " + tablesComboBox.getSelectionModel().getSelectedItem() + " tables";
+        } else {
+            return layoutComboBox.getSelectionModel().getSelectedItem();
+        }
     }
 
     private String getEventType(String selectedVenue) {
@@ -206,9 +216,67 @@ public class AddEvent {
         }
     }
 
-    // To be completed, Use Lancaster's Music Hall's rate card
-    private BigDecimal calculateCost() {
-        return BigDecimal.ZERO;
+    private BigDecimal calculateCost(String venueName, LocalDateTime startDate, LocalDateTime endDate) {
+        double VAT = 0.2;
+        Duration duration = Duration.between(startDate, endDate);
+        long hours = duration.toHours();
+        long days = duration.toDays();
+        double hourlyRate = 0;
+        double dailyRate = 0;
+
+        switch (venueName) {
+            case "Main Hall":
+                hourlyRate = 325;
+                dailyRate = 3800;
+                break;
+            case "Small Hall":
+                hourlyRate = 225;
+                dailyRate = 2200;
+                break;
+            case "Rehearsal Space":
+                hourlyRate = 60;
+                dailyRate = 450;
+                break;
+            case "The Green Room":
+                hourlyRate = 25;
+                dailyRate = 130;
+                break;
+            case "Bronte Boardroom":
+                hourlyRate = 40;
+                dailyRate = 200;
+                break;
+            case "Dickens Den":
+                hourlyRate = 30;
+                dailyRate = 150;
+                break;
+            case "Poe Parlor":
+                hourlyRate = 35;
+                dailyRate = 170;
+                break;
+            case "Globe Room":
+                hourlyRate = 50;
+                dailyRate = 250;
+                break;
+            case "Chekhov Chamber":
+                hourlyRate = 38;
+                dailyRate = 180;
+                break;
+            default:
+                System.out.println("Invalid venue for cost calculation");
+        }
+
+        double baseCost;
+        if (days > 1) {
+            // Use daily rate for multi-day events
+            baseCost = days * dailyRate;
+        } else {
+            // Use hourly rate for events ≤ 1 day
+            baseCost = hours * hourlyRate;
+        }
+
+        // Apply VAT and return total
+        return BigDecimal.valueOf(baseCost * (1 + VAT));
+
     }
 
     private void showError(String message) {
@@ -268,6 +336,12 @@ public class AddEvent {
     @FXML private Button clearRestrictedViews_Button;
     private ObservableList<String> unavailableSeats;
     private ObservableList<String> restrictedViews;
+
+    // Capacity
+    private final int MAIN_HALL_MAX_CAPACITY = 374;
+    private final int SMALL_HALL_MAX_CAPACITY = 95;
+    private int capacity;
+    @FXML private Label capacityLabel;
 
     // Images
     @FXML private ImageView seatMap_Image;
@@ -409,6 +483,7 @@ public class AddEvent {
                 }
                 disableListManagement();
                 tablesComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
+                    updateCapacityLabel();
                     handleTablesLayout(newLayoutValue);
                 });
                 break;
@@ -517,6 +592,7 @@ public class AddEvent {
                     break;
             }
         }
+        updateCapacityLabel();
     }
 
     public void ClearUnavailableSeats() {
@@ -525,6 +601,7 @@ public class AddEvent {
         for (CheckComboBox<String> checkComboBox : rows) {
             checkComboBox.getCheckModel().clearChecks();
         }
+        updateCapacityLabel();
     }
 
     public void ClearRestrictedViews() {
@@ -533,5 +610,43 @@ public class AddEvent {
         for (CheckComboBox<String> checkComboBox : rows) {
             checkComboBox.getCheckModel().clearChecks();
         }
+    }
+
+    private void updateCapacityLabel() {
+        if (venueComboBox.getSelectionModel().getSelectedItem() == null || layoutComboBox.getSelectionModel().getSelectedItem() == null) {
+            return;
+        }
+        int unavailableCount = unavailableSeats.size();
+        int availableCount = 0;
+        if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall")) {
+            switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                case "Default":
+                    availableCount = MAIN_HALL_MAX_CAPACITY - unavailableCount;
+                    break;
+                case "No Balconies":
+                    availableCount = MAIN_HALL_MAX_CAPACITY - 89 - unavailableCount;
+                    break;
+                case "Dinner":
+                    availableCount = 8 * (tablesComboBox.getSelectionModel().getSelectedItem() == null ? 0 : tablesComboBox.getSelectionModel().getSelectedItem());
+                    break;
+                default:
+                    availableCount = MAIN_HALL_MAX_CAPACITY;
+                    break;
+            }
+        } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Small Hall")) {
+            switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                case "Default":
+                    availableCount = SMALL_HALL_MAX_CAPACITY - unavailableCount;
+                    break;
+                case "Dinner":
+                    availableCount = 18;
+                    break;
+                default:
+                    availableCount = SMALL_HALL_MAX_CAPACITY;
+                    break;
+            }
+        }
+        System.out.println(availableCount);
+        capacityLabel.setText("Capacity: " + availableCount);
     }
 }

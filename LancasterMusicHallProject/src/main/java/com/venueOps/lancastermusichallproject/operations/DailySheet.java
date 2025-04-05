@@ -110,21 +110,21 @@ public class DailySheet {
                     mainHall_who.setText(event.getEventHost());
                     mainHall_startTime.setText(event.getEventStart().format(formatter));
                     mainHall_endTime.setText(event.getEventEnd().format(formatter));
-                    mainHall_seatingConfig.setText(String.valueOf(event.getSeatingConfigID())); // This should probably be replaced with the name of a seating config
+                    mainHall_seatingConfig.setText(String.valueOf(event.getSeatingConfig().getLayout())); // This should probably be replaced with the name of a seating config
                     break;
                 case 1: // Small Hall
                     smallHall_grid.setDisable(false);
                     smallHall_who.setText(event.getEventHost());
                     smallHall_startTime.setText(event.getEventStart().format(formatter));
                     smallHall_endTime.setText(event.getEventEnd().format(formatter));
-                    smallHall_seatingConfig.setText(String.valueOf(event.getSeatingConfigID()));
+                    smallHall_seatingConfig.setText(String.valueOf(event.getSeatingConfig().getLayout()));
                     break;
                 case 2: // Rehearsal Space
                     rehearsalSpace_grid.setDisable(false);
                     rehearsalSpace_who.setText(event.getEventHost());
                     rehearsalSpace_startTime.setText(event.getEventStart().format(formatter));
                     rehearsalSpace_endTime.setText(event.getEventEnd().format(formatter));
-                    rehearsalSpace_seatingConfig.setText(String.valueOf(event.getSeatingConfigID()));
+                    rehearsalSpace_seatingConfig.setText(String.valueOf(event.getSeatingConfig().getLayout()));
                     break;
                 case 3: // The Green Room
                     theGreenRoom_button.setDisable(false);
@@ -197,7 +197,7 @@ public class DailySheet {
                     table.addCell(new Cell().add(new Paragraph("End Time")));
                     table.addCell(new Cell().add(new Paragraph(event.getEventEnd().format(formatter))));
                     table.addCell(new Cell().add(new Paragraph("Seating Config")));
-                    table.addCell(new Cell().add(new Paragraph(String.valueOf(event.getSeatingConfigID()))));
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(event.getSeatingConfig().getLayout()))));
 
                     document.add(table);
                 }
@@ -230,7 +230,7 @@ public class DailySheet {
                             table.addCell(new Cell().add(new Paragraph("End Time")));
                             table.addCell(new Cell().add(new Paragraph(meeting.getEventEnd().format(formatter))));
                             table.addCell(new Cell().add(new Paragraph("Seating Config")));
-                            table.addCell(new Cell().add(new Paragraph(String.valueOf(meeting.getSeatingConfigID()))));
+                            table.addCell(new Cell().add(new Paragraph(String.valueOf(meeting.getSeatingConfig().getLayout()))));
 
                             document.add(table);
                             meetingCounter++;
@@ -335,7 +335,7 @@ public class DailySheet {
         Label endLabel = new Label("End:");
         Label endField = new Label(event.getEventEnd().format(formatter));
         Label seatingLabel = new Label("Seating Config:");
-        Label seatingField = new Label(String.valueOf(event.getSeatingConfigID()));
+        Label seatingField = new Label(String.valueOf(event.getSeatingConfig().getLayout()));
 
         // Add labels to the grid
         gridPane.add(whoLabel, 0, 0);

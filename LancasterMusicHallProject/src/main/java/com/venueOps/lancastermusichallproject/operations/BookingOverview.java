@@ -13,10 +13,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookingOverview {
     // Events tab attributes
@@ -242,6 +242,34 @@ public class BookingOverview {
         return totalCost;
     }
 
+    private LocalDate getEarliestStartDate(List<IEvent> events) {
+        if (events == null || events.isEmpty()) {
+            return LocalDate.now();
+        }
+        LocalDate earliestDate = null;
+        for (IEvent event : events) {
+            LocalDate eventStartDate = LocalDate.from(event.getEventStart());
+            if (earliestDate == null || eventStartDate.isBefore(earliestDate)) {
+                earliestDate = eventStartDate;
+            }
+        }
+        return earliestDate;
+    }
+
+    private LocalDate getLatestEndDate(List<IEvent> events) {
+        if (events == null || events.isEmpty()) {
+            return LocalDate.now();
+        }
+        LocalDate latestDate = null;
+        for (IEvent event : events) {
+            LocalDate eventEndDate = LocalDate.from(event.getEventEnd());
+            if (latestDate == null || eventEndDate.isAfter(latestDate)) {
+                latestDate = eventEndDate;
+            }
+        }
+        return latestDate;
+    }
+
     public void AddEvent() { ScreenController.loadScreen("AddEvent"); }
 
     public void ClearClientFields() {
@@ -278,5 +306,21 @@ public class BookingOverview {
         venuesText.setText(venuesTextBuilder.toString());
     }
 
-    public void ConfirmBooking() { ScreenController.loadScreen("Invoice"); }
+    public void ConfirmBooking() {
+        try {
+            Client client = new Client(0, companyNameField.getText(), contactFNameField.getText(), contactLNameField.getText(),
+                    emailField.getText(), phoneField.getText(), addressField.getText(), cityField.getText(), postcodeField.getText());
+            LocalDate startDate = getEarliestStartDate(events);
+            LocalDate endDate = getLatestEndDate(events);
+            BigDecimal totalCost = getTotalCost();
+            Booking booking = new Booking(events, client, LocalDate.now(), totalCost, startDate, endDate, "Confirmed");
+            AppData.setCurrentBooking(booking);
+
+            DatabaseConnection.saveBooking(booking);
+
+            ScreenController.loadScreen("Invoice");
+        } catch (Exception e) {
+            System.err.println("Failed to save booking: " + e.getMessage());
+        }
+    }
 }
