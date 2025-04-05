@@ -1,24 +1,29 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.controlsfx.control.CheckComboBox;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AddEvent {
-
+    // Event Details tab attributes
     @FXML private TextField eventNameField;
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
@@ -33,17 +38,10 @@ public class AddEvent {
     @FXML private HBox maxDiscountHBox;
     @FXML private TextField maxDiscountField;
     @FXML private ComboBox<String> venueComboBox;
+    @FXML private ComboBox<String> layoutComboBox;
+    @FXML private ComboBox<Integer> tablesComboBox;
 
-    @FXML private Tab mainHall_Tab;
-    @FXML private Tab smallHall_Tab;
-    @FXML private Tab meetingRooms_Tab;
-
-    @FXML private ComboBox<String> greenRoom_ComboBox;
-    @FXML private ComboBox<String> bronteBoardroom_ComboBox;
-    @FXML private ComboBox<String> dickensDen_ComboBox;
-    @FXML private ComboBox<String> poeParlor_ComboBox;
-    @FXML private ComboBox<String> globeRoom_ComboBox;
-    @FXML private ComboBox<String> chekhovChamber_ComboBox;
+    @FXML private Tab SeatingConfig_Tab;
 
     private final Map<String, Integer> venueNametoID = Map.of(
             "Main Hall", 0,
@@ -60,44 +58,46 @@ public class AddEvent {
             "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");
     private List<String> halls = venues.subList(0,3);
     private List<String> meetingRooms = venues.subList(3, venues.size());
+    private List<String> mainHall_Layouts = List.of("Default", "No Balconies", "Empty", "Dinner");
+    private List<String> smallHall_Layouts = List.of("Default", "Dinner");
+    private List<String> meeting_Layouts = List.of("Classroom", "Boardroom", "Presentation");
 
     @FXML
     public void initialize() {
+        // Disable certain fields by default
         disableByDefault();
 
-        // Populate with venue options
-        venueComboBox.getItems().addAll(venues);
+        rows = List.of(RowAA_CheckComboBox, RowBB_CheckComboBox, RowCC_CheckComboBox, RowA_CheckComboBox,
+                RowB_CheckComboBox, RowC_CheckComboBox, RowD_CheckComboBox, RowE_CheckComboBox, RowF_CheckComboBox, RowG_CheckComboBox,
+                RowH_CheckComboBox, RowI_CheckComboBox, RowJ_CheckComboBox, RowK_CheckComboBox, RowL_CheckComboBox, RowM_CheckComboBox,
+                RowN_CheckComboBox, RowO_CheckComboBox, RowP_CheckComboBox);
 
-        List<ComboBox<String>> meetingRoomComboBoxes = List.of(greenRoom_ComboBox, bronteBoardroom_ComboBox, dickensDen_ComboBox,
-                poeParlor_ComboBox, globeRoom_ComboBox, chekhovChamber_ComboBox);
-        for (ComboBox<String> comboBox : meetingRoomComboBoxes) {
-            comboBox.getItems().addAll(
-                    "Classroom",
-                    "Boardroom",
-                    "Presentation"
-            );
-        }
+        // Populate with venue options
+        venueComboBox.getItems().setAll(venues);
+        // Populate table combo box
+        tablesComboBox.getItems().setAll(List.of(1, 2, 3, 4, 5, 6));
+
+        // Initialize ObservableLists
+        unavailableSeats = FXCollections.observableArrayList();
+        restrictedViews = FXCollections.observableArrayList();
+        // Set ListView items
+        UnavailableSeats_ListView.setItems(unavailableSeats);
+        RestrictedViews_ListView.setItems(restrictedViews);
+        // Populate list selector combo box
+        chooseListComboBox.getItems().setAll(List.of("Unavailable Seats", "Restricted Views"));
+        chooseListComboBox.getSelectionModel().selectFirst();
 
         // Venue combo box listener
         venueComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                // Enable/disable Main Hall tab
-                mainHall_Tab.setDisable(!newValue.equals("Main Hall"));
+                // Enable/disable Hall Layout tab
+                SeatingConfig_Tab.setDisable(!(newValue.equals("Main Hall") || newValue.equals("Small Hall")));
 
-                // Enable/disable Small Hall tab
-                smallHall_Tab.setDisable(!newValue.equals("Small Hall"));
+                // Populate row combo boxes on SeatingConfig tab
+                populateRows();
 
-                // Enable/disable Meeting Rooms tab
+                // Enable/disable Meeting Room Combo Box
                 boolean isMeetingRoom = meetingRooms.contains(newValue);
-                meetingRooms_Tab.setDisable(!isMeetingRoom);
-
-                // Enable/disable Meeting Rooms combo boxes
-                greenRoom_ComboBox.setDisable(!newValue.equals("The Green Room"));
-                bronteBoardroom_ComboBox.setDisable(!newValue.equals("Bronte Boardroom"));
-                dickensDen_ComboBox.setDisable(!newValue.equals("Dickens Den"));
-                poeParlor_ComboBox.setDisable(!newValue.equals("Poe Parlor"));
-                globeRoom_ComboBox.setDisable(!newValue.equals("Globe Room"));
-                chekhovChamber_ComboBox.setDisable(!newValue.equals("Chekhov Chamber"));
 
                 // Show/hide ticket price and discount fields for Main Hall or Small Hall only
                 boolean isHall = newValue.equals("Main Hall") || newValue.equals("Small Hall");
@@ -105,6 +105,25 @@ public class AddEvent {
                 ticketPriceHBox.setVisible(isHall);
                 maxDiscountText.setVisible(isHall);
                 maxDiscountHBox.setVisible(isHall);
+
+                // Layout handler
+                layoutComboBox.setVisible(isMeetingRoom || isHall);
+                tablesComboBox.setVisible(false);
+                if (isMeetingRoom) {
+                    layoutComboBox.getItems().setAll(meeting_Layouts);
+                } else if (newValue.equals("Main Hall")) {
+                    layoutComboBox.getItems().setAll(mainHall_Layouts);
+                    layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
+                        handleMainHallLayout(newLayoutValue);
+                    });
+                } else if (newValue.equals("Small Hall")) {
+                    layoutComboBox.getItems().setAll(smallHall_Layouts);
+                    layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
+                        handleSmallHallLayout(newLayoutValue);
+                    });
+                } else {
+                    layoutComboBox.setVisible(false);
+                }
             }
         });
     }
@@ -193,16 +212,11 @@ public class AddEvent {
 
     private void disableByDefault() {
         // Disable layout tabs by default
-        mainHall_Tab.setDisable(true);
-        smallHall_Tab.setDisable(true);
-        meetingRooms_Tab.setDisable(true);
-        // Disable all ComboBoxes by default
-        greenRoom_ComboBox.setDisable(true);
-        bronteBoardroom_ComboBox.setDisable(true);
-        dickensDen_ComboBox.setDisable(true);
-        poeParlor_ComboBox.setDisable(true);
-        globeRoom_ComboBox.setDisable(true);
-        chekhovChamber_ComboBox.setDisable(true);
+        SeatingConfig_Tab.setDisable(true);
+        // Hide layout combo box by default
+        layoutComboBox.setVisible(false);
+        // Hide tables combo box by default
+        tablesComboBox.setVisible(false);
         // Hide ticket price and max discount rows
         ticketPriceHBox.setVisible(false);
         ticketPriceText.setVisible(false);
@@ -211,4 +225,297 @@ public class AddEvent {
     }
 
     public void BackButton() { ScreenController.loadScreen("BookingOverview"); }
+
+    // SEATING CONFIG TAB
+
+    // SeatingConfig tab attributes
+    // Row checkboxes
+    @FXML private CheckComboBox<Integer> RowAA_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowBB_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowCC_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowA_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowB_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowC_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowD_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowE_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowF_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowG_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowH_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowI_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowJ_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowK_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowL_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowM_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowN_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowO_CheckComboBox;
+    @FXML private CheckComboBox<Integer> RowP_CheckComboBox;
+    private List<CheckComboBox> rows;
+
+    // List management
+    @FXML private ComboBox<String> chooseListComboBox;
+    @FXML private Button updateListButton;
+    @FXML private ListView<String> UnavailableSeats_ListView;
+    @FXML private Button clearUnavailableSeats_Button;
+    @FXML private ListView<String> RestrictedViews_ListView;
+    @FXML private Button clearRestrictedViews_Button;
+    private ObservableList<String> unavailableSeats;
+    private ObservableList<String> restrictedViews;
+
+    // Images
+    @FXML private ImageView seatMap_Image;
+    Image mainHall_default = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Default.png").toExternalForm());
+    Image mainHall_noBalconies = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_NoBalconies.png").toExternalForm());
+    Image mainHall_empty = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Flexible.png").toExternalForm());
+    Image mainHall_dinner1 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner1.png").toExternalForm());
+    Image mainHall_dinner2 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner2.png").toExternalForm());
+    Image mainHall_dinner3 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner3.png").toExternalForm());
+    Image mainHall_dinner4 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner4.png").toExternalForm());
+    Image mainHall_dinner5 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner5.png").toExternalForm());
+    Image mainHall_dinner6 = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/MainHall_Dinner6.png").toExternalForm());
+    Image smallHall_default = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/SmallHall_Default.png").toExternalForm());
+    Image smallHall_dinner = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/SmallHall_Dinner.png").toExternalForm());
+
+    public void populateRows() {
+        int seatCount;
+        if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall")) {
+            for (CheckComboBox checkComboBox : rows) {
+                String id = checkComboBox.getId();
+                switch (id) {
+                    // Balcony rows
+                    case "RowAA_CheckComboBox":
+                        seatCount = 53;
+                        break;
+                    case "RowBB_CheckComboBox":
+                        seatCount = 28;
+                        break;
+                    case "RowCC_CheckComboBox":
+                        seatCount = 8;
+                        break;
+
+                    // Stall rows
+                    case "RowL_CheckComboBox":
+                        seatCount = 16;
+                        break;
+                    case "RowN_CheckComboBox":
+                        seatCount = 20;
+                        break;
+                    case "RowO_CheckComboBox":
+                        seatCount = 11;
+                        break;
+                    case "RowP_CheckComboBox":
+                        seatCount = 10;
+                        break;
+                    case "RowA_CheckComboBox", "RowB_CheckComboBox", "RowC_CheckComboBox", "RowD_CheckComboBox",
+                         "RowE_CheckComboBox", "RowF_CheckComboBox",
+                         "RowG_CheckComboBox", "RowH_CheckComboBox", "RowI_CheckComboBox", "RowJ_CheckComboBox",
+                         "RowK_CheckComboBox", "RowM_CheckComboBox":
+                        seatCount = 19;
+                        break;
+                    default:
+                        seatCount = 0;
+                        System.err.println("Invalid row id: " + id);
+                        break;
+                }
+                // Generate seat numbers and add to the CheckComboBox
+                ObservableList<String> seats = FXCollections.observableArrayList();
+                String rowLetter = id.replace("Row", "").replace("_CheckComboBox", "");
+                for (int i = 1; i <= seatCount; i++) {
+                    seats.add(rowLetter + i);
+                }
+                checkComboBox.getItems().setAll(seats);
+            }
+        } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Small Hall")) {
+            for (CheckComboBox checkComboBox : rows) {
+                String id = checkComboBox.getId();
+                switch (id) {
+                    case "RowA_CheckComboBox", "RowB_CheckComboBox", "RowC_CheckComboBox":
+                        seatCount = 8;
+                        break;
+                    case "RowD_CheckComboBox", "RowE_CheckComboBox", "RowF_CheckComboBox", "RowG_CheckComboBox",
+                         "RowH_CheckComboBox", "RowI_CheckComboBox", "RowJ_CheckComboBox", "RowK_CheckComboBox", "RowL_CheckComboBox":
+                        seatCount = 7;
+                        break;
+                    case "RowM_CheckComboBox", "RowN_CheckComboBox":
+                        seatCount = 4;
+                        break;
+                    default:
+                        seatCount = 0;
+                        System.err.println("Invalid row id: " + id);
+                        break;
+                }
+                // Generate seat numbers and add to the CheckComboBox
+                ObservableList<String> seats = FXCollections.observableArrayList();
+                String rowLetter = id.replace("Row", "").replace("_CheckComboBox", "");
+                for (int i = 1; i <= seatCount; i++) {
+                    seats.add(rowLetter + i);
+                }
+                checkComboBox.getItems().setAll(seats);
+            }
+        }
+    }
+
+    private void handleMainHallLayout(String layout) {
+        if (layout == null) {
+            return;
+        }
+        tablesComboBox.setVisible(false);
+        // Enable all rows
+        for (CheckComboBox checkComboBox : rows) {
+            checkComboBox.setDisable(false);
+        }
+        enableListManagement();
+        ClearRestrictedViews();
+        ClearUnavailableSeats();
+        switch (layout) {
+            // Add logic to set venue seating layout
+            case "Default":
+                seatMap_Image.setImage(mainHall_default);
+
+                break;
+            case "No Balconies":
+                seatMap_Image.setImage(mainHall_noBalconies);
+                // Disable all balconies
+                RowAA_CheckComboBox.setDisable(true);
+                RowBB_CheckComboBox.setDisable(true);
+                RowCC_CheckComboBox.setDisable(true);
+                break;
+            case "Empty":
+                // Disable all rows
+                seatMap_Image.setImage(mainHall_empty);
+                for (CheckComboBox checkComboBox : rows) {
+                    checkComboBox.setDisable(true);
+                }
+                disableListManagement();
+                break;
+            case "Dinner":
+                seatMap_Image.setImage(mainHall_dinner1);
+                tablesComboBox.setVisible(true);
+                for (CheckComboBox checkComboBox : rows) {
+                    checkComboBox.setDisable(true);
+                }
+                disableListManagement();
+                tablesComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
+                    handleTablesLayout(newLayoutValue);
+                });
+                break;
+            default:
+                seatMap_Image.setImage(mainHall_default);
+                break;
+        }
+    }
+
+    private void handleSmallHallLayout(String layout) {
+        if (layout == null) {
+            return;
+        }
+        tablesComboBox.setVisible(false);
+        // Disable all rows
+        for (CheckComboBox checkComboBox : rows) {
+            checkComboBox.setDisable(true);
+        }
+        enableListManagement();
+        ClearRestrictedViews();
+        ClearUnavailableSeats();
+        switch (layout) {
+            case "Default":
+                seatMap_Image.setImage(smallHall_default);
+                List<CheckComboBox> smallHallDefaultRows = rows.subList(3, 17);
+                for (CheckComboBox checkComboBox : smallHallDefaultRows) {
+                    checkComboBox.setDisable(false);
+                }
+                break;
+            case "Dinner":
+                seatMap_Image.setImage(smallHall_dinner);
+                disableListManagement();
+                break;
+            default:
+                seatMap_Image.setImage(smallHall_default);
+                break;
+        }
+    }
+
+    private void handleTablesLayout(Integer layout) {
+        if (layout == null) {
+            return;
+        }
+        switch (layout) {
+            case 1:
+                seatMap_Image.setImage(mainHall_dinner1);
+                break;
+            case 2:
+                seatMap_Image.setImage(mainHall_dinner2);
+                break;
+            case 3:
+                seatMap_Image.setImage(mainHall_dinner3);
+                break;
+            case 4:
+                seatMap_Image.setImage(mainHall_dinner4);
+                break;
+            case 5:
+                seatMap_Image.setImage(mainHall_dinner5);
+                break;
+            case 6:
+                seatMap_Image.setImage(mainHall_dinner6);
+                break;
+            default:
+                seatMap_Image.setImage(mainHall_dinner1);
+        }
+    }
+
+    private void enableListManagement() {
+        chooseListComboBox.setDisable(false);
+        updateListButton.setDisable(false);
+        UnavailableSeats_ListView.setDisable(false);
+        clearUnavailableSeats_Button.setDisable(false);
+        RestrictedViews_ListView.setDisable(false);
+        clearRestrictedViews_Button.setDisable(false);
+    }
+
+    private void disableListManagement() {
+        chooseListComboBox.setDisable(true);
+        updateListButton.setDisable(true);
+        UnavailableSeats_ListView.setDisable(true);
+        clearUnavailableSeats_Button.setDisable(true);
+        RestrictedViews_ListView.setDisable(true);
+        clearRestrictedViews_Button.setDisable(true);
+    }
+
+    public void UpdateList() {
+        // Get selected seats from all CheckComboBoxes
+        ObservableList<String> selectedSeats = FXCollections.observableArrayList();
+        for (CheckComboBox<String> checkComboBox : rows) {
+            selectedSeats.addAll(checkComboBox.getCheckModel().getCheckedItems());
+        }
+
+        // Determine which list to update
+        String selectedList = chooseListComboBox.getSelectionModel().getSelectedItem();
+        if (selectedList != null) {
+            switch (selectedList) {
+                case "Unavailable Seats":
+                    unavailableSeats.clear();
+                    unavailableSeats.addAll(selectedSeats);
+                    break;
+                case "Restricted Views":
+                    restrictedViews.clear();
+                    restrictedViews.addAll(selectedSeats);
+                    break;
+            }
+        }
+    }
+
+    public void ClearUnavailableSeats() {
+        unavailableSeats.clear();
+        // Uncheck all seats in CheckComboBoxes
+        for (CheckComboBox<String> checkComboBox : rows) {
+            checkComboBox.getCheckModel().clearChecks();
+        }
+    }
+
+    public void ClearRestrictedViews() {
+        restrictedViews.clear();
+        // Uncheck all seats in CheckComboBoxes
+        for (CheckComboBox<String> checkComboBox : rows) {
+            checkComboBox.getCheckModel().clearChecks();
+        }
+    }
 }

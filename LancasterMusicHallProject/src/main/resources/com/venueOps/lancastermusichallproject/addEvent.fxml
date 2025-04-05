@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,18 +20,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.CheckComboBox?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.AddEvent">
 
     <children>
-      <AnchorPane layoutX="128.0" layoutY="73.0" prefHeight="576" prefWidth="1024" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
+      <AnchorPane layoutX="128.0" layoutY="73.0" prefHeight="576.0" prefWidth="1024.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
          <children>
             <Label alignment="CENTER" layoutX="425.0" layoutY="-1.0" prefHeight="66.0" prefWidth="174.0" text="Add Event" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="36.0" />
                </font>
             </Label>
-            <Button alignment="CENTER" layoutX="14.0" layoutY="14.0" onAction="#BackButton" prefHeight="35.0" prefWidth="212.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Booking Overview" textFill="WHITE">
+            <Button alignment="CENTER" layoutX="14.0" layoutY="14.0" onAction="#BackButton" prefHeight="35.0" prefWidth="144.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Booking" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -65,22 +71,22 @@
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date" GridPane.rowIndex="1">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date:" GridPane.rowIndex="1">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Date" GridPane.rowIndex="2">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Date:" GridPane.rowIndex="2">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Time" GridPane.rowIndex="3">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Time:" GridPane.rowIndex="3">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Text>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Time" GridPane.rowIndex="4">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="End Time:" GridPane.rowIndex="4">
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
@@ -103,7 +109,7 @@
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                           </Text>
-                                          <ComboBox fx:id="venueComboBox" prefHeight="25.0" prefWidth="281.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ComboBox fx:id="venueComboBox" prefHeight="25.0" prefWidth="281.0" visibleRowCount="5" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                           <HBox alignment="CENTER" prefHeight="52.0" prefWidth="286.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                              <children>
                                                 <TextField fx:id="startTime_HourField" alignment="CENTER" prefHeight="25.0" prefWidth="131.0" promptText="HH" />
@@ -150,25 +156,17 @@
                                     </GridPane>
                                  </children>
                               </VBox>
+                              <ComboBox fx:id="layoutComboBox" layoutX="760.0" layoutY="286.0" prefWidth="150.0" promptText="Layout" visibleRowCount="6" />
+                              <ComboBox fx:id="tablesComboBox" layoutX="920.0" layoutY="286.0" prefHeight="25.0" prefWidth="91.0" promptText="Tables" visibleRowCount="6" />
                            </children>
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="mainHall_Tab" closable="false" disable="true" text="Main Hall Layout">
+                <Tab fx:id="SeatingConfig_Tab" closable="false" text="Seating Configuration">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-                  <Tab fx:id="smallHall_Tab" closable="false" disable="true" text="Small Hall Layout">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-                  <Tab fx:id="meetingRooms_Tab" closable="false" disable="true" text="Meeting Room Layouts">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <GridPane alignment="CENTER" layoutX="12.0" layoutY="41.0" prefHeight="400.0" prefWidth="1000.0">
+                              <GridPane alignment="TOP_CENTER" layoutX="14.0" layoutY="16.0" prefHeight="345.0" prefWidth="330.0">
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -177,74 +175,147 @@
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                                       <children>
-                                          <Label text="The Green Room">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="greenRoom_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1">
-                                       <children>
-                                          <Label text="Bronte Boardroom">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="bronteBoardroom_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2">
-                                       <children>
-                                          <Label text="Dickens Den">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="dickensDen_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.rowIndex="1">
-                                       <children>
-                                          <Label text="Poe Parlor">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="poeParlor_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <children>
-                                          <Label text="Globe Room">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="globeRoom_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                       <children>
-                                          <Label text="Chekhov Chamber">
-                                             <font>
-                                                <Font name="System Bold" size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="chekhovChamber_ComboBox" prefWidth="150.0" />
-                                       </children>
-                                    </VBox>
+                                    <CheckComboBox fx:id="RowAA_CheckComboBox" prefHeight="25.0" prefWidth="60.0" title="AA" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowBB_CheckComboBox" prefHeight="25.0" prefWidth="60.0" title="BB" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowCC_CheckComboBox" prefHeight="25.0" prefWidth="60.0" title="CC" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowA_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="A" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowB_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="B" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowC_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="C" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowD_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="D" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowE_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="E" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowF_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="F" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowG_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="G" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowH_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="H" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowI_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="I" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowJ_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="J" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowK_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="K" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowL_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="L" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowM_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="M" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowN_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="N" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowO_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="O" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
+                                    <CheckComboBox fx:id="RowP_CheckComboBox" prefHeight="25.0" prefWidth="55.0" title="P" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="TOP">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </CheckComboBox>
                                  </children>
                               </GridPane>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </Tab>
+                              <ComboBox fx:id="chooseListComboBox" layoutX="41.0" layoutY="355.0" prefHeight="25.0" prefWidth="181.0" promptText="Choose List" />
+                              <Button fx:id="updateListButton" layoutX="246.0" layoutY="355.0" mnemonicParsing="false" onAction="#UpdateList" prefHeight="25.0" prefWidth="72.0" text="Update" />
+                              <VBox alignment="TOP_CENTER" layoutX="344.0" layoutY="14.0" prefHeight="368.0" prefWidth="187.0" spacing="5.0">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="17.0" prefWidth="188.0" text="Unavailable Seats">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ListView fx:id="UnavailableSeats_ListView" prefHeight="125.0" prefWidth="187.0" />
+                                    <Button fx:id="clearUnavailableSeats_Button" alignment="CENTER" mnemonicParsing="false" onAction="#ClearUnavailableSeats" text="Clear" />
+                                    <Label alignment="CENTER" prefHeight="17.0" prefWidth="188.0" text="Restricted Views">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ListView fx:id="RestrictedViews_ListView" prefHeight="125.0" prefWidth="187.0" />
+                                    <Button fx:id="clearRestrictedViews_Button" alignment="CENTER" mnemonicParsing="false" onAction="#ClearRestrictedViews" text="Clear" />
+                                 </children>
+                              </VBox>
+                              <ScrollPane hvalue="0.5" layoutX="539.0" layoutY="-1.0" prefHeight="485.0" prefWidth="485.0" vvalue="1.0">
+                                 <content>
+                                    <ImageView fx:id="seatMap_Image" fitHeight="1008.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@assets/MainHall_Default.png" />
+                                       </image>
+                                    </ImageView>
+                                 </content>
+                              </ScrollPane>
+                              <Label fx:id="capacityLabel" layoutX="41.0" layoutY="411.0" text="Capacity:">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                           </children></AnchorPane>
+                  </content>
+                </Tab>
               </tabs>
             </TabPane>
          </children>

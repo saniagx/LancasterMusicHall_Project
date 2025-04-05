@@ -101,6 +101,8 @@
                                                    </font>
                                                 </Text>
                                                 <TextField fx:id="companyNameField" GridPane.columnIndex="1" />
+                                                <TextField fx:id="contactFNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="contactLNameField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                 <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -109,13 +111,11 @@
                                                       <Font name="System Bold" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="contactFNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact Last Name:" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font name="System Bold" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="contactLNameField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="City:" wrappingWidth="84.4375" GridPane.rowIndex="6">
                                                    <font>
                                                       <Font name="System Bold" size="14.0" />
@@ -193,7 +193,7 @@
                      </content></Tab>
                </tabs>
             </TabPane>
-            <Button alignment="CENTER" layoutX="14.0" layoutY="15.0" onAction="#BackButton" prefHeight="35.0" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Day Overview" textFill="WHITE">
+            <Button alignment="CENTER" layoutX="14.0" layoutY="15.0" onAction="#BackButton" prefHeight="35.0" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Calendar" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
