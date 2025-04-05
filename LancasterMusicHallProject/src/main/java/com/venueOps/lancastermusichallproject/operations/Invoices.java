@@ -2,9 +2,16 @@ package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
 
-public class Invoice {
+
+
+
+//Class to view all the existing Invoices for LMH
+public class Invoices {
+
+    public Invoices(){}
 
     public void BackButton() {
-        ScreenController.loadScreen("DayOverview");
+        ScreenController.loadScreen("MainMenu");
     }
+
 }
