@@ -73,10 +73,11 @@ public class DatabaseConnection {
                 return events;
             }
             // Fetch events
-            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
+            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name, sc.capacity " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
+                    "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
                     "WHERE e.start <= ? AND e.end >= ?";
             PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
             eventsStmt.setString(1, end.plusDays(1).toString());
@@ -98,6 +99,7 @@ public class DatabaseConnection {
                 double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
+                int capacity = eventRs.getInt("capacity");
 
                 // Fetch daily ticket sales for this event
                 Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
@@ -110,7 +112,10 @@ public class DatabaseConnection {
                 }
                 salesRs.close();
 
-                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, null);
+                // Minimal seating config object just for capacity
+                SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
+
+                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
                 events.add(event);
             }
 

@@ -13,8 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.math.BigDecimal;
-import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,10 +52,6 @@ public class UsageChart {
     private ArrayList<Event> events;
     private List<ClickableBar> clickableBars;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private final Map<Integer, Integer> venueCapacity = Map.of(
-            0, 374, // Main Hall
-            1, 95 // Small Hall
-    );
 
     public UsageChart() {}
 
@@ -259,7 +253,7 @@ public class UsageChart {
 
                     Color topColor = baseColor; // Default to base color if no ticket sales
                     if (hasTicketSales && (venueIndex == 0 || venueIndex == 1)) { // Main Hall or Small Hall
-                        double salesPercentage = ((double) ticketsSold / (double) venueCapacity.get(venueIndex)) * 100;
+                        double salesPercentage = ((double) ticketsSold / event.getSeatingConfig().getCapacity()) * 100;
                         if (salesPercentage == 100.0) {
                             topColor = Color.MEDIUMPURPLE; // Sold out
                         } else if (salesPercentage >= 75.0) {
@@ -329,7 +323,7 @@ public class UsageChart {
             eventTicketSales_Text.setVisible(true);
 
             int totalTicketsSold = event.getTotalTicketsSold();
-            int totalTicketsCapacity = venueCapacity.get(event.getVenueID()) * event.getDaysWithTicketSales();
+            int totalTicketsCapacity = event.getSeatingConfig().getCapacity() * event.getDaysWithTicketSales();
 
             double salesPercentage = ((double) totalTicketsSold / totalTicketsCapacity)*100;
             eventTicketSales_Text.setText(totalTicketsSold + " / " + totalTicketsCapacity + "\t\t" + String.format("%.2f", salesPercentage) + "%");
