@@ -2,7 +2,6 @@ package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,9 +12,7 @@ import javafx.scene.text.Text;
 import org.controlsfx.control.CheckComboBox;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.time.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,18 +174,18 @@ public class AddEvent {
             );
 
             // Add to calendar instance
-            BookingOverview bookingOverviewController = (BookingOverview) ScreenController.getController("BookingOverview");
-            if (bookingOverviewController != null) {
-                bookingOverviewController.addEventToList(newEvent);
-                bookingOverviewController.refresh();
+            NewBooking newBookingController = (NewBooking) ScreenController.getController("NewBooking");
+            if (newBookingController != null) {
+                newBookingController.addEventToList(newEvent);
+                newBookingController.refresh();
             }
 
-            ScreenController.loadScreen("BookingOverview");
+            ScreenController.loadScreen("NewBooking");
             ClearFields();
 
         } catch (Exception e) {
             showError("Please fill all fields correctly.");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } finally {
             tabPane.getSelectionModel().select(EventDetails_Tab);
         }
@@ -304,7 +301,7 @@ public class AddEvent {
     }
 
     public void BackButton() {
-        ScreenController.loadScreen("BookingOverview");
+        ScreenController.loadScreen("NewBooking");
         tabPane.getSelectionModel().select(EventDetails_Tab);
     }
 

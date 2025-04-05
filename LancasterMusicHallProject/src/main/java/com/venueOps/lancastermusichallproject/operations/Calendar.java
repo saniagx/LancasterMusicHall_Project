@@ -31,7 +31,7 @@ public class Calendar implements ICalendar {
         ScreenController.loadScreen("MainMenu");
     }
 
-    public void NewBooking() { ScreenController.loadScreen("BookingOverview"); }
+    public void NewBooking() { ScreenController.loadScreen("NewBooking"); }
 
     public void ViewBookings() {};
 
