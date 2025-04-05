@@ -236,47 +236,44 @@ public class DatabaseConnection {
     public static void saveBooking(Booking booking) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            if (conn == null) {
-                conn.setAutoCommit(false);
-
-                // Upsert Client
-                int clientID = upsertClient(conn, booking.getClient());
-
-                // Insert Contract
-                int contractID = insertContract(conn, clientID, booking.getTotalPrice(), booking.getSignedDate());
-
-                // Insert Booking
-                String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
-                    stmt.setInt(1, contractID);
-                    stmt.setDate(2, Date.valueOf(booking.getStartDate()));
-                    stmt.setDate(3, Date.valueOf(booking.getEndDate()));
-                    stmt.setString(4, booking.getStatus());
-                    stmt.executeUpdate();
-
-                    ResultSet rs = stmt.getGeneratedKeys();
-                    if (rs.next()) {
-                        int bookingId = rs.getInt(1);
-                        booking.setBookingID(bookingId); // Update Booking object with database assigned ID
-                    } else {
-                        throw new SQLException("Failed to retrieve booking_id");
-                    }
-                }
-
-                // Insert Events
-                insertEvents(conn, booking.getEvents(), clientID);
-                conn.commit();
+            if (conn != null) {
+                return;
             }
+            conn.setAutoCommit(false);
+
+            // Upsert Client
+            int clientID = upsertClient(conn, booking.getClient());
+
+            // Insert Contract
+            int contractID = insertContract(conn, clientID, booking.getTotalPrice(), booking.getSignedDate());
+
+            // Insert Booking
+            String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setInt(1, contractID);
+                stmt.setDate(2, Date.valueOf(booking.getStartDate()));
+                stmt.setDate(3, Date.valueOf(booking.getEndDate()));
+                stmt.setString(4, booking.getStatus());
+                stmt.executeUpdate();
+
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    int bookingId = rs.getInt(1);
+                    booking.setBookingID(bookingId); // Update Booking object with database assigned ID
+                } else {
+                    throw new SQLException("Failed to retrieve booking_id");
+                }
+            }
+
+            // Insert Events
+            insertEvents(conn, booking.getEvents(), clientID);
+            conn.commit();
         } catch (SQLException e) {
-            try {
-                Connection conn = DatabaseConnection.getConnection();
+            try (Connection conn = DatabaseConnection.getConnection()) {
                 conn.rollback();
             } catch (SQLException ex) {
-                System.out.println("Failed to roll back: " + ex.getMessage());
                 throw new RuntimeException(ex);
             }
-            System.out.println("Failed to save booking, rolling back: " + e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
