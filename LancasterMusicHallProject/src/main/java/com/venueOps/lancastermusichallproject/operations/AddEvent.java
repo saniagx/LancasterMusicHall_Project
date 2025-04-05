@@ -39,7 +39,9 @@ public class AddEvent {
     @FXML private ComboBox<String> layoutComboBox;
     @FXML private ComboBox<Integer> tablesComboBox;
 
+    @FXML private TabPane tabPane;
     @FXML private Tab SeatingConfig_Tab;
+    @FXML private Tab EventDetails_Tab;
 
     private final Map<String, Integer> venueNametoID = Map.of(
             "Main Hall", 0,
@@ -86,7 +88,7 @@ public class AddEvent {
         chooseListComboBox.getSelectionModel().selectFirst();
 
         layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
-            String selectedVenue = venueComboBox .getSelectionModel().getSelectedItem();
+            String selectedVenue = venueComboBox.getSelectionModel().getSelectedItem();
             if (selectedVenue != null && newLayoutValue != null) {
                 if (selectedVenue.equals("Main Hall")) {
                     handleMainHallLayout(newLayoutValue);
@@ -159,7 +161,7 @@ public class AddEvent {
 
             Event newEvent = new Event(
                     0, // Will be replaced with a proper value when booking is confirmed
-                    generateEventID(),
+                    0, // Will be replaced with a proper value when booking is confirmed
                     name,
                     getEventType(venueName),
                     "temp",
@@ -171,7 +173,7 @@ public class AddEvent {
                     venueID,
                     venueName,
                     new HashMap<>(), // Pass empty usage map
-                    new SeatingConfig(generateSeatingConfigID(), capacity, getLayout(), restrictedViews)
+                    new SeatingConfig(generateSeatingConfigID(), capacity, getLayout(), venueName, restrictedViews)
             );
 
             // Add to calendar instance
@@ -182,15 +184,14 @@ public class AddEvent {
             }
 
             ScreenController.loadScreen("BookingOverview");
+            ClearFields();
 
         } catch (Exception e) {
             showError("Please fill all fields correctly.");
             e.printStackTrace();
+        } finally {
+            tabPane.getSelectionModel().select(EventDetails_Tab);
         }
-    }
-
-    private int generateEventID() {
-        return (int) (System.currentTimeMillis() % 100000);
     }
 
     private int generateSeatingConfigID() {
@@ -200,6 +201,8 @@ public class AddEvent {
     private String getLayout() {
         if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall") && layoutComboBox.getSelectionModel().getSelectedItem().equals("Dinner")) {
             return "Dinner with " + tablesComboBox.getSelectionModel().getSelectedItem() + " tables";
+        } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Rehearsal Space")) {
+            return "Rehearsal Space";
         } else {
             return layoutComboBox.getSelectionModel().getSelectedItem();
         }
@@ -300,7 +303,10 @@ public class AddEvent {
         maxDiscountText.setVisible(false);
     }
 
-    public void BackButton() { ScreenController.loadScreen("BookingOverview"); }
+    public void BackButton() {
+        ScreenController.loadScreen("BookingOverview");
+        tabPane.getSelectionModel().select(EventDetails_Tab);
+    }
 
     // SEATING CONFIG TAB
 
@@ -583,14 +589,15 @@ public class AddEvent {
         if (selectedList != null) {
             switch (selectedList) {
                 case "Unavailable Seats":
-                    unavailableSeats.clear();
-                    unavailableSeats.addAll(selectedSeats);
+                    unavailableSeats.setAll(selectedSeats);
                     break;
                 case "Restricted Views":
-                    restrictedViews.clear();
-                    restrictedViews.addAll(selectedSeats);
+                    restrictedViews.setAll(selectedSeats);
                     break;
             }
+        }
+        for (CheckComboBox<String> checkComboBox : rows) {
+            checkComboBox.getCheckModel().clearChecks();
         }
         updateCapacityLabel();
     }
@@ -617,36 +624,50 @@ public class AddEvent {
             return;
         }
         int unavailableCount = unavailableSeats.size();
-        int availableCount = 0;
         if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall")) {
             switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
                 case "Default":
-                    availableCount = MAIN_HALL_MAX_CAPACITY - unavailableCount;
+                    capacity = MAIN_HALL_MAX_CAPACITY - unavailableCount;
                     break;
                 case "No Balconies":
-                    availableCount = MAIN_HALL_MAX_CAPACITY - 89 - unavailableCount;
+                    capacity = MAIN_HALL_MAX_CAPACITY - 89 - unavailableCount;
                     break;
                 case "Dinner":
-                    availableCount = 8 * (tablesComboBox.getSelectionModel().getSelectedItem() == null ? 0 : tablesComboBox.getSelectionModel().getSelectedItem());
+                    capacity = 8 * (tablesComboBox.getSelectionModel().getSelectedItem() == null ? 0 : tablesComboBox.getSelectionModel().getSelectedItem());
                     break;
                 default:
-                    availableCount = MAIN_HALL_MAX_CAPACITY;
+                    capacity = MAIN_HALL_MAX_CAPACITY;
                     break;
             }
         } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Small Hall")) {
             switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
                 case "Default":
-                    availableCount = SMALL_HALL_MAX_CAPACITY - unavailableCount;
+                    capacity = SMALL_HALL_MAX_CAPACITY - unavailableCount;
                     break;
                 case "Dinner":
-                    availableCount = 18;
+                    capacity = 18;
                     break;
                 default:
-                    availableCount = SMALL_HALL_MAX_CAPACITY;
+                    capacity = SMALL_HALL_MAX_CAPACITY;
                     break;
             }
         }
-        System.out.println(availableCount);
-        capacityLabel.setText("Capacity: " + availableCount);
+        capacityLabel.setText("Capacity: " + capacity);
+    }
+
+    public void ClearFields() {
+        eventNameField.setText("");
+        startDatePicker.getEditor().setText("");
+        endDatePicker.getEditor().setText("");
+        startTime_HourField.setText("");
+        startTime_MinuteField.setText("");
+        endTime_HourField.setText("");
+        endTime_MinuteField.setText("");
+        disableByDefault();
+        venueComboBox.getSelectionModel().clearSelection();
+        layoutComboBox.getSelectionModel().clearSelection();
+        tablesComboBox.getSelectionModel().clearSelection();
+        ticketPriceField.setText("");
+        maxDiscountField.setText("");
     }
 }

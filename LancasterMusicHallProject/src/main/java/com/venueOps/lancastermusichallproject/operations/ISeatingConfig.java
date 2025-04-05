@@ -14,6 +14,9 @@ public interface ISeatingConfig{
     String getLayout();
     void setLayout(String layout);
 
+    String getVenueName();
+    void setVenueName(String venueName);
+
     List<String> getRestrictedViews();
     void setRestrictedViews(List<String> restrictedViews);
 

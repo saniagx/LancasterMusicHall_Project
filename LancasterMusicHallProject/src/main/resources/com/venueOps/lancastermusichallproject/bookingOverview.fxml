@@ -26,9 +26,9 @@
                   <Font name="System Bold" size="36.0" />
                </font>
             </Label>
-            <TabPane layoutY="65.0" prefHeight="511.0" prefWidth="1024.0" style="-fx-background-radius: 20px;" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tabPane" layoutY="65.0" prefHeight="511.0" prefWidth="1024.0" style="-fx-background-radius: 20px;" tabClosingPolicy="UNAVAILABLE">
                <tabs>
-                  <Tab closable="false" text="Events">
+                  <Tab fx:id="events_Tab" closable="false" text="Events">
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>

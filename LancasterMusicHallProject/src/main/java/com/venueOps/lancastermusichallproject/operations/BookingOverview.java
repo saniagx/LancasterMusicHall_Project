@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingOverview {
+    @FXML TabPane tabPane;
+    @FXML Tab events_Tab;
+
     // Events tab attributes
     @FXML private GridPane eventsGridPane;
     private ArrayList<IEvent> events;
@@ -154,7 +157,7 @@ public class BookingOverview {
         priceLabel.setFont(boldFont);
         priceLabel.setLayoutX(10);
         priceLabel.setLayoutY(70);
-        Label priceLabelValue = new Label(String.format("£%.2f", event.getEventPrice()));
+        Label priceLabelValue = new Label(String.format("£%.2f", event.getTicketPrice()));
         priceLabelValue.setFont(regularFont);
         priceLabel.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             priceLabelValue.setLayoutX(priceLabel.getLayoutX() + newWidth.doubleValue() + textOffset);
@@ -230,7 +233,8 @@ public class BookingOverview {
     }
 
     public void BackButton() {
-        events.clear();
+        clearAll();
+        tabPane.getSelectionModel().select(events_Tab);
         ScreenController.loadScreen("Calendar");
     }
 
@@ -321,6 +325,15 @@ public class BookingOverview {
             ScreenController.loadScreen("Invoice");
         } catch (Exception e) {
             System.err.println("Failed to save booking: " + e.getMessage());
+        } finally {
+            clearAll();
+            tabPane.getSelectionModel().select(events_Tab);
         }
+    }
+
+    public void clearAll() {
+        ClearClientFields();
+        events.clear();
+        refresh();
     }
 }

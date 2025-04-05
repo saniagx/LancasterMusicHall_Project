@@ -42,9 +42,9 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <TabPane layoutY="65.0" prefHeight="511.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tabPane" layoutY="65.0" prefHeight="511.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab closable="false" text="Event Details">
+                <Tab fx:id="EventDetails_Tab" closable="false" text="Event Details">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -158,6 +158,11 @@
                               </VBox>
                               <ComboBox fx:id="layoutComboBox" layoutX="760.0" layoutY="286.0" prefWidth="150.0" promptText="Layout" visibleRowCount="6" />
                               <ComboBox fx:id="tablesComboBox" layoutX="920.0" layoutY="286.0" prefHeight="25.0" prefWidth="91.0" promptText="Tables" visibleRowCount="6" />
+                              <Button alignment="CENTER" layoutX="453.0" layoutY="433.0" onAction="#ClearFields" prefHeight="35.0" prefWidth="119.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Clear" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Button>
                            </children>
                         </AnchorPane>
                   </content>

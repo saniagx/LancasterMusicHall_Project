@@ -162,7 +162,7 @@ public class DatabaseConnection {
 
                 // Create minimal seatingConfig object with only layout
                 SeatingConfig seatingConfig = (layout != null)
-                        ? new SeatingConfig(seatingConfigID, 0, layout, null)
+                        ? new SeatingConfig(seatingConfigID, 0, layout, venueName, null)
                         : null;
 
                 Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO,
@@ -242,10 +242,11 @@ public class DatabaseConnection {
             conn.setAutoCommit(false);
 
             // Upsert Client
-            int clientID = upsertClient(conn, booking.getClient());
+            ClientInfo clientInfo = upsertClient(conn, booking.getClient());
 
             // Insert Contract
-            int contractID = insertContract(conn, clientID, booking.getTotalPrice(), booking.getSignedDate());
+            int contractID = insertContract(conn, clientInfo.getClientID(), booking.getTotalPrice(), booking.getSignedDate());
+
             // Insert Booking
             String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -263,12 +264,11 @@ public class DatabaseConnection {
                     throw new SQLException("Failed to retrieve booking_id");
                 }
             }
-            System.out.println("here 1");
+
             // Insert Events
-            insertEvents(conn, booking.getEvents(), clientID);
-            System.out.println("here 2");
+            insertEvents(conn, booking.getEvents(), clientInfo);
+
             conn.commit();
-            System.out.println("here 3");
         } catch (SQLException e) {
             try (Connection conn = DatabaseConnection.getConnection()) {
                 conn.rollback();
@@ -278,7 +278,7 @@ public class DatabaseConnection {
         }
     }
 
-    private static int upsertClient(Connection conn, Client client) throws SQLException {
+    private static ClientInfo upsertClient(Connection conn, Client client) throws SQLException {
         String checkSql = "SELECT client_id FROM Clients WHERE company_name = ? AND email = ?";
         try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
             checkStmt.setString(1, client.getCompanyName());
@@ -287,14 +287,14 @@ public class DatabaseConnection {
             if (rs.next()) {
                 int clientID = rs.getInt("client_id");
                 updateClient(conn, clientID, client);
-                return clientID;
+                return new ClientInfo(clientID, client.getCompanyName());
             } else {
                 return insertClient(conn, client);
             }
         }
     }
 
-    private static int insertClient(Connection conn, Client client) throws SQLException {
+    private static ClientInfo insertClient(Connection conn, Client client) throws SQLException {
         String insertSql = "INSERT INTO Clients (company_name, contact_first_name, contact_last_name, phone_number, email) " +
                 "VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -305,8 +305,8 @@ public class DatabaseConnection {
             stmt.setString(5, client.getEmail());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) return rs.getInt(1);
-            throw new SQLException("Failed to retrieve client_id");
+            if (rs.next()) return new ClientInfo(rs.getInt(1), client.getCompanyName());
+            throw new SQLException("Failed to retrieve client info");
         }
     }
 
@@ -337,9 +337,9 @@ public class DatabaseConnection {
         }
     }
 
-    private static void insertEvents(Connection conn, List<IEvent> events, int client_id) throws SQLException {
-        String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, start, end, price, ticket_price, venue_id, client_id, seating_config_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static void insertEvents(Connection conn, List<IEvent> events, ClientInfo clientInfo) throws SQLException {
+        String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, host, start, end, price, ticket_price, max_discount, venue_id, client_id, seating_config_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
             int eventID = 1;
             for (IEvent event : events) {
@@ -351,13 +351,15 @@ public class DatabaseConnection {
                     stmt.setInt(2, eventID++);
                     stmt.setString(3, event.getEventName());
                     stmt.setString(4, event.getEventType());
-                    stmt.setTimestamp(5, Timestamp.valueOf(event.getEventStart()));
-                    stmt.setTimestamp(6, Timestamp.valueOf(event.getEventEnd()));
-                    stmt.setBigDecimal(7, event.getEventPrice());
-                    stmt.setBigDecimal(8, event.getTicketPrice());
-                    stmt.setInt(9, event.getVenueID());
-                    stmt.setInt(10, client_id);
-                    stmt.setInt(11, seatingConfigID);
+                    stmt.setString(5, clientInfo.getCompanyName());
+                    stmt.setTimestamp(6, Timestamp.valueOf(event.getEventStart()));
+                    stmt.setTimestamp(7, Timestamp.valueOf(event.getEventEnd()));
+                    stmt.setBigDecimal(8, event.getEventPrice());
+                    stmt.setBigDecimal(9, event.getTicketPrice());
+                    stmt.setDouble(10, event.getMaxDiscount());
+                    stmt.setInt(11, event.getVenueID());
+                    stmt.setInt(12, clientInfo.getClientID());
+                    stmt.setInt(13, seatingConfigID);
                     stmt.addBatch();
                 } catch (SQLException e) {
                     System.err.println("Error inserting event " + event.getEventName() + ": " + e.getMessage());
@@ -404,5 +406,19 @@ public class DatabaseConnection {
             System.err.println("Error inserting Restricted Views: " + e.getMessage());
             throw e;
         }
+    }
+
+    // Helper class to pass Client info to be stored in the Event table
+    public static class ClientInfo {
+        private int clientID;
+        private String companyName;
+
+        public ClientInfo(int clientID, String companyName) {
+            this.clientID = clientID;
+            this.companyName = companyName;
+        }
+
+        public int getClientID() { return clientID; }
+        public String getCompanyName() { return companyName; }
     }
 }

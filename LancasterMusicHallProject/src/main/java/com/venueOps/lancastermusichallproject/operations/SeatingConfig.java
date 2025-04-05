@@ -8,6 +8,7 @@ public class SeatingConfig implements ISeatingConfig {
     private int seatingConfigID;
     private int capacity;
     private String layout;
+    private String venueName;
     private List<String> restrictedViews;
 
     //private static Map<String, Integer> predefinedConfigs = new HashMap<>();
@@ -29,10 +30,11 @@ public class SeatingConfig implements ISeatingConfig {
     //}
 
     // Constructor
-    public SeatingConfig(int seatingConfigID, int capacity, String layout, List<String> restrictedViews) {
+    public SeatingConfig(int seatingConfigID, int capacity, String layout, String venueName, List<String> restrictedViews) {
         this.seatingConfigID = seatingConfigID;
         this.capacity = capacity;
         this.layout = layout;
+        this.venueName = venueName;
         this.restrictedViews = restrictedViews;
     }
 
@@ -40,7 +42,6 @@ public class SeatingConfig implements ISeatingConfig {
     public int getSeatingConfigID() {
         return seatingConfigID;
     }
-
     @Override
     public void setSeatingConfigID(int seatingConfigID) {
         this.seatingConfigID = seatingConfigID;
@@ -48,7 +49,6 @@ public class SeatingConfig implements ISeatingConfig {
 
     @Override
     public int getCapacity() { return capacity; }
-
     @Override
     public void setCapacity(int capacity) {
         this.capacity = capacity;
@@ -58,17 +58,20 @@ public class SeatingConfig implements ISeatingConfig {
     public String getLayout() {
         return layout;
     }
-
     @Override
     public void setLayout(String layout) {
         this.layout = layout;
     }
 
     @Override
+    public String getVenueName() { return venueName; }
+    @Override
+    public void setVenueName(String venueName) { this.venueName = venueName; }
+
+    @Override
     public ObservableList<String> getRestrictedViews() {
         return (ObservableList<String>) restrictedViews;
     }
-
     @Override
     public void setRestrictedViews(List<String> restrictedViews) {
         this.restrictedViews = restrictedViews;
