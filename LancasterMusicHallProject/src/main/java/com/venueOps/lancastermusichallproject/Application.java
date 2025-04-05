@@ -55,7 +55,7 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Calendar", calendarLoader.load(), calendarLoader);
         FXMLLoader dayOverviewLoader = new FXMLLoader(getClass().getResource("dayOverview.fxml"));
         sc.addScreen("DayOverview", dayOverviewLoader.load(), dayOverviewLoader);
-        FXMLLoader invoiceLoader = new FXMLLoader(getClass().getResource("invoice.fxml"));
+        FXMLLoader invoiceLoader = new FXMLLoader(getClass().getResource("invoices.fxml"));
         sc.addScreen("Invoice", invoiceLoader.load(), invoiceLoader);
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
