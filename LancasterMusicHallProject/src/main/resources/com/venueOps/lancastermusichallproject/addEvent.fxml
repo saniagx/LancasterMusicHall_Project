@@ -299,9 +299,9 @@
                                     <Button fx:id="clearRestrictedViews_Button" alignment="CENTER" mnemonicParsing="false" onAction="#ClearRestrictedViews" text="Clear" />
                                  </children>
                               </VBox>
-                              <ScrollPane hvalue="0.5" layoutX="539.0" layoutY="-1.0" prefHeight="485.0" prefWidth="485.0" vvalue="1.0">
+                              <ScrollPane hvalue="0.5" layoutX="539.0" layoutY="-1.0" prefHeight="485.0" prefWidth="485.0" vvalue="0.5">
                                  <content>
-                                    <ImageView fx:id="seatMap_Image" fitHeight="1008.0" fitWidth="900.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="seatMap_Image" fitHeight="897.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@assets/MainHall_Default.png" />
                                        </image>

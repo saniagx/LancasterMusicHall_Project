@@ -87,6 +87,17 @@ public class AddEvent {
         chooseListComboBox.getItems().setAll(List.of("Unavailable Seats", "Restricted Views"));
         chooseListComboBox.getSelectionModel().selectFirst();
 
+        layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
+            String selectedVenue = venueComboBox .getSelectionModel().getSelectedItem();
+            if (selectedVenue != null && newLayoutValue != null) {
+                if (selectedVenue.equals("Main Hall")) {
+                    handleMainHallLayout(newLayoutValue);
+                } else if (selectedVenue.equals("Small Hall")) {
+                    handleSmallHallLayout(newLayoutValue);
+                }
+            }
+        });
+
         // Venue combo box listener
         venueComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -109,18 +120,15 @@ public class AddEvent {
                 // Layout handler
                 layoutComboBox.setVisible(isMeetingRoom || isHall);
                 tablesComboBox.setVisible(false);
+
                 if (isMeetingRoom) {
                     layoutComboBox.getItems().setAll(meeting_Layouts);
                 } else if (newValue.equals("Main Hall")) {
                     layoutComboBox.getItems().setAll(mainHall_Layouts);
-                    layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
-                        handleMainHallLayout(newLayoutValue);
-                    });
+                    layoutComboBox.getSelectionModel().selectFirst();
                 } else if (newValue.equals("Small Hall")) {
                     layoutComboBox.getItems().setAll(smallHall_Layouts);
-                    layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
-                        handleSmallHallLayout(newLayoutValue);
-                    });
+                    layoutComboBox.getSelectionModel().selectFirst();
                 } else {
                     layoutComboBox.setVisible(false);
                 }
@@ -313,7 +321,6 @@ public class AddEvent {
                         break;
                     default:
                         seatCount = 0;
-                        System.err.println("Invalid row id: " + id);
                         break;
                 }
                 // Generate seat numbers and add to the CheckComboBox
@@ -340,7 +347,6 @@ public class AddEvent {
                         break;
                     default:
                         seatCount = 0;
-                        System.err.println("Invalid row id: " + id);
                         break;
                 }
                 // Generate seat numbers and add to the CheckComboBox
@@ -370,18 +376,23 @@ public class AddEvent {
             // Add logic to set venue seating layout
             case "Default":
                 seatMap_Image.setImage(mainHall_default);
-
+                seatMap_Image.setFitWidth(800);
+                seatMap_Image.setFitHeight(897);
                 break;
             case "No Balconies":
                 seatMap_Image.setImage(mainHall_noBalconies);
+                seatMap_Image.setFitWidth(600);
+                seatMap_Image.setFitHeight(760);
                 // Disable all balconies
                 RowAA_CheckComboBox.setDisable(true);
                 RowBB_CheckComboBox.setDisable(true);
                 RowCC_CheckComboBox.setDisable(true);
                 break;
             case "Empty":
-                // Disable all rows
                 seatMap_Image.setImage(mainHall_empty);
+                seatMap_Image.setFitWidth(600);
+                seatMap_Image.setFitHeight(760);
+                // Disable all rows
                 for (CheckComboBox checkComboBox : rows) {
                     checkComboBox.setDisable(true);
                 }
@@ -389,7 +400,10 @@ public class AddEvent {
                 break;
             case "Dinner":
                 seatMap_Image.setImage(mainHall_dinner1);
+                seatMap_Image.setFitWidth(600);
+                seatMap_Image.setFitHeight(760);
                 tablesComboBox.setVisible(true);
+                // Disable all rows
                 for (CheckComboBox checkComboBox : rows) {
                     checkComboBox.setDisable(true);
                 }
@@ -416,6 +430,8 @@ public class AddEvent {
         enableListManagement();
         ClearRestrictedViews();
         ClearUnavailableSeats();
+        seatMap_Image.setFitWidth(514);
+        seatMap_Image.setFitHeight(771);
         switch (layout) {
             case "Default":
                 seatMap_Image.setImage(smallHall_default);
