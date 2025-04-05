@@ -76,10 +76,10 @@ public class DailySheet {
     public DailySheet() {}
 
     @FXML private void initialize() throws Exception {
-        date = LocalDateTime.now(); // TEMPORARY - THIS SHOULD BE SET TO THE DATE SELECTED ON THE CALENDAR
+        date = LocalDateTime.now();
         disableByDefault();
         meetingRoom_pane.setVisible(false);
-        events = getEvents();
+        events = DatabaseConnection.getEventsForDailySheet(date);
         initialiseEvents();
     }
 
@@ -99,52 +99,6 @@ public class DailySheet {
         poeParlor_button.setDisable(true);
         globeRoom_button.setDisable(true);
         chekhovChamber_button.setDisable(true);
-    }
-
-    // Fetches all events for specific day
-    public ArrayList<Event> getEvents() {
-        ArrayList<Event> events = new ArrayList<>();
-
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            if (conn == null) {
-                return events;
-            }
-            String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.price, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name " +
-                    "FROM Events e " +
-                    "JOIN Clients c ON e.client_id = c.client_id " +
-                    "JOIN Venues v ON e.venue_id = v.venue_id " +
-                    "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
-            PreparedStatement eventStmt = conn.prepareStatement(eventQuery);
-            eventStmt.setString(1, date.toLocalDate().toString()); // Set day for query to given day
-            eventStmt.setString(2, date.toLocalDate().toString());
-            ResultSet eventRs = eventStmt.executeQuery();
-
-            // Create event objects and add to array
-            while (eventRs.next()) {
-                int bookingID = eventRs.getInt("booking_id");
-                int eventID = eventRs.getInt("event_id");
-                String name = eventRs.getString("name");
-                String type = eventRs.getString("type");
-                String client = eventRs.getString("client_name");
-                LocalDateTime start = eventRs.getTimestamp("start").toLocalDateTime();
-                LocalDateTime end = eventRs.getTimestamp("end").toLocalDateTime();
-                BigDecimal price = BigDecimal.valueOf(eventRs.getDouble("price"));
-                double max_discount = Double.parseDouble(eventRs.getString("max_discount"));
-                int venueID = eventRs.getInt("venue_id");
-                String venueName = eventRs.getString("venue_name");
-
-                Event event = new Event(bookingID, eventID, name, type, client, start, end, price, max_discount, venueID, venueName, null);
-                events.add(event);
-            }
-
-            eventRs.close();
-            eventStmt.close();
-        } catch (SQLException e) {
-            System.out.println("Failed to fetch events from database" + e.getMessage());
-            return events;
-        }
-        return events;
     }
 
     // Iterates through events and fills in information for each venue

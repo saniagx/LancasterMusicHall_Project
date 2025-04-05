@@ -32,6 +32,9 @@ public interface IEvent {
     BigDecimal getEventPrice();
     void setEventPrice(BigDecimal eventPrice);
 
+    BigDecimal getTicketPrice();
+    void setTicketPrice(BigDecimal ticketPrice);
+
     double getMaxDiscount();
     void setMaxDiscount(double maxDiscount);
 

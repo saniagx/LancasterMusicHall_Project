@@ -5,6 +5,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.controlsfx.control.CheckComboBox;
 
@@ -21,11 +22,15 @@ public class AddEvent {
     @FXML private TextField eventNameField;
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
-    @FXML private TextField startTimeField;
-    @FXML private TextField endTimeField;
+    @FXML private TextField startTime_HourField;
+    @FXML private TextField startTime_MinuteField;
+    @FXML private TextField endTime_HourField;
+    @FXML private TextField endTime_MinuteField;
     @FXML private Text ticketPriceText;
+    @FXML private HBox ticketPriceHBox;
     @FXML private TextField ticketPriceField;
-    @FXML private Text maxDIscountText;
+    @FXML private Text maxDiscountText;
+    @FXML private HBox maxDiscountHBox;
     @FXML private TextField maxDiscountField;
     @FXML private ComboBox<String> venueComboBox;
 
@@ -97,9 +102,9 @@ public class AddEvent {
                 // Show/hide ticket price and discount fields for Main Hall or Small Hall only
                 boolean isHall = newValue.equals("Main Hall") || newValue.equals("Small Hall");
                 ticketPriceText.setVisible(isHall);
-                ticketPriceField.setVisible(isHall);
-                maxDIscountText.setVisible(isHall);
-                maxDiscountField.setVisible(isHall);
+                ticketPriceHBox.setVisible(isHall);
+                maxDiscountText.setVisible(isHall);
+                maxDiscountHBox.setVisible(isHall);
             }
         });
     }
@@ -109,18 +114,18 @@ public class AddEvent {
             String name = eventNameField.getText();
             LocalDate startDate = startDatePicker.getValue();
             LocalDate endDate = endDatePicker.getValue();
-            LocalTime startTime = LocalTime.parse(startTimeField.getText());
-            LocalTime endTime = LocalTime.parse(endTimeField.getText());
+            LocalTime startTime = LocalTime.of(Integer.parseInt(startTime_HourField.getText()), Integer.parseInt(startTime_MinuteField.getText()));
+            LocalTime endTime = LocalTime.of(Integer.parseInt(endTime_HourField.getText()), Integer.parseInt(endTime_MinuteField.getText()));
             String venueName = venueComboBox.getSelectionModel().getSelectedItem();
             int venueID = venueNametoID.get(venueName);
 
-            BigDecimal price;
+            BigDecimal ticketPrice;
             double maxDiscount;
             if (venueName.equals("Main Hall") || venueName.equals("Small Hall")) {
-                price = new BigDecimal(ticketPriceField.getText());
+                ticketPrice = new BigDecimal(ticketPriceField.getText());
                 maxDiscount = Double.parseDouble(maxDiscountField.getText());
             } else {
-                price = BigDecimal.ZERO;
+                ticketPrice = BigDecimal.ZERO;
                 maxDiscount = 0.0;
             }
 
@@ -132,7 +137,8 @@ public class AddEvent {
                     "temp",
                     LocalDateTime.of(startDate, startTime),
                     LocalDateTime.of(endDate, endTime),
-                    price,
+                    calculateCost(),
+                    ticketPrice,
                     maxDiscount,
                     venueID,
                     venueName,
@@ -140,12 +146,11 @@ public class AddEvent {
             );
 
             // Add to calendar instance
-            // MODIFY THIS TO ADD TO BOOKING OVERVIEW INSTEAD
-            //Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
-            //if (calendarController != null) {
-                //calendarController.addEvent(newEvent);
-                //calendarController.refreshCalendar();
-            //}
+            BookingOverview bookingOverviewController = (BookingOverview) ScreenController.getController("BookingOverview");
+            if (bookingOverviewController != null) {
+                bookingOverviewController.addEventToList(newEvent);
+                bookingOverviewController.refresh();
+            }
 
             ScreenController.loadScreen("BookingOverview");
 
@@ -174,6 +179,11 @@ public class AddEvent {
         }
     }
 
+    // To be completed, Use Lancaster's Music Hall's rate card
+    private BigDecimal calculateCost() {
+        return BigDecimal.ZERO;
+    }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(null);
@@ -194,10 +204,10 @@ public class AddEvent {
         globeRoom_ComboBox.setDisable(true);
         chekhovChamber_ComboBox.setDisable(true);
         // Hide ticket price and max discount rows
-        ticketPriceField.setVisible(false);
+        ticketPriceHBox.setVisible(false);
         ticketPriceText.setVisible(false);
-        maxDiscountField.setVisible(false);
-        maxDIscountText.setVisible(false);
+        maxDiscountHBox.setVisible(false);
+        maxDiscountText.setVisible(false);
     }
 
     public void BackButton() { ScreenController.loadScreen("BookingOverview"); }

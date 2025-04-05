@@ -12,10 +12,6 @@ public class MainMenu {
         ScreenController.loadScreen("UsageChart");
     }
 
-    public void Diary() {
-        ScreenController.loadScreen("Diary");
-    }
-
     public void Logout() {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");

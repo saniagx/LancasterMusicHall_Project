@@ -15,6 +15,7 @@ public class Event implements IEvent {
     private LocalDateTime eventStart;
     private LocalDateTime eventEnd;
     private BigDecimal eventPrice;
+    private BigDecimal ticketPrice;
     private double maxDiscount;
     private int venueID;
     private String venueName;
@@ -22,7 +23,7 @@ public class Event implements IEvent {
     private int seatingConfigID;
 
     public Event(int bookingID, int eventID, String eventName, String eventType, String eventHost, LocalDateTime eventStart,
-                 LocalDateTime eventEnd, BigDecimal eventPrice, double maxDiscount, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
+                 LocalDateTime eventEnd, BigDecimal eventPrice, BigDecimal ticketPrice, double maxDiscount, int venueID, String venueName, Map<LocalDate, Integer> dailyTicketSales) {
         this.bookingID = bookingID;
         this.eventID = eventID;
         this.eventName = eventName;
@@ -31,6 +32,7 @@ public class Event implements IEvent {
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
         this.eventPrice = eventPrice;
+        this.ticketPrice = ticketPrice;
         this.maxDiscount = maxDiscount;
         this.venueID = venueID;
         this.venueName = venueName;
@@ -80,6 +82,11 @@ public class Event implements IEvent {
     public BigDecimal getEventPrice() { return this.eventPrice; }
     @Override
     public void setEventPrice(BigDecimal eventPrice) { this.eventPrice = eventPrice; }
+
+    @Override
+    public BigDecimal getTicketPrice() { return this.ticketPrice; }
+    @Override
+    public void setTicketPrice(BigDecimal ticketPrice) { this.ticketPrice = ticketPrice; }
 
     @Override
     public double getMaxDiscount() { return this.maxDiscount; }
