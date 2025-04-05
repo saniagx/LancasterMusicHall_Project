@@ -33,7 +33,7 @@ public class Calendar implements ICalendar {
 
     public void NewBooking() { ScreenController.loadScreen("NewBooking"); }
 
-    public void ViewBookings() {};
+    public void ViewBookings() { ScreenController.loadScreen("BookingsOverview"); }
 
     @FXML
     private void goToPreviousMonth() {

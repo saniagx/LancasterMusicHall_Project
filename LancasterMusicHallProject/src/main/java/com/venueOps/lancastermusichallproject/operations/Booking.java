@@ -8,21 +8,35 @@ public class Booking {
     private int bookingID;
     private List<IEvent> events;
     private Client client;
-    private LocalDate signed_date;
-    private BigDecimal total_price;
-    private LocalDate start_date;
-    private LocalDate end_date;
-    private String status; // Confirmed - Cancelled - Completed
+    private LocalDate signedDate;
+    private BigDecimal totalPrice;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String status;
 
-    public Booking(List<IEvent> events,Client client, LocalDate signed_date, BigDecimal total_price,
+    // Constructor for storing in database
+    public Booking(List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
         this.bookingID = 0; // Placeholder until Database assigns it
         this.events = events;
         this.client = client;
-        this.signed_date = signed_date;
-        this.total_price = total_price;
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.signedDate = signed_date;
+        this.totalPrice = total_price;
+        this.startDate = start_date;
+        this.endDate = end_date;
+        this.status = status;
+    }
+
+    // Constructor for fetching from database
+    public Booking(int bookingID, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
+                   LocalDate start_date, LocalDate end_date, String status) {
+        this.bookingID = bookingID;
+        this.events = events;
+        this.client = client;
+        this.signedDate = signed_date;
+        this.totalPrice = total_price;
+        this.startDate = start_date;
+        this.endDate = end_date;
         this.status = status;
     }
 
@@ -41,18 +55,19 @@ public class Booking {
     public Client getClient() {return client;}
     public void setClient(Client client) {this.client = client;}
 
-    public LocalDate getSignedDate() {return signed_date;}
-    public void setSignedDate(LocalDate signed_date) {this.signed_date = signed_date;}
+    public LocalDate getSignedDate() {return signedDate;}
+    public void setSignedDate(LocalDate signed_date) {this.signedDate = signed_date;}
 
-    public BigDecimal getTotalPrice() {return total_price;}
-    public void setTotalPrice(BigDecimal total_price) {this.total_price = total_price;}
+    public BigDecimal getTotalPrice() {return totalPrice;}
+    public void setTotalPrice(BigDecimal total_price) {this.totalPrice = total_price;}
 
-    public LocalDate getStartDate() {return start_date;}
-    public void setStartDate(LocalDate start_date) {this.start_date = start_date;}
+    public LocalDate getStartDate() {return startDate;}
+    public void setStartDate(LocalDate start_date) {this.startDate = start_date;}
 
-    public LocalDate getEndDate() {return end_date;}
-    public void setEnd_date(LocalDate end_date) {this.end_date = end_date;}
+    public LocalDate getEndDate() {return endDate;}
+    public void setEnd_date(LocalDate end_date) {this.endDate = end_date;}
 
     public String getStatus() {return status;}
     public void setStatus(String status) {this.status = status;}
+
 }

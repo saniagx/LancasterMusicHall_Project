@@ -85,7 +85,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <Button layoutX="855.0" layoutY="189.0" onAction="#BackButton" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="View Bookings" textFill="WHITE">
+            <Button layoutX="855.0" layoutY="189.0" onAction="#ViewBookings" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="View Bookings" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

@@ -413,6 +413,73 @@ public class DatabaseConnection {
         }
     }
 
+    public static List<Booking> getBookings() {
+        List<Booking> bookings = new ArrayList<>();
+        String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date " +
+                "FROM Bookings b " +
+                "JOIN Contracts ct ON b.contract_id = ct.contract_id " +
+                "JOIN Clients cl ON ct.client_id = cl.client_id";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            if (conn == null) {
+                return bookings;
+            }
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery(); {
+                while (rs.next()) {
+                    int bookingID = rs.getInt("booking_id");
+                    String companyName = rs.getString("company_name");
+                    String contact_FName = rs.getString("contact_first_name");
+                    String contact_LName = rs.getString("contact_last_name");
+                    String email = rs.getString("email");
+                    String phoneNumber = rs.getString("phone_number");
+                    LocalDate signedDate = rs.getDate("signed_date").toLocalDate();
+                    LocalDate startDate = rs.getDate("start_date").toLocalDate();
+                    LocalDate endDate = rs.getDate("end_date").toLocalDate();
+
+                    List<IEvent> events = getEventsForBooking(conn, bookingID);
+                    Client client = new Client(0, companyName, contact_FName, contact_LName, email, phoneNumber, null, null, null);
+
+                    Booking booking = new Booking(bookingID, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, null);
+                    bookings.add(booking);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Failed to get bookings: " + e.getMessage());
+        }
+        return bookings;
+    }
+
+    private static List<IEvent> getEventsForBooking(Connection conn, int bookingID) throws SQLException {
+        List<IEvent> events = new ArrayList<>();
+        String eventsQuery = "SELECT e.name, e.type, e.start, e.end, e.ticket_price, e.max_discount, e.venue_id, v.name AS venue_name " +
+                "FROM Events e " +
+                "JOIN Venues v ON e.venue_id = v.venue_id " +
+                "WHERE e.booking_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(eventsQuery)) {
+            stmt.setInt(1, bookingID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String name = rs.getString("name");
+                String type = rs.getString("type");
+                LocalDateTime start = rs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime end = rs.getTimestamp("end").toLocalDateTime();
+                BigDecimal ticketPrice = rs.getBigDecimal("ticket_price");
+                double maxDiscount = rs.getDouble("max_discount");
+                int venueID = rs.getInt("venue_id");
+                String venueName = rs.getString("venue_name");
+
+                Event event = new Event(bookingID, 0, name, type, null, start, end,
+                        BigDecimal.ZERO, ticketPrice, maxDiscount, venueID, venueName, null, null);
+                events.add(event);
+            }
+        }
+        return events;
+    }
+
+
     // Helper class to pass Client info to be stored in the Event table
     public static class ClientInfo {
         private int clientID;
