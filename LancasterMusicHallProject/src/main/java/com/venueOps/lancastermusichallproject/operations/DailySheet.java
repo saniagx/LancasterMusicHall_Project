@@ -79,7 +79,7 @@ public class DailySheet {
         date = LocalDateTime.now();
         disableByDefault();
         meetingRoom_pane.setVisible(false);
-        events = DatabaseConnection.getEventsForDailySheet(date);
+        Refresh();
         initialiseEvents();
     }
 
@@ -151,6 +151,7 @@ public class DailySheet {
     }
 
     public void BackButton() {
+        CloseMeetingPane();
         ScreenController.loadScreen("MainMenu");
     }
 
@@ -348,5 +349,9 @@ public class DailySheet {
         gridPane.add(seatingField, 1, 3);
 
         return gridPane;
+    }
+
+    public void Refresh() {
+        events = DatabaseConnection.getEventsForDailySheet(date);
     }
 }

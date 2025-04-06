@@ -1,6 +1,8 @@
 package com.venueOps.lancastermusichallproject;
 
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
+import com.venueOps.lancastermusichallproject.operations.DailySheet;
+import com.venueOps.lancastermusichallproject.operations.UsageChart;
 
 public class MainMenu {
 
@@ -9,6 +11,10 @@ public class MainMenu {
     public void Calendar() { ScreenController.loadScreen("Calendar"); }
 
     public void UsageChart() {
+        UsageChart usageChartController = (UsageChart) ScreenController.getController("UsageChart");
+        if (usageChartController != null) {
+            usageChartController.Refresh();
+        }
         ScreenController.loadScreen("UsageChart");
     }
 
@@ -19,12 +25,17 @@ public class MainMenu {
         ScreenController.loadScreen("Contracts");
     }
 
-    public void Logout() {
+    public void DailySheet () {
+        DailySheet dailySheetController = (DailySheet) ScreenController.getController("DailySheet");
+        if (dailySheetController != null) {
+            dailySheetController.Refresh();
+        }
+        ScreenController.loadScreen("DailySheet");
+    }
+
+    public void Logout () {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");
     }
 
-    public void DailySheet() {
-        ScreenController.loadScreen("DailySheet");
-    }
 }

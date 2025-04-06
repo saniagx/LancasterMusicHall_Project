@@ -1,6 +1,7 @@
 package com.venueOps.lancastermusichallproject;
 
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -66,11 +67,13 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Contracts", contractsLoader.load(), contractsLoader);
         FXMLLoader bookingOverviewLoader = new FXMLLoader(getClass().getResource("bookingOverview.fxml"));
         sc.addScreen("BookingOverview", bookingOverviewLoader.load(), bookingOverviewLoader);
+        FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
+        sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
+
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
         sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
     }
-
 }
