@@ -40,6 +40,21 @@ public class Invoices {
     //Attribute to view the invoice, only visible when a corresponding event exists
     @FXML Button viewInvoice;
 
+    //Attributes to view details on the Invoice Page
+    @FXML Label bookingName;
+
+    @FXML Label invoiceID;
+    @FXML Label dateIssued;
+    @FXML Label dueDate;
+
+    @FXML Label billingName;
+    @FXML Label billingAddress;
+    @FXML Label billingEmail;
+
+    @FXML Label totalPrice;
+
+    @FXML Button exportPDF;
+
     //Holds the events
     private ArrayList<IEvent> events;
 
@@ -74,6 +89,10 @@ public class Invoices {
     }
 
     public void BackButton() {
+        ScreenController.loadScreen("MainMenu");
+    }
+
+    public void exportPDF() {
         ScreenController.loadScreen("MainMenu");
     }
 
