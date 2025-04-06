@@ -513,6 +513,72 @@ public class DatabaseConnection {
         return events;
     }
 
+    public static List<VenueTable> getVenuesForInvoice(int bookingId) {
+        List<VenueTable> venueList = new ArrayList<>();
+        String sql = """
+        SELECT v.name AS venue_name, e.price AS venue_price
+        FROM Events e
+        JOIN Venues v ON e.venue_id = v.venue_id
+        WHERE e.booking_id = ?
+    """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookingId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String venueName = rs.getString("venue_name");
+                BigDecimal price = rs.getBigDecimal("venue_price");
+                venueList.add(new VenueTable(venueName, price));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching venues for invoice: " + e.getMessage());
+        }
+
+        return venueList;
+    }
+
+    public static Client getClientDetailsByBookingId(int bookingId) {
+        Client client = null;
+        String sql = """
+        SELECT c.client_id, c.company_name, c.contact_first_name, c.contact_last_name,
+               c.email, c.phone_number, binfo.address, binfo.city, binfo.postcode
+        FROM Bookings b
+        JOIN Contracts ct ON b.contract_id = ct.contract_id
+        JOIN Clients c ON ct.client_id = c.client_id
+        JOIN Billing_Info binfo ON c.client_id = binfo.client_id
+        WHERE b.booking_id = ?
+    """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, bookingId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                client = new Client(
+                        rs.getInt("client_id"),
+                        rs.getString("company_name"),
+                        rs.getString("contact_first_name"),
+                        rs.getString("contact_last_name"),
+                        rs.getString("email"),
+                        rs.getString("phone_number"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("postcode")
+                );
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Error fetching client by booking ID: " + e.getMessage());
+        }
+
+        return client;
+    }
+
     public static List<InvoiceInfo> getInvoices() {
         List<InvoiceInfo> invoices = new ArrayList<>();
 
