@@ -61,6 +61,12 @@ public class Invoices {
             Button button = new Button("View");
             button.setOnAction(e -> {
                 AppData.setSelectedInvoice(cellData.getValue());
+                // Load screen and call refresh method
+                InvoicePage controller = (InvoicePage) ScreenController.getController("InvoicePage");
+                if (controller != null) {
+                    controller.Refresh();
+                }
+
                 ScreenController.loadScreen("InvoicePage");
             });
             return new SimpleObjectProperty<>(button);

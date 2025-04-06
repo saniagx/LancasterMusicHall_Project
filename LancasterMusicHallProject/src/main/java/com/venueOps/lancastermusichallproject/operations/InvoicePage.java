@@ -9,6 +9,8 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.venueOps.lancastermusichallproject.ScreenController;
+import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -20,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class InvoicePage {
     @FXML private Label bookingName;
@@ -39,6 +42,11 @@ public class InvoicePage {
     private void initialize() {
         venueColumn.setCellValueFactory(new PropertyValueFactory<>("venueName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        InvoiceInfo invoice = AppData.getSelectedInvoice();
+        if (invoice != null) {
+            loadInvoiceDetails(invoice); // load details
+        }
     }
 
     @FXML
@@ -58,9 +66,16 @@ public class InvoicePage {
                 folder.mkdirs();
             }
 
-
             // set PDF dest
-            String dest = folderPath + "/Invoice_" + invoiceID.getText() + ".pdf";
+            int counter = 1;
+            String baseName = "Invoice_" + invoiceID.getText();
+            String dest = folderPath + "/" + baseName + ".pdf";
+            java.io.File file = new java.io.File(dest);
+
+            while (file.exists()) {
+                dest = folderPath + "/" + baseName + "(" + counter++ + ").pdf";
+                file = new java.io.File(dest);
+            }
 
             // write the pdf
             PdfWriter writer = new PdfWriter(dest);
@@ -99,5 +114,46 @@ public class InvoicePage {
             e.printStackTrace();
         }
     }
+
+    public void Refresh() {
+        InvoiceInfo invoice = AppData.getSelectedInvoice();
+        if (invoice == null) return;
+
+        bookingName.setText(invoice.getEventNames());
+        invoiceID.setText(String.valueOf(invoice.getInvoiceId()));
+        dateIssued.setText(invoice.getIssueDate().toString());
+        dueDate.setText(invoice.getDueDate().toString());
+        billingName.setText(invoice.getClientName());
+
+        // fetch billing info
+        Client client = DatabaseConnection.getClientDetailsByBookingId(invoice.getBookingId());
+        if (client != null) {
+            billingAddress.setText(client.getAddress() + ", " + client.getCity() + ", " + client.getPostcode());
+            billingEmail.setText(client.getEmail());
+        }
+
+        // total price
+        totalPrice.setText("£" + invoice.getTotalPrice().toPlainString());
+
+        // fetch venue list
+        List<VenueTable> venueList = DatabaseConnection.getVenuesForInvoice(invoice.getBookingId());
+        venueTable.getItems().setAll(venueList);
+    }
+
+    public void loadInvoiceDetails(InvoiceInfo invoice) {
+        // Set details
+        invoiceID.setText(String.valueOf(invoice.getInvoiceId()));
+        bookingName.setText("(Booking Name Here)");
+        dateIssued.setText(invoice.getIssueDate().toString());
+        dueDate.setText(invoice.getDueDate().toString());
+        billingName.setText(invoice.getClientName());
+
+
+        // fetch venues from DB based on invoice's bookingId
+        List<VenueTable> venues = DatabaseConnection.getVenuesForInvoice(invoice.getBookingId());
+        venueTable.setItems(FXCollections.observableArrayList(venues));
+    }
+
+
 
 }
