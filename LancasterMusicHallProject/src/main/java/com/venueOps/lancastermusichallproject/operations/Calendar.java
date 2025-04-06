@@ -126,7 +126,7 @@ public class Calendar implements ICalendar {
                 preview.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n\n");
             }
 
-            diaryPreviewArea.setText(preview.isEmpty() ? "No notes yet." : preview.toString());
+            diaryPreviewArea.setText(preview.isEmpty() ? "No notes found" : preview.toString());
         }
     }
 
