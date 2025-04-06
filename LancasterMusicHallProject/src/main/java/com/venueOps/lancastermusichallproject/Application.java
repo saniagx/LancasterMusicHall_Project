@@ -65,11 +65,10 @@ public class Application extends javafx.application.Application {
         sc.addScreen("UsageChart", usageChartLoader.load(), usageChartLoader);
         FXMLLoader contractsLoader = new FXMLLoader(getClass().getResource("contracts.fxml"));
         sc.addScreen("Contracts", contractsLoader.load(), contractsLoader);
-        FXMLLoader bookingOverviewLoader = new FXMLLoader(getClass().getResource("bookingOverview.fxml"));
-        sc.addScreen("BookingOverview", bookingOverviewLoader.load(), bookingOverviewLoader);
+        FXMLLoader bookingsOverviewLoader = new FXMLLoader(getClass().getResource("bookingsOverview.fxml"));
+        sc.addScreen("BookingsOverview", bookingsOverviewLoader.load(), bookingsOverviewLoader);
         FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
         sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
-
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
