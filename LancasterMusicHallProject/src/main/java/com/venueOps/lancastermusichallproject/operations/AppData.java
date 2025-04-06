@@ -5,7 +5,9 @@ import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppData {
     private static final List<String> VENUES = List.of("Main Hall", "Small Hall", "Rehearsal Space", "The Green Room",
@@ -13,6 +15,7 @@ public class AppData {
     private static LocalDate selectedDate;
     private static ObservableList<String> companyNames = FXCollections.observableArrayList();
     private static List<IEvent> currentBookingEvents = new ArrayList<>();
+    private static final Map<String, String> notesMap = new HashMap<>();
 
     public static List<String> getVenues() { return VENUES; }
 
@@ -50,5 +53,21 @@ public class AppData {
 
     public static void clearCurrentBookingEvents() {
         AppData.currentBookingEvents.clear();
+    }
+
+    public static Map<String, String> getAllNotes() {
+        return notesMap;
+    }
+
+    public static String getNote(String dateKey) {
+        return notesMap.get(dateKey);
+    }
+
+    public static void saveNote(String dateKey, String noteText) {
+        notesMap.put(dateKey, noteText);
+    }
+
+    public static void deleteNote(String dateKey) {
+        notesMap.remove(dateKey);
     }
 }

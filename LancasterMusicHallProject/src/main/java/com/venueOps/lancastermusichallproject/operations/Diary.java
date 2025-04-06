@@ -15,15 +15,8 @@ public class Diary {
     @FXML private Label dateLabel;
 
     @FXML
-    private DatePicker datePicker;
-
-    @FXML
     private TextArea noteTextArea;
 
-    @FXML
-    private ListView<String> notesListView;
-
-    private final Map<String, String> notesMap = new HashMap<>(); // store notes by date
     private LocalDate date;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
@@ -42,7 +35,7 @@ public class Diary {
 
     // Add a new note
     public void addNote() {
-        LocalDate selectedDate = datePicker.getValue();
+        LocalDate selectedDate = AppData.getSelectedDate();
         String noteText = noteTextArea.getText().trim();
 
         if (selectedDate == null) {
@@ -56,25 +49,43 @@ public class Diary {
         }
 
         String dateKey = selectedDate.toString();
-        notesMap.put(dateKey, noteText);
+        AppData.saveNote(dateKey, noteText);
 
-        notesListView.getItems().add(dateKey + ": " + noteText); // Display note
-        noteTextArea.clear(); // Clear input field
+        ScreenController.loadScreen("Calendar");
+
+        //refresh
+        Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+        if (calendarController != null) {
+            calendarController.refreshCalendar();
+        }
     }
 
     // Delete a note
     public void deleteNote() {
-        String selectedNote = notesListView.getSelectionModel().getSelectedItem();
+        LocalDate selectedDate = AppData.getSelectedDate();
 
-        if (selectedNote == null) {
-            Alert("Error", "Please select a note to delete");
+        if (selectedDate == null) {
+            Alert("Error", "No date selected");
             return;
         }
 
-        String dateKey = selectedNote.split(":")[0];
-        notesMap.remove(dateKey);
+        String dateKey = selectedDate.toString();
+        String existingNote = AppData.getNote(dateKey);
 
-        notesListView.getItems().remove(selectedNote); // Remove date from list
+        if (existingNote == null) {
+            Alert("Error", "No note exists for this date");
+            return;
+        }
+
+        AppData.deleteNote(dateKey);
+        noteTextArea.clear();
+
+        ScreenController.loadScreen("Calendar");
+        //refresh
+        Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+        if (calendarController != null) {
+            calendarController.refreshCalendar();
+        }
     }
 
     // Show alerts for errors (e.g. no date selected, empty note, no note selected to delete, etc.)
@@ -83,31 +94,6 @@ public class Diary {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    public void viewNote() {
-        String selectedNote = notesListView.getSelectionModel().getSelectedItem();
-
-        if (selectedNote == null) {
-            Alert("Error", "Please select a note to view");
-            return;
-        }
-
-        String dateKey = selectedNote.split(":")[0].trim();
-        String noteText = notesMap.get(dateKey);
-
-        if (noteText == null) {
-            Alert("Error", "No note found for this date");
-            return;
-        }
-
-        // Create a popup to display the note
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("View Note");
-        alert.setHeaderText("Note for " + dateKey);
-        alert.setContentText(noteText);
-        alert.getButtonTypes().setAll(ButtonType.CLOSE);
         alert.showAndWait();
     }
 
