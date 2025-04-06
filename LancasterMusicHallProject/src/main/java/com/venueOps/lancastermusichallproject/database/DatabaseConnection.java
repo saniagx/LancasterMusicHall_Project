@@ -535,9 +535,14 @@ public class DatabaseConnection {
         GROUP BY i.invoice_id;
         """;
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try {
+            Connection conn = getConnection();
+            if (conn == null) {
+                return invoices;
+            }
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 InvoiceInfo invoice = new InvoiceInfo(
