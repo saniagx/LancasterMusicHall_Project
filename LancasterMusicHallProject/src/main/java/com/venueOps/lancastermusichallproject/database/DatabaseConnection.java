@@ -562,6 +562,48 @@ public class DatabaseConnection {
         return invoices;
     }
 
+    public static List<ContractInfo> getContracts() {
+        List<ContractInfo> contracts = new ArrayList<>();
+
+        String sql = "SELECT b.booking_id, b.booking_name, b.start_date, b.end_date, ct.total_price, b.status, cl.company_name, CONCAT(cl.contact_first_name, '', cl.contact_last_name) AS client_name, cl.phone_number, cl.email"
+        + "FROM Bookings b " + "JOIN Contracts ct ON b.contract_id = ct.contract.id "
+        + "JOIN Clients cl ON ct.client_id = cl.client_id " + "WHERE b.status='confirmed'";
+
+
+        try {
+            Connection conn = getConnection();
+            if (conn == null) {
+                return contracts;
+            }
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ContractInfo contract = new ContractInfo(
+                        rs.getInt("bookingID"),
+                        rs.getString("bookingName"),
+                        rs.getInt("contractID"),
+                        rs.getInt("clientID"),
+                        rs.getDate("signedDate").toLocalDate(),
+                        rs.getBigDecimal("total_price"),
+                        rs.getString("status"),
+                        rs.getString("companyName"),
+                        rs.getString("clientName"),
+                                rs.getString("clientTelephone"),
+                                rs.getString("clientEmail")
+                );
+                contracts.add(contract);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return contracts;
+    }
+
+
     public static void updateBookingStatus(int bookingID, String newStatus) throws SQLException {
         String updateQuery = "UPDATE Bookings SET status = ? WHERE booking_id = ?";
         try (Connection conn = getConnection();
