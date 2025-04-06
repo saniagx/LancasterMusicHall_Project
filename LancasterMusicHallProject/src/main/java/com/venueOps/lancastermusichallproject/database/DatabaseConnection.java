@@ -240,7 +240,7 @@ public class DatabaseConnection {
                         rs.getString("postcode")
                 );
             }
-        } catch  (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Failed to fetch client details for " + companyName + " from database" + e.getMessage());
             return null;
         }
@@ -422,6 +422,7 @@ public class DatabaseConnection {
         }
     }
 
+
     public static List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date, b.status " +
@@ -434,7 +435,8 @@ public class DatabaseConnection {
                 return bookings;
             }
             PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery(); {
+            ResultSet rs = stmt.executeQuery();
+            {
                 LocalDate today = LocalDate.now();
                 while (rs.next()) {
                     int bookingID = rs.getInt("booking_id");
@@ -517,7 +519,87 @@ public class DatabaseConnection {
             this.companyName = companyName;
         }
 
-        public int getClientID() { return clientID; }
-        public String getCompanyName() { return companyName; }
+        public int getClientID() {
+            return clientID;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
     }
+
+
+    //get events for the invoice(and contracts) table
+    //without date parameters
+
+    public static ArrayList<Event> getEventsForInvoicesAndContracts() {
+        ArrayList<Event> events = new ArrayList<>();
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            if (conn == null) {
+                return events;
+            }
+            String query = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
+                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.seating_config_id, sc.layout, b.status " +
+                    "FROM Events e " +
+                    "JOIN Clients c ON e.client_id = c.client_id " +
+                    "JOIN Venues v ON e.venue_id = v.venue_id " +
+                    "JOIN Bookings b ON e.booking_id = b.booking_id " +
+                    "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
+                    "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            // Fetch daily ticket sales for each event
+            String salesQuery = "SELECT event_date, tickets_sold FROM DailyTicketSales WHERE event_id = ?";
+            PreparedStatement salesStmt = conn.prepareStatement(salesQuery);
+
+            while (rs.next()) {
+                int bookingID = rs.getInt("booking_id");
+                int eventID = rs.getInt("event_id");
+                String name = rs.getString("name");
+                String type = rs.getString("type");
+                String client = rs.getString("client_name");
+                LocalDateTime startTimestamp = rs.getTimestamp("start").toLocalDateTime();
+                LocalDateTime endTimestamp = rs.getTimestamp("end").toLocalDateTime();
+                double max_discount = Double.parseDouble(rs.getString("max_discount"));
+                int venueID = rs.getInt("venue_id");
+                String venueName = rs.getString("venue_name");
+                int capacity = rs.getInt("capacity");
+                String status = rs.getString("status");
+
+                if (!status.equals("Cancelled")) { // Only show events from bookings that aren't cancelled
+                    // Fetch daily ticket sales for this event
+                    Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
+                    salesStmt.setInt(1, eventID);
+                    ResultSet salesRs = salesStmt.executeQuery();
+                    while (salesRs.next()) {
+                        LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
+                        int ticketsSold = salesRs.getInt("tickets_sold");
+                        dailyTicketSales.put(eventDate, ticketsSold);
+                    }
+                    salesRs.close();
+
+                    // Minimal seating config object just for capacity
+                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
+
+                    Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
+                    events.add(event);
+                }
+            }
+
+            rs.close();
+            stmt.close();
+            salesStmt.close();
+        } catch (SQLException e) {
+            System.out.println("Failed to fetch events for Usage Chart from database" + e.getMessage());
+            return events;
+        }
+        return events;
+        }
+
+
 }
+
+
+

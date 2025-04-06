@@ -24,7 +24,7 @@
             </Button>
             <AnchorPane layoutX="19.0" layoutY="66.0" prefHeight="491.0" prefWidth="975.0">
                <children>
-                  <TableView layoutX="1.0" layoutY="-1.0" prefHeight="489.0" prefWidth="975.0">
+                  <TableView fx:id="invoiceTable" layoutY="-1.0" prefHeight="489.0" prefWidth="975.0">
                     <columns>
                         <TableColumn fx:id="Booking_ID" editable="false" maxWidth="130.0" prefWidth="130.0" text="Booking ID" />
                         <TableColumn fx:id="Event_Name" editable="false" maxWidth="340.0" prefWidth="340.0" text="Event Name" />

@@ -25,10 +25,11 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
+
 //Class to view all the existing Invoices for LMH
 public class Invoices {
 
-    @FXML private TableView<Event> invoiceTable;
+    @FXML private TableView<IEvent> invoiceTable;
     // Attributes for individual fields in the table, to be set based on event data held
 
     @FXML private TableColumn<Event, Integer> Booking_ID;
@@ -39,18 +40,8 @@ public class Invoices {
     //Attribute to view the invoice, only visible when a corresponding event exists
     @FXML Button viewInvoice;
 
-    private LocalDate today;
-    private LocalDate currentMonday;
-    private LocalDate prevMonday;
-    private LocalDate nextMonday;
-    private List<LocalDate> weekStarts;
-
-    //(Sania: My Plan)
-    //The page for invoice always exists. When the button is clicked, the page gets updated
-    //with the corresponding details based on the specific event
-
     //Holds the events
-    private ArrayList<Event> events;
+    private ArrayList<IEvent> events;
 
     //constructor
     public Invoices(){}
@@ -60,37 +51,27 @@ public class Invoices {
     //initialise
     @FXML private void initialize() throws Exception {
 
-        //setting date and time boundaries for number of rows to show
-        today = LocalDate.now();
-        currentMonday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        prevMonday = currentMonday.minusWeeks(1);
-        nextMonday = currentMonday.plusWeeks(1);
-        weekStarts = List.of(prevMonday, currentMonday, nextMonday);
-        //Get Events for Usage Charts also works to get events for the invoices (as we are getting events over a time period)
-        events = DatabaseConnection.getEventsForUsageChart(prevMonday, nextMonday.plusDays(6));
-
+        //we only need these four attributes/columns for events in invoices
         Booking_ID.setCellValueFactory(new PropertyValueFactory<Event, Integer>("Booking ID"));
         Event_Name.setCellValueFactory(new PropertyValueFactory<Event, String>("Event Name"));
         Client_Name.setCellValueFactory(new PropertyValueFactory<Event, String>("Client Name"));
         Invoice.setCellValueFactory(new PropertyValueFactory<Event, Button>("Invoice"));
 
-        //initialiseEvents();
+        //populate the invoice table with all the right data
+        populateInvoiceTable();
+
+        //when the table row button is clicked, the code should open the corresponding page
     }
 
-    //Need to write code to get events for invoices
+    //display the correct invoice based on booking id.
 
 
-//    public void NextWeek() {
-//        changeWeek(1);
-//    }
-//
-//    public void PrevWeek() {
-//        changeWeek(-1);
-//    }
-//    public Event getEvent() {
-//        return event;
-//    }
-
+    //populate the invoice table with events
+    public void populateInvoiceTable() {
+        invoiceTable.getItems().clear();
+        List<Event> events = DatabaseConnection.getEventsForInvoicesAndContracts();
+        invoiceTable.getItems().addAll(events);
+    }
 
     public void BackButton() {
         ScreenController.loadScreen("MainMenu");
