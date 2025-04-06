@@ -13,6 +13,8 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,18 +53,16 @@ public class AddEvent {
             "Globe Room", 7,
             "Chekhov Chamber", 8
     );
-    private List<String> venues = List.of("Main Hall", "Small Hall", "Rehearsal Space", "The Green Room", "Bronte Boardroom",
-            "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");
-    private List<String> halls = venues.subList(0,3);
-    private List<String> meetingRooms = venues.subList(3, venues.size());
+    private List<String> VENUES = AppData.getVenues();
+    private List<String> halls = VENUES.subList(0,3);
+    private List<String> meetingRooms = VENUES.subList(3, VENUES.size());
     private List<String> mainHall_Layouts = List.of("Default", "No Balconies", "Empty", "Dinner");
     private List<String> smallHall_Layouts = List.of("Default", "Dinner");
     private List<String> meeting_Layouts = List.of("Classroom", "Boardroom", "Presentation");
 
     @FXML
     public void initialize() {
-        // Disable certain fields by default
-        disableByDefault();
+        ClearFields();
 
         rows = List.of(RowAA_CheckComboBox, RowBB_CheckComboBox, RowCC_CheckComboBox, RowA_CheckComboBox,
                 RowB_CheckComboBox, RowC_CheckComboBox, RowD_CheckComboBox, RowE_CheckComboBox, RowF_CheckComboBox, RowG_CheckComboBox,
@@ -70,7 +70,7 @@ public class AddEvent {
                 RowN_CheckComboBox, RowO_CheckComboBox, RowP_CheckComboBox);
 
         // Populate with venue options
-        venueComboBox.getItems().setAll(venues);
+        venueComboBox.getItems().setAll(getAvailableVenues());
         // Populate table combo box
         tablesComboBox.getItems().setAll(List.of(1, 2, 3, 4, 5, 6));
 
@@ -83,6 +83,20 @@ public class AddEvent {
         // Populate list selector combo box
         chooseListComboBox.getItems().setAll(List.of("Unavailable Seats", "Restricted Views"));
         chooseListComboBox.getSelectionModel().selectFirst();
+
+        // Listen to date pickers to change which venues are available
+        startDatePicker.getEditor().selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                venueComboBox.getItems().setAll(getAvailableVenues());
+                venueComboBox.getSelectionModel().clearSelection();
+            }
+        });
+        endDatePicker.getEditor().selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                venueComboBox.getItems().setAll(getAvailableVenues());
+                venueComboBox.getSelectionModel().clearSelection();
+            }
+        });
 
         layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
             String selectedVenue = venueComboBox.getSelectionModel().getSelectedItem();
@@ -173,7 +187,7 @@ public class AddEvent {
                     new SeatingConfig(generateSeatingConfigID(), capacity, getLayout(), venueName, restrictedViews)
             );
 
-            // Add to calendar instance
+            // Add to booking instance
             NewBooking newBookingController = (NewBooking) ScreenController.getController("NewBooking");
             if (newBookingController != null) {
                 newBookingController.addEventToList(newEvent);
@@ -284,20 +298,6 @@ public class AddEvent {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private void disableByDefault() {
-        // Disable layout tabs by default
-        SeatingConfig_Tab.setDisable(true);
-        // Hide layout combo box by default
-        layoutComboBox.setVisible(false);
-        // Hide tables combo box by default
-        tablesComboBox.setVisible(false);
-        // Hide ticket price and max discount rows
-        ticketPriceHBox.setVisible(false);
-        ticketPriceText.setVisible(false);
-        maxDiscountHBox.setVisible(false);
-        maxDiscountText.setVisible(false);
     }
 
     public void BackButton() {
@@ -652,10 +652,24 @@ public class AddEvent {
         capacityLabel.setText("Capacity: " + capacity);
     }
 
+    private void disableByDefault() {
+        // Disable layout tabs by default
+        SeatingConfig_Tab.setDisable(true);
+        // Hide layout combo box by default
+        layoutComboBox.setVisible(false);
+        // Hide tables combo box by default
+        tablesComboBox.setVisible(false);
+        // Hide ticket price and max discount rows
+        ticketPriceHBox.setVisible(false);
+        ticketPriceText.setVisible(false);
+        maxDiscountHBox.setVisible(false);
+        maxDiscountText.setVisible(false);
+    }
+
     public void ClearFields() {
         eventNameField.setText("");
-        startDatePicker.getEditor().setText("");
-        endDatePicker.getEditor().setText("");
+        startDatePicker.setValue(LocalDate.now());
+        endDatePicker.setValue(LocalDate.now());
         startTime_HourField.setText("");
         startTime_MinuteField.setText("");
         endTime_HourField.setText("");
@@ -666,5 +680,18 @@ public class AddEvent {
         tablesComboBox.getSelectionModel().clearSelection();
         ticketPriceField.setText("");
         maxDiscountField.setText("");
+    }
+
+    public List<String> getAvailableVenues() {
+        List<String> availableVenues = new ArrayList<>();
+        Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+        for (String venue : VENUES) {
+            if (calendarController != null) {
+                if (calendarController.isVenueAvailable(startDatePicker.getValue().atStartOfDay(), endDatePicker.getValue().atTime(23, 59, 59), venue)) {
+                    availableVenues.add(venue);
+                }
+            }
+        }
+        return availableVenues;
     }
 }

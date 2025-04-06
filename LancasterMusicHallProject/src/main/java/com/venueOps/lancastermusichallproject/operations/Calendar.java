@@ -6,9 +6,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Calendar implements ICalendar {
 
@@ -16,7 +18,7 @@ public class Calendar implements ICalendar {
     @FXML private Label monthYearLabel;
 
     private YearMonth currentYearMonth;
-    private final ArrayList<IEvent> events = new ArrayList<>();
+    private final ArrayList<Booking> bookings = new ArrayList<>();
 
     public Calendar() {
         currentYearMonth = YearMonth.now(); // Start with current month
@@ -65,18 +67,32 @@ public class Calendar implements ICalendar {
             Button dayButton = new Button(String.valueOf(day));
             dayButton.setPrefSize(114, 85);
 
-            // Highlight todays dat
+            // Highlight todays date
             if (currentDate.equals(LocalDate.now())) {
                 dayButton.setStyle("-fx-border-color: #3366FF; -fx-border-width: 2px;");
             }
 
-            // Color if event exists
-            if (!isAvailable(currentDate)) {
-                dayButton.setStyle("-fx-background-color: #FFDAB9;"); // Peach for event day
+            // Color if booking exists
+            int bookedVenues = 0;
+            for (String venue : AppData.getVenues()) {
+                if (!isVenueAvailable(currentDate.atStartOfDay(), currentDate.atTime(23, 59, 59), venue)) {
+                    bookedVenues++;
+                }
             }
 
-            // Click day to view or add event
-            dayButton.setOnAction(e -> openDayPopup(currentDate));
+            if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
+                // Green for good availability
+                dayButton.setStyle("-fx-background-color: #B9FFC2;");
+            } else if (bookedVenues >= AppData.getVenues().size() - 2 && bookedVenues < AppData.getVenues().size()) {
+                // Yellow for limited availability
+                dayButton.setStyle("-fx-background-color: #F0D680;");
+            } else if (bookedVenues == AppData.getVenues().size()) {
+                // Red for no availability
+                dayButton.setStyle("-fx-background-color: #F08080;");
+            }
+
+            // Click day to add diary note
+            dayButton.setOnAction(e -> openDiary(currentDate));
 
             calendarGrid.add(dayButton, col, row);
             col++;
@@ -87,11 +103,8 @@ public class Calendar implements ICalendar {
         }
     }
 
-    // Method to show popup when clicking a day
-    private void openDayPopup(LocalDate date) {
-        // optional: save clicked date to a shared variable or service for later use
-        // for now, just switch screen
-
+    // Method to show diary when clicking a day
+    private void openDiary(LocalDate date) {
         AppData.setSelectedDate(date);
         Diary diaryController = (Diary) ScreenController.getController("Diary");
         if (diaryController != null) {
@@ -105,63 +118,41 @@ public class Calendar implements ICalendar {
         updateCalendar();
     }
 
-    // Generates unique event ID
-    private int generateEventID() {
-        return events.size() == 0 ? 1 : events.get(events.size() - 1).getEventID() + 1;
-    }
-
     // Interface Methods from ICalendar
     @Override
-    public void addEvent(IEvent event) {
-        events.add(event);
+    public void addBooking(Booking booking) {
+        bookings.add(booking);
     }
 
-    /**
-     * Removes event from the events ArrayList according to the given ID
-     * @param eventID Unique identifier for event objects
-     */
     @Override
-    public void removeEvent(int eventID) {
-        events.removeIf(event -> event.getEventID() == eventID);
+    public void removeBooking(int bookingID) {
+        bookings.removeIf(booking -> booking.getBookingID() == bookingID);
     }
 
-    /**
-     * Returns event object matching the given ID
-     * @param eventID Unique identifier for event objects
-     * @return Event object or null if no Event in the ArrayList has the given ID
-     */
     @Override
-    public IEvent getEvent(int eventID) {
-        for (IEvent event : events) {
-            if (event.getEventID() == eventID)
-                return event;
-        }
-        return null;
+    public List<IEvent> getEvents(Booking booking) {
+        return booking.getEvents();
     }
 
-    /**
-     * Returns the events ArrayList
-     * @return ArrayList containing all the events in the calendar
-     */
     @Override
-    public ArrayList<IEvent> getAllEvents() {
-        return events;
+    public List<Booking> getBookings() {
+        return bookings;
     }
 
-    /**
-     * Returns true if the date given doesn't have an event booked on that date
-     * @param date LocalDate data type
-     * @return Boolean which is true if a date is available to be booked
-     */
     @Override
-    public boolean isAvailable(LocalDate date) {
-        for (IEvent event : events) {
-            LocalDate start = event.getEventStart().toLocalDate();
-            LocalDate end = event.getEventEnd().toLocalDate();
-            if (!date.isBefore(start) && !date.isAfter(end)) {
-                return false; // Date falls within the event range
+    public boolean isVenueAvailable(LocalDateTime start, LocalDateTime end, String venueName) {
+        for (Booking booking : bookings) {
+            for (IEvent event : booking.getEvents()) {
+                if (event.getVenueName().equals(venueName)) {
+                    LocalDateTime eventStart = event.getEventStart();
+                    LocalDateTime eventEnd = event.getEventEnd();
+
+                    if (start.isBefore(eventEnd) && end.isAfter(eventStart)) {
+                        return false; // Overlap so venue is not available
+                    }
+                }
             }
         }
-        return true; // Date is available
+        return true;
     }
 }

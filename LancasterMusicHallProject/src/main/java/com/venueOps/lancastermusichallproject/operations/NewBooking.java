@@ -322,6 +322,10 @@ public class NewBooking {
 
             DatabaseConnection.saveBooking(booking);
 
+            Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+            if (calendarController != null) {
+                calendarController.refreshCalendar();
+            }
             ScreenController.loadScreen("Invoice");
         } catch (Exception e) {
             System.err.println("Failed to save booking: " + e.getMessage());

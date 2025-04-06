@@ -185,6 +185,11 @@ public class BookingsOverview {
     }
 
     public void BackButton() {
+        Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+        if (calendarController != null) {
+            calendarController.refreshCalendar();
+        }
+
         ScreenController.loadScreen("Calendar");
     }
 
