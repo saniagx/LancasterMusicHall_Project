@@ -1,5 +1,6 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,5 +28,11 @@ public class InvoicePage {
     private void initialize() {
         venueColumn.setCellValueFactory(new PropertyValueFactory<>("venueName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+    }
+
+    public void BackButton(ActionEvent actionEvent) {
+    }
+
+    public void exportPDF(ActionEvent actionEvent) {
     }
 }
