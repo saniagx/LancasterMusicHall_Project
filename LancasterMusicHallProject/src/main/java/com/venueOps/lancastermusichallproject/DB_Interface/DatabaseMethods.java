@@ -17,7 +17,7 @@ public class DatabaseMethods implements DatabaseInterface {
 
     public List<Booking> getBookings(Connection conn, LocalDate timeframeStart, LocalDate timeframeEnd) {
         List<Booking> bookings = new ArrayList<>();
-        String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, " +
+        String query = "SELECT b.booking_id, b.booking_name, cl.company_name, cl.contact_first_name, cl.contact_last_name, " +
                 "ct.signed_date, b.start_date, b.end_date, b.status " +
                 "FROM Bookings b " +
                 "JOIN Contracts ct ON b.contract_id = ct.contract_id " +
@@ -34,6 +34,7 @@ public class DatabaseMethods implements DatabaseInterface {
             {
                 while (rs.next()) {
                     int bookingID = rs.getInt("booking_id");
+                    String bookingName = rs.getString("booking_name");
                     String companyName = rs.getString("company_name");
                     String contact_FName = rs.getString("contact_first_name");
                     String contact_LName = rs.getString("contact_last_name");
@@ -45,7 +46,7 @@ public class DatabaseMethods implements DatabaseInterface {
                     List<IEvent> events = getEventsForBooking(conn, bookingID, companyName);
                     Client client = new Client(0, companyName, contact_FName, contact_LName, null, null, null, null, null);
 
-                    Booking booking = new Booking(bookingID, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, status);
+                    Booking booking = new Booking(bookingID, bookingName, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, status);
                     bookings.add(booking);
                 }
             }

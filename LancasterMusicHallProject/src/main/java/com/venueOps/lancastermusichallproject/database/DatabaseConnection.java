@@ -425,7 +425,7 @@ public class DatabaseConnection {
 
     public static List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
-        String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date, b.status " +
+        String query = "SELECT b.booking_id, b.booking_name cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date, b.status " +
                 "FROM Bookings b " +
                 "JOIN Contracts ct ON b.contract_id = ct.contract_id " +
                 "JOIN Clients cl ON ct.client_id = cl.client_id";
@@ -440,6 +440,7 @@ public class DatabaseConnection {
                 LocalDate today = LocalDate.now();
                 while (rs.next()) {
                     int bookingID = rs.getInt("booking_id");
+                    String bookingName = rs.getString("booking_name");
                     String companyName = rs.getString("company_name");
                     String contact_FName = rs.getString("contact_first_name");
                     String contact_LName = rs.getString("contact_last_name");
@@ -459,7 +460,7 @@ public class DatabaseConnection {
                         status = "Completed";
                     }
 
-                    Booking booking = new Booking(bookingID, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, status);
+                    Booking booking = new Booking(bookingID, bookingName, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, status);
                     bookings.add(booking);
                 }
             }
