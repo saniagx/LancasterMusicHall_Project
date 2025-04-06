@@ -282,7 +282,11 @@ public class UsageChart {
                 long startOffset = ChronoUnit.DAYS.between(prevMonday, eventStartDate);
                 double x = startOffset * cell_width;
 
-                chart_gc.setFill(Color.WHITE);
+                if(!currentDate.isAfter(eventEndDate)) {
+                    chart_gc.setFill(Color.WHITE); // White text on dark blue background for past/ongoing events
+                } else {
+                    chart_gc.setFill(Color.BLACK); // Black text on light blue background for upcoming events
+                }
                 Font font = Font.font("System", FontWeight.BOLD, 12);
                 chart_gc.setFont(font);
                 String hostName = event.getEventHost();

@@ -1,6 +1,7 @@
 package com.venueOps.lancastermusichallproject;
 
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -60,14 +61,16 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Invoice", invoiceLoader.load(), invoiceLoader);
         FXMLLoader newBookingLoader = new FXMLLoader(getClass().getResource("newBooking.fxml"));
         sc.addScreen("NewBooking", newBookingLoader.load(), newBookingLoader);
+        FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
+        sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
+        FXMLLoader usageChartLoader = new FXMLLoader(getClass().getResource("usageChart.fxml"));
+        sc.addScreen("UsageChart", usageChartLoader.load(), usageChartLoader);
+        FXMLLoader bookingsOverviewLoader = new FXMLLoader(getClass().getResource("bookingsOverview.fxml"));
+        sc.addScreen("BookingsOverview", bookingsOverviewLoader.load(), bookingsOverviewLoader);
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
-        sc.addScreen("UsageChart", FXMLLoader.load(getClass().getResource("usageChart.fxml")));
-        sc.addScreen("DailySheet", FXMLLoader.load(getClass().getResource("dailySheet.fxml")));
         sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
-        sc.addScreen("BookingsOverview", FXMLLoader.load(getClass().getResource("bookingsOverview.fxml")));
     }
-
 }
