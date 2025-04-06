@@ -17,6 +17,7 @@ public class AppData {
     private static List<IEvent> currentBookingEvents = new ArrayList<>();
     private static Map<String, String> notesMap = new HashMap<>();
     private static InvoiceInfo selectedInvoice;
+    private static ContractInfo selectedContract;
 
     public static List<String> getVenues() { return VENUES; }
 
@@ -78,6 +79,9 @@ public class AppData {
 
     public static void setSelectedInvoice(InvoiceInfo invoice) {
         selectedInvoice = invoice;
+    }
+    public static void setSelectedContract(ContractInfo contract) {
+        selectedContract = contract;
     }
 
     public static InvoiceInfo getSelectedInvoice() {

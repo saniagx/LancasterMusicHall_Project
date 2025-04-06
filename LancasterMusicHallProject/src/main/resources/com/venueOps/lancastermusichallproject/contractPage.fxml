@@ -19,68 +19,62 @@
                         <Font name="System Bold" size="36.0" />
                     </font>
                 </Label>
-                <Button alignment="CENTER" layoutX="14.0" layoutY="15.0" onAction="#BackButton" prefHeight="35.0" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to Main Menu" textFill="WHITE">
+                <Button alignment="CENTER" layoutX="14.0" layoutY="15.0" onAction="#BackButton" prefHeight="35.0" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Back to All Contracts" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Button>
                 <AnchorPane layoutX="22.0" layoutY="201.0" prefHeight="79.0" prefWidth="979.0">
-                    <TableView fx:id="eventOverviewTable" layoutX="-1.0" prefHeight="82.0" prefWidth="980.0"
-                               style="-fx-background-color: #FFFFFF;">
+                    <TableView fx:id="eventOverviewTable" layoutX="-1.0" prefHeight="82.0" prefWidth="980.0" style="-fx-background-color: #FFFFFF;">
                         <columns>
-                            <TableColumn fx:id="booking_Name" prefWidth="268.94549560546875" text="Booking Name"/>
-                            <TableColumn fx:id="start_Time" prefWidth="219.85595703125" text="Start Date/Time*"/>
-                            <TableColumn fx:id="end_Time" prefWidth="217.14404296875" text="End Date/Time*"/>
-                            <TableColumn fx:id="total_Price" prefWidth="163.2451171875" text="Total Price"/>
-                            <TableColumn fx:id="status" prefWidth="110.93975830078125" text="Status"/>
+                            <TableColumn fx:id="booking_Name" prefWidth="268.94549560546875" text="Booking Name" />
+                            <TableColumn fx:id="start_Time" prefWidth="219.85595703125" text="Start Date/Time*" />
+                            <TableColumn fx:id="end_Time" prefWidth="217.14404296875" text="End Date/Time*" />
+                            <TableColumn fx:id="total_Price" prefWidth="163.2451171875" text="Total Price" />
+                            <TableColumn fx:id="status" prefWidth="110.93975830078125" text="Status" />
                         </columns>
                     </TableView>
                 </AnchorPane>
                 <AnchorPane layoutX="21.0" layoutY="318.0" prefHeight="81.0" prefWidth="981.0">
-                    <TableView fx:id="clientOverviewTable" prefHeight="82.0" prefWidth="980.0"
-                               style="-fx-background-color: #FFFFFF;">
+                    <TableView fx:id="clientOverviewTable" prefHeight="82.0" prefWidth="980.0" style="-fx-background-color: #FFFFFF;">
                         <columns>
-                            <TableColumn fx:id="client_Company" prefWidth="307.1590881347656" text="Client Company"/>
-                            <TableColumn fx:id="client_Name" prefWidth="303.0328369140625" text="Client Name"/>
-                            <TableColumn fx:id="client_Tel" prefWidth="170.46710205078125" text="Client Telephone"/>
-                            <TableColumn fx:id="client_Email" prefWidth="200.098388671875" text="Client Email"/>
+                            <TableColumn fx:id="client_Company" prefWidth="307.1590881347656" text="Client Company" />
+                            <TableColumn fx:id="client_Name" prefWidth="303.0328369140625" text="Client Name" />
+                            <TableColumn fx:id="client_Tel" prefWidth="170.46710205078125" text="Client Telephone" />
+                            <TableColumn fx:id="client_Email" prefWidth="200.098388671875" text="Client Email" />
                         </columns>
                     </TableView>
                 </AnchorPane>
                 <AnchorPane layoutX="20.0" layoutY="71.0" prefHeight="108.0" prefWidth="981.0">
                     <Label layoutX="2.0" layoutY="6.0" text="Summary Overview">
                         <font>
-                            <Font name="System Bold" size="20.0"/>
+                            <Font name="System Bold" size="20.0" />
                         </font>
                     </Label>
-                    <Label layoutX="2.0" layoutY="35.0" text="Booking ID:"/>
-                    <Label fx:id="booking_ID" layoutX="70.0" layoutY="35.0" text="(ID)"/>
+                    <Label layoutX="2.0" layoutY="35.0" text="Booking ID:" />
+                    <Label fx:id="booking_ID" layoutX="70.0" layoutY="35.0" text="(ID)" />
                     <Label layoutX="799.0" layoutY="6.0" text="Lancaster Music Hall">
                         <font>
-                            <Font name="System Bold" size="20.0"/>
+                            <Font name="System Bold" size="20.0" />
                         </font>
                     </Label>
-                    <Label layoutX="801.0" layoutY="34.0" text="5374 Main Street, City"/>
-                    <Label layoutX="800.0" layoutY="50.0" text="County WC2N 5DN"/>
+                    <Label layoutX="801.0" layoutY="34.0" text="5374 Main Street, City" />
+                    <Label layoutX="800.0" layoutY="50.0" text="County WC2N 5DN" />
                     <ImageView id="Lancaster_Round_Logo" fitHeight="70.0" fitWidth="69.0" layoutX="724.0" layoutY="3.0">
                         <image>
-                            <Image url="@assets/lancastercirclelogo.png"/>
+                            <Image url="@assets/lancastercirclelogo.png" />
                         </image>
                     </ImageView>
                 </AnchorPane>
                 <AnchorPane layoutX="20.0" layoutY="415.0" prefHeight="71.0" prefWidth="981.0">
-                    <Label layoutX="195.0" layoutY="5.0"
-                           text="Total Price*: Refers to the total cost of all selected Venues. Please view previous page to view selected Venues."/>
-                    <Label layoutX="237.0" layoutY="27.0"
-                           text="Start Date/Time*: Refers to the First Booked Venue (e.g Meeting Room, Rehearsal Studio etc.)"/>
-                    <Label layoutX="275.0" layoutY="49.0"
-                           text="End Date/Time*: Refers to the Last Booked Venue (e.g Main Hall, Small Hall etc.)"/>
+                    <Label layoutX="195.0" layoutY="5.0" text="Total Price*: Refers to the total cost of all selected Venues. Please view previous page to view selected Venues." />
+                    <Label layoutX="237.0" layoutY="27.0" text="Start Date/Time*: Refers to the First Booked Venue (e.g Meeting Room, Rehearsal Studio etc.)" />
+                    <Label layoutX="275.0" layoutY="49.0" text="End Date/Time*: Refers to the Last Booked Venue (e.g Main Hall, Small Hall etc.)" />
                 </AnchorPane>
                 <AnchorPane layoutX="21.0" layoutY="503.0" prefHeight="42.0" prefWidth="979.0">
-                    <Label layoutX="201.0" layoutY="11.0"
-                           text="Booking has been confirmed and should be viewable from the calendar.">
+                    <Label layoutX="201.0" layoutY="11.0" text="Booking has been confirmed and should be viewable from the calendar.">
                         <font>
-                            <Font size="20.0"/>
+                            <Font size="20.0" />
                         </font>
                     </Label>
                 </AnchorPane>
