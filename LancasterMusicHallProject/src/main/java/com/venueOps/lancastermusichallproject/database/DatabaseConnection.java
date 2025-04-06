@@ -262,12 +262,13 @@ public class DatabaseConnection {
             int contractID = insertContract(conn, clientInfo.getClientID(), booking.getTotalPrice(), booking.getSignedDate());
 
             // Insert Booking
-            String insertBookingSql = "INSERT INTO Bookings (contract_id, start_date, end_date, status) VALUES (?, ?, ?, ?)";
+            String insertBookingSql = "INSERT INTO Bookings (contract_id, booking_name, start_date, end_date, status) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(insertBookingSql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, contractID);
-                stmt.setDate(2, Date.valueOf(booking.getStartDate()));
-                stmt.setDate(3, Date.valueOf(booking.getEndDate()));
-                stmt.setString(4, booking.getStatus());
+                stmt.setString(2, booking.getBookingName());
+                stmt.setDate(3, Date.valueOf(booking.getStartDate()));
+                stmt.setDate(4, Date.valueOf(booking.getEndDate()));
+                stmt.setString(5, booking.getStatus());
                 stmt.executeUpdate();
 
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -281,7 +282,10 @@ public class DatabaseConnection {
 
             // Insert Events
             insertEvents(conn, booking.getEvents(), clientInfo);
+            // Insert Invoices
+            BigDecimal totalPrice = booking.getTotalPrice();
 
+            insertInvoice(conn, booking.getBookingID(), totalPrice);
             conn.commit();
         } catch (SQLException e) {
             try (Connection conn = DatabaseConnection.getConnection()) {
@@ -350,6 +354,18 @@ public class DatabaseConnection {
             throw new SQLException("Failed to retrieve contract_id");
         }
     }
+
+    private static void insertInvoice(Connection conn, int bookingId, BigDecimal totalPrice) throws SQLException {
+        String sql = "INSERT INTO Invoices (booking_id, issue_date, due_date, total_price) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookingId);
+            stmt.setDate(2, Date.valueOf(LocalDate.now()));
+            stmt.setDate(3, Date.valueOf(LocalDate.now().plusDays(14))); // e.g. 2-week due date
+            stmt.setBigDecimal(4, totalPrice);
+            stmt.executeUpdate();
+        }
+    }
+
 
     private static void insertEvents(Connection conn, List<IEvent> events, ClientInfo clientInfo) throws SQLException {
         String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, host, start, end, price, ticket_price, max_discount, venue_id, client_id, seating_config_id) " +
@@ -498,6 +514,50 @@ public class DatabaseConnection {
             }
         }
         return events;
+    }
+
+    public static List<InvoiceInfo> getInvoices() {
+        List<InvoiceInfo> invoices = new ArrayList<>();
+
+        String sql = """
+        SELECT 
+            i.invoice_id,
+            i.booking_id,
+            i.issue_date,
+            i.due_date,
+            i.total_price,
+            GROUP_CONCAT(e.name SEPARATOR ', ') AS event_names,
+            CONCAT(c.contact_first_name, ' ', c.contact_last_name) AS client_name
+        FROM Invoices i
+        JOIN Bookings b ON i.booking_id = b.booking_id
+        JOIN Events e ON e.booking_id = b.booking_id
+        JOIN Contracts ct ON b.contract_id = ct.contract_id
+        JOIN Clients c ON ct.client_id = c.client_id
+        GROUP BY i.invoice_id;
+        """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                InvoiceInfo invoice = new InvoiceInfo(
+                        rs.getInt("invoice_id"),
+                        rs.getInt("booking_id"),
+                        rs.getDate("issue_date").toLocalDate(),
+                        rs.getDate("due_date").toLocalDate(),
+                        rs.getBigDecimal("total_price"),
+                        rs.getString("event_names"),
+                        rs.getString("client_name")
+                );
+                invoices.add(invoice);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return invoices;
     }
 
     public static void updateBookingStatus(int bookingID, String newStatus) throws SQLException {

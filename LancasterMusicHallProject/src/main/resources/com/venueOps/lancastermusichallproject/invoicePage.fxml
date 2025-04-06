@@ -77,12 +77,12 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <TableView layoutX="540.0" layoutY="110.0" prefHeight="393.0" prefWidth="448.0">
-              <columns>
-                <TableColumn prefWidth="226.30401611328125" text="Venue Name" />
-                <TableColumn minWidth="0.0" prefWidth="220.69598388671875" text="Price" />
-              </columns>
-            </TableView>
+                <TableView fx:id="venueTable" layoutX="540.0" layoutY="110.0" prefHeight="393.0" prefWidth="448.0">
+                    <columns>
+                        <TableColumn fx:id="venueColumn" prefWidth="226.30401611328125" text="Venue Name" />
+                        <TableColumn fx:id="priceColumn" prefWidth="220.69598388671875" text="Price" />
+                    </columns>
+                </TableView>
             <Label layoutX="539.0" layoutY="519.0" text="Total Price:">
                <font>
                   <Font name="System Bold" size="20.0" />

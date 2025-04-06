@@ -2,6 +2,8 @@ package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,31 +31,16 @@ import java.util.List;
 //Class to view all the existing Invoices for LMH
 public class Invoices {
 
-    @FXML private TableView<IEvent> invoiceTable;
+    @FXML private TableView<InvoiceInfo> invoiceTable;
     // Attributes for individual fields in the table, to be set based on event data held
 
-    @FXML private TableColumn<Event, Integer> Booking_ID;
-    @FXML private TableColumn<Event, String> Event_Name;
-    @FXML private TableColumn<Event, String> Client_Name;
-    @FXML private TableColumn<Event, Button> Invoice;
+    @FXML private TableColumn<InvoiceInfo, Integer> Booking_ID;
+    @FXML private TableColumn<InvoiceInfo, String> Event_Name;
+    @FXML private TableColumn<InvoiceInfo, String> Client_Name;
+    @FXML private TableColumn<InvoiceInfo, Button> Invoice;
 
     //Attribute to view the invoice, only visible when a corresponding event exists
     @FXML Button viewInvoice;
-
-    //Attributes to view details on the Invoice Page
-    @FXML Label bookingName;
-
-    @FXML Label invoiceID;
-    @FXML Label dateIssued;
-    @FXML Label dueDate;
-
-    @FXML Label billingName;
-    @FXML Label billingAddress;
-    @FXML Label billingEmail;
-
-    @FXML Label totalPrice;
-
-    @FXML Button exportPDF;
 
     //Holds the events
     private ArrayList<IEvent> events;
@@ -61,17 +48,22 @@ public class Invoices {
     //constructor
     public Invoices(){}
 
-
-
     //initialise
     @FXML private void initialize() throws Exception {
 
         //we only need these four attributes/columns for events in invoices
-        Booking_ID.setCellValueFactory(new PropertyValueFactory<Event, Integer>("Booking ID"));
-        Event_Name.setCellValueFactory(new PropertyValueFactory<Event, String>("Event Name"));
-        Client_Name.setCellValueFactory(new PropertyValueFactory<Event, String>("Client Name"));
-        Invoice.setCellValueFactory(new PropertyValueFactory<Event, Button>("Invoice"));
+        Booking_ID.setCellValueFactory(new PropertyValueFactory<>("bookingId"));
+        Event_Name.setCellValueFactory(new PropertyValueFactory<>("eventNames"));
+        Client_Name.setCellValueFactory(new PropertyValueFactory<>("clientName"));
 
+        Invoice.setCellValueFactory(cellData -> {
+            Button button = new Button("View");
+            button.setOnAction(e -> {
+                AppData.setSelectedInvoice(cellData.getValue());
+                ScreenController.loadScreen("InvoicePage");
+            });
+            return new SimpleObjectProperty<>(button);
+        });
         //populate the invoice table with all the right data
         populateInvoiceTable();
 
@@ -83,9 +75,8 @@ public class Invoices {
 
     //populate the invoice table with events
     public void populateInvoiceTable() {
-        invoiceTable.getItems().clear();
-        List<Event> events = DatabaseConnection.getEventsForInvoicesAndContracts();
-        invoiceTable.getItems().addAll(events);
+        List<InvoiceInfo> invoiceList = DatabaseConnection.getInvoices();
+        invoiceTable.setItems(FXCollections.observableArrayList(invoiceList));
     }
 
     public void BackButton() {
