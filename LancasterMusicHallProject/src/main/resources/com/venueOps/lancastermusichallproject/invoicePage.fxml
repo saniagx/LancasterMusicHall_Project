@@ -35,12 +35,12 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="68.0" layoutY="486.0" text="Lancaster Music Hall">
+            <Label layoutX="71.0" layoutY="492.0" text="Lancaster Music Hall">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label layoutX="68.0" layoutY="506.0" prefHeight="29.0" prefWidth="257.0" text="5374 Main Street, City, County WC2N 5DN" />
+            <Label layoutX="71.0" layoutY="514.0" prefHeight="29.0" prefWidth="257.0" text="5374 Main Street, City, County WC2N 5DN" />
             <Label layoutX="22.0" layoutY="119.0" prefHeight="26.0" prefWidth="174.0" text="Invoice Details:">
                <font>
                   <Font name="System Bold" size="20.0" />
@@ -51,7 +51,7 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label fx:id="bookingName" layoutX="155.0" layoutY="72.0" text="(Name)">
+            <Label fx:id="bookingName" layoutX="175.0" layoutY="72.0" text="(Name)">
                <font>
                   <Font size="20.0" />
                </font>
@@ -62,15 +62,15 @@
             <Label fx:id="invoiceID" layoutX="86.0" layoutY="151.0" text="(ID)" />
             <Label fx:id="dateIssued" layoutX="101.0" layoutY="172.0" text="(Date Issued)" />
             <Label fx:id="dueDate" layoutX="86.0" layoutY="192.0" text="(Date Due)" />
-            <Label fx:id="billingName" layoutX="19.0" layoutY="250.0" text="(Billing Name)">
+            <Label fx:id="billingName" layoutX="21.0" layoutY="251.0" text="(Billing Name)">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label layoutX="22.0" layoutY="280.0" text="Billing Address:" />
-            <Label layoutX="23.0" layoutY="330.0" text="Billing Email: " />
-            <Label fx:id="billingAddress" layoutX="21.0" layoutY="296.0" text="(Address)" />
-            <Label fx:id="billingEmail" layoutX="22.0" layoutY="346.0" text="(Email)" />
+            <Label layoutX="22.0" layoutY="289.0" text="Billing Address:" />
+            <Label layoutX="25.0" layoutY="339.0" text="Billing Email: " />
+            <Label fx:id="billingAddress" layoutX="22.0" layoutY="305.0" text="(Address)" />
+            <Label fx:id="billingEmail" layoutX="23.0" layoutY="355.0" text="(Email)" />
             <Line endX="-100.0" endY="465.45806884765625" layoutX="611.0" layoutY="79.0" startX="-100.0" startY="-6.0" />
             <Label layoutX="538.0" layoutY="72.0" text="Venue(s)">
                <font>
@@ -98,7 +98,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="19.0" layoutY="487.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="19.0" layoutY="493.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@assets/lancastercirclelogo.png" />
                </image>
