@@ -3,6 +3,7 @@ package com.venueOps.lancastermusichallproject;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import com.venueOps.lancastermusichallproject.operations.Calendar;
 import com.venueOps.lancastermusichallproject.operations.DailySheet;
+import com.venueOps.lancastermusichallproject.operations.Invoices;
 import com.venueOps.lancastermusichallproject.operations.UsageChart;
 
 public class MainMenu {
@@ -25,6 +26,10 @@ public class MainMenu {
     }
 
     public void Invoices() {
+        Invoices invoicesController = (Invoices) ScreenController.getController("Invoices");
+        if (invoicesController != null) {
+            invoicesController.refreshInvoices();
+        }
         ScreenController.loadScreen("Invoices");
     }
     public void Contracts() {
