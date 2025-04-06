@@ -32,8 +32,8 @@ public class MainMenu {
         }
         ScreenController.loadScreen("DailySheet");
     }
-
-    public void Logout () {
+    
+    public void Logout() {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");
     }
