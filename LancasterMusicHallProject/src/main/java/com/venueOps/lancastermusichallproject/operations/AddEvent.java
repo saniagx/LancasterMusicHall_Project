@@ -159,6 +159,13 @@ public class AddEvent {
             LocalTime endTime = LocalTime.of(Integer.parseInt(endTime_HourField.getText()), Integer.parseInt(endTime_MinuteField.getText()));
             LocalDateTime start = LocalDateTime.of(startDate, startTime);
             LocalDateTime end = LocalDateTime.of(endDate, endTime);
+            if (end.isBefore(start)) {
+                throw new Exception("End cannot be before start");
+            }
+            if (start.isEqual(end)) {
+                throw new Exception("Start and end cannot be equal");
+            }
+
             String venueName = venueComboBox.getSelectionModel().getSelectedItem();
             int venueID = venueNametoID.get(venueName);
 

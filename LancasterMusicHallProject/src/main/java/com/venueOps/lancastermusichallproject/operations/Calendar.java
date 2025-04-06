@@ -62,6 +62,7 @@ public class Calendar implements ICalendar {
 
     private void updateCalendar() {
         bookings = DatabaseConnection.getBookings();
+
         calendarGrid.getChildren().clear();
 
         // Update title
@@ -169,6 +170,9 @@ public class Calendar implements ICalendar {
     @Override
     public boolean isVenueAvailable(LocalDateTime start, LocalDateTime end, String venueName) {
         for (Booking booking : bookings) {
+            if (booking.getStatus().equals("Cancelled")) {
+                continue; // Skip cancelled bookings
+            }
             for (IEvent event : booking.getEvents()) {
                 if (event.getVenueName().equals(venueName)) {
                     LocalDateTime eventStart = event.getEventStart();
