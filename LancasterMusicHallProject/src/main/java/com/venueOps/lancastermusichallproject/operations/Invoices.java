@@ -84,9 +84,8 @@ public class Invoices {
         ScreenController.loadScreen("MainMenu");
     }
 
-    public void exportPDF() {
-        //needs editing
-        ScreenController.loadScreen("MainMenu");
+    public void refreshInvoices() {
+        populateInvoiceTable();
     }
 
 }
