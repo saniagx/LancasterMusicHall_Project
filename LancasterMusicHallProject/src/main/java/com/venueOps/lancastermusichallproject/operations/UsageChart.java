@@ -325,7 +325,7 @@ public class UsageChart {
             int totalTicketsSold = event.getTotalTicketsSold();
             int totalTicketsCapacity = event.getSeatingConfig().getCapacity() * event.getDaysWithTicketSales();
 
-            double salesPercentage = ((double) totalTicketsSold / totalTicketsCapacity)*100;
+            double salesPercentage = totalTicketsCapacity == 0 ? 0 : ((double) totalTicketsSold / totalTicketsCapacity)*100;
             eventTicketSales_Text.setText(totalTicketsSold + " / " + totalTicketsCapacity + "\t\t" + String.format("%.2f", salesPercentage) + "%");
         }
     }
