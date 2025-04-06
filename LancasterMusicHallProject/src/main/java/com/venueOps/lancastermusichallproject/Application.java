@@ -69,10 +69,11 @@ public class Application extends javafx.application.Application {
         sc.addScreen("BookingsOverview", bookingsOverviewLoader.load(), bookingsOverviewLoader);
         FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
         sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
+        FXMLLoader addEventLoader = new FXMLLoader(getClass().getResource("addEvent.fxml"));
+        sc.addScreen("AddEvent", addEventLoader.load(), addEventLoader);
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));
         sc.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
-        sc.addScreen("AddEvent", FXMLLoader.load(getClass().getResource("addEvent.fxml")));
     }
 }

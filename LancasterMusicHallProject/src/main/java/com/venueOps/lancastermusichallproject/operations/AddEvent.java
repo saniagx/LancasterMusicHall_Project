@@ -70,7 +70,7 @@ public class AddEvent {
                 RowN_CheckComboBox, RowO_CheckComboBox, RowP_CheckComboBox);
 
         // Populate with venue options
-        venueComboBox.getItems().setAll(getAvailableVenues());
+        refreshAvailableVenues();
         // Populate table combo box
         tablesComboBox.getItems().setAll(List.of(1, 2, 3, 4, 5, 6));
 
@@ -85,15 +85,15 @@ public class AddEvent {
         chooseListComboBox.getSelectionModel().selectFirst();
 
         // Listen to date pickers to change which venues are available
-        startDatePicker.getEditor().selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+        startDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                venueComboBox.getItems().setAll(getAvailableVenues());
+                refreshAvailableVenues();
                 venueComboBox.getSelectionModel().clearSelection();
             }
         });
-        endDatePicker.getEditor().selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+        endDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                venueComboBox.getItems().setAll(getAvailableVenues());
+                refreshAvailableVenues();
                 venueComboBox.getSelectionModel().clearSelection();
             }
         });
@@ -117,7 +117,7 @@ public class AddEvent {
 
                 // Populate row combo boxes on SeatingConfig tab
                 populateRows();
-                updateCapacityLabel();
+                updateCapacity();
 
                 // Enable/disable Meeting Room Combo Box
                 boolean isMeetingRoom = meetingRooms.contains(newValue);
@@ -184,7 +184,7 @@ public class AddEvent {
                     venueID,
                     venueName,
                     new HashMap<>(), // Pass empty usage map
-                    new SeatingConfig(generateSeatingConfigID(), capacity, getLayout(), venueName, restrictedViews)
+                    new SeatingConfig(0, capacity, getLayout(), venueName, restrictedViews)
             );
 
             // Add to booking instance
@@ -194,19 +194,16 @@ public class AddEvent {
                 newBookingController.refresh();
             }
 
+            AppData.addEventToCurrentBookingEvents(newEvent);
+
             ScreenController.loadScreen("NewBooking");
             ClearFields();
-
         } catch (Exception e) {
             showError("Please fill all fields correctly.");
             System.out.println(e.getMessage());
         } finally {
             tabPane.getSelectionModel().select(EventDetails_Tab);
         }
-    }
-
-    private int generateSeatingConfigID() {
-        return (int) (System.currentTimeMillis() % 100000);
     }
 
     private String getLayout() {
@@ -486,7 +483,7 @@ public class AddEvent {
                 }
                 disableListManagement();
                 tablesComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
-                    updateCapacityLabel();
+                    updateCapacity();
                     handleTablesLayout(newLayoutValue);
                 });
                 break;
@@ -596,7 +593,7 @@ public class AddEvent {
         for (CheckComboBox<String> checkComboBox : rows) {
             checkComboBox.getCheckModel().clearChecks();
         }
-        updateCapacityLabel();
+        updateCapacity();
     }
 
     public void ClearUnavailableSeats() {
@@ -605,7 +602,7 @@ public class AddEvent {
         for (CheckComboBox<String> checkComboBox : rows) {
             checkComboBox.getCheckModel().clearChecks();
         }
-        updateCapacityLabel();
+        updateCapacity();
     }
 
     public void ClearRestrictedViews() {
@@ -616,38 +613,140 @@ public class AddEvent {
         }
     }
 
-    private void updateCapacityLabel() {
+    private void updateCapacity() {
         if (venueComboBox.getSelectionModel().getSelectedItem() == null || layoutComboBox.getSelectionModel().getSelectedItem() == null) {
             return;
         }
         int unavailableCount = unavailableSeats.size();
-        if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall")) {
-            switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
-                case "Default":
-                    capacity = MAIN_HALL_MAX_CAPACITY - unavailableCount;
-                    break;
-                case "No Balconies":
-                    capacity = MAIN_HALL_MAX_CAPACITY - 89 - unavailableCount;
-                    break;
-                case "Dinner":
-                    capacity = 8 * (tablesComboBox.getSelectionModel().getSelectedItem() == null ? 0 : tablesComboBox.getSelectionModel().getSelectedItem());
-                    break;
-                default:
-                    capacity = MAIN_HALL_MAX_CAPACITY;
-                    break;
-            }
-        } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Small Hall")) {
-            switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
-                case "Default":
-                    capacity = SMALL_HALL_MAX_CAPACITY - unavailableCount;
-                    break;
-                case "Dinner":
-                    capacity = 18;
-                    break;
-                default:
-                    capacity = SMALL_HALL_MAX_CAPACITY;
-                    break;
-            }
+        switch (venueComboBox.getSelectionModel().getSelectedItem()) {
+            case "Main Hall":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Default":
+                        capacity = MAIN_HALL_MAX_CAPACITY - unavailableCount;
+                        break;
+                    case "No Balconies":
+                        capacity = MAIN_HALL_MAX_CAPACITY - 89 - unavailableCount;
+                        break;
+                    case "Dinner":
+                        capacity = 8 * (tablesComboBox.getSelectionModel().getSelectedItem() == null ? 0 : tablesComboBox.getSelectionModel().getSelectedItem());
+                        break;
+                    default:
+                        capacity = MAIN_HALL_MAX_CAPACITY;
+                        break;
+                }
+                break;
+            case "Small Hall":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Default":
+                        capacity = SMALL_HALL_MAX_CAPACITY - unavailableCount;
+                        break;
+                    case "Dinner":
+                        capacity = 18;
+                        break;
+                    default:
+                        capacity = SMALL_HALL_MAX_CAPACITY;
+                        break;
+                }
+                break;
+            case "The Green Room":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 12;
+                        break;
+                    case "Boardroom":
+                        capacity = 10;
+                        break;
+                    case "Presentation":
+                        capacity = 20;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            case "Bronte Boardroom":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 25;
+                        break;
+                    case "Boardroom":
+                        capacity = 18;
+                        break;
+                    case "Presentation":
+                        capacity = 40;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            case "Dickens Den":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 15;
+                        break;
+                    case "Boardroom":
+                        capacity = 12;
+                        break;
+                    case "Presentation":
+                        capacity = 25;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            case "Poe Parlor":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 20;
+                        break;
+                    case "Boardroom":
+                        capacity = 14;
+                        break;
+                    case "Presentation":
+                        capacity = 30;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            case "Globe Room":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 30;
+                        break;
+                    case "Boardroom":
+                        capacity = 20;
+                        break;
+                    case "Presentation":
+                        capacity = 50;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            case "Chekhov Chamber":
+                switch (layoutComboBox.getSelectionModel().getSelectedItem()) {
+                    case "Classroom":
+                        capacity = 18;
+                        break;
+                    case "Boardroom":
+                        capacity = 16;
+                        break;
+                    case "Presentation":
+                        capacity = 35;
+                        break;
+                    default:
+                        capacity = 0;
+                        break;
+                }
+                break;
+            default:
+                capacity = 0;
+                break;
         }
         capacityLabel.setText("Capacity: " + capacity);
     }
@@ -685,13 +784,23 @@ public class AddEvent {
     public List<String> getAvailableVenues() {
         List<String> availableVenues = new ArrayList<>();
         Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
+        LocalDateTime start = startDatePicker.getValue().atStartOfDay();
+        LocalDateTime end = endDatePicker.getValue().atTime(23, 59, 59);
         for (String venue : VENUES) {
             if (calendarController != null) {
-                if (calendarController.isVenueAvailable(startDatePicker.getValue().atStartOfDay(), endDatePicker.getValue().atTime(23, 59, 59), venue)) {
+                if (calendarController.isVenueAvailable(start, end, venue)
+                        && AppData.getCurrentBookingEvents().stream()
+                        .filter(e -> e.getVenueName().equals(venue))
+                        .allMatch(e -> !(start.isBefore(e.getEventEnd()) && end.isAfter(e.getEventStart()))))
+                {
                     availableVenues.add(venue);
                 }
             }
         }
         return availableVenues;
+    }
+
+    public void refreshAvailableVenues() {
+        venueComboBox.getItems().setAll(getAvailableVenues());
     }
 }

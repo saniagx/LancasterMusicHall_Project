@@ -1,6 +1,7 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
+import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -18,7 +19,7 @@ public class Calendar implements ICalendar {
     @FXML private Label monthYearLabel;
 
     private YearMonth currentYearMonth;
-    private final ArrayList<Booking> bookings = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
     public Calendar() {
         currentYearMonth = YearMonth.now(); // Start with current month
@@ -50,6 +51,7 @@ public class Calendar implements ICalendar {
     }
 
     private void updateCalendar() {
+        bookings = DatabaseConnection.getBookings();
         calendarGrid.getChildren().clear();
 
         // Update title
@@ -83,7 +85,7 @@ public class Calendar implements ICalendar {
             if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
                 // Green for good availability
                 dayButton.setStyle("-fx-background-color: #B9FFC2;");
-            } else if (bookedVenues >= AppData.getVenues().size() - 2 && bookedVenues < AppData.getVenues().size()) {
+            } else if (bookedVenues >= AppData.getVenues().size() - 3 && bookedVenues < AppData.getVenues().size()) {
                 // Yellow for limited availability
                 dayButton.setStyle("-fx-background-color: #F0D680;");
             } else if (bookedVenues == AppData.getVenues().size()) {
