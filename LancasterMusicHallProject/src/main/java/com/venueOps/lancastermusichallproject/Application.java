@@ -58,15 +58,18 @@ public class Application extends javafx.application.Application {
         FXMLLoader diaryLoader = new FXMLLoader(getClass().getResource("diary.fxml"));
         sc.addScreen("Diary", diaryLoader.load(), diaryLoader);
         FXMLLoader invoiceLoader = new FXMLLoader(getClass().getResource("invoices.fxml"));
-        sc.addScreen("Invoice", invoiceLoader.load(), invoiceLoader);
+        sc.addScreen("Invoices", invoiceLoader.load(), invoiceLoader);
         FXMLLoader newBookingLoader = new FXMLLoader(getClass().getResource("newBooking.fxml"));
         sc.addScreen("NewBooking", newBookingLoader.load(), newBookingLoader);
-        FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
-        sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
         FXMLLoader usageChartLoader = new FXMLLoader(getClass().getResource("usageChart.fxml"));
         sc.addScreen("UsageChart", usageChartLoader.load(), usageChartLoader);
-        FXMLLoader bookingsOverviewLoader = new FXMLLoader(getClass().getResource("bookingsOverview.fxml"));
-        sc.addScreen("BookingsOverview", bookingsOverviewLoader.load(), bookingsOverviewLoader);
+        FXMLLoader contractsLoader = new FXMLLoader(getClass().getResource("contracts.fxml"));
+        sc.addScreen("Contracts", contractsLoader.load(), contractsLoader);
+        FXMLLoader bookingOverviewLoader = new FXMLLoader(getClass().getResource("bookingOverview.fxml"));
+        sc.addScreen("BookingOverview", bookingOverviewLoader.load(), bookingOverviewLoader);
+        FXMLLoader dailySheetLoader = new FXMLLoader(getClass().getResource("dailySheet.fxml"));
+        sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
+
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));

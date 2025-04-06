@@ -18,7 +18,14 @@ public class MainMenu {
         ScreenController.loadScreen("UsageChart");
     }
 
-    public void DailySheet() {
+    public void Invoices() {
+        ScreenController.loadScreen("Invoices");
+    }
+    public void Contracts() {
+        ScreenController.loadScreen("Contracts");
+    }
+
+    public void DailySheet () {
         DailySheet dailySheetController = (DailySheet) ScreenController.getController("DailySheet");
         if (dailySheetController != null) {
             dailySheetController.Refresh();
@@ -30,4 +37,5 @@ public class MainMenu {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");
     }
+
 }

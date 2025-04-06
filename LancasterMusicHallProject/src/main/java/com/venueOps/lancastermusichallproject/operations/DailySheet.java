@@ -79,6 +79,7 @@ public class DailySheet {
         date = LocalDateTime.now();
         disableByDefault();
         meetingRoom_pane.setVisible(false);
+        events = DatabaseConnection.getEventsForDailySheet(date);
         Refresh();
         initialiseEvents();
     }
