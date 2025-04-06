@@ -73,10 +73,12 @@ public class DatabaseConnection {
                 return events;
             }
             // Fetch events
-            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, v.name as venue_name, e.client_id, c.company_name AS client_name, sc.capacity " +
+            String eventsQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
+                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.capacity, b.status " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
+                    "JOIN Bookings b ON e.booking_id = b.booking_id " +
                     "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
                     "WHERE e.start <= ? AND e.end >= ?";
             PreparedStatement eventsStmt = conn.prepareStatement(eventsQuery);
@@ -100,23 +102,26 @@ public class DatabaseConnection {
                 int venueID = eventRs.getInt("venue_id");
                 String venueName = eventRs.getString("venue_name");
                 int capacity = eventRs.getInt("capacity");
+                String status = eventRs.getString("status");
 
-                // Fetch daily ticket sales for this event
-                Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
-                salesStmt.setInt(1, eventID);
-                ResultSet salesRs = salesStmt.executeQuery();
-                while (salesRs.next()) {
-                    LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
-                    int ticketsSold = salesRs.getInt("tickets_sold");
-                    dailyTicketSales.put(eventDate, ticketsSold);
+                if (!status.equals("Cancelled")) { // Only show events from bookings that aren't cancelled
+                    // Fetch daily ticket sales for this event
+                    Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
+                    salesStmt.setInt(1, eventID);
+                    ResultSet salesRs = salesStmt.executeQuery();
+                    while (salesRs.next()) {
+                        LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
+                        int ticketsSold = salesRs.getInt("tickets_sold");
+                        dailyTicketSales.put(eventDate, ticketsSold);
+                    }
+                    salesRs.close();
+
+                    // Minimal seating config object just for capacity
+                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
+
+                    Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
+                    events.add(event);
                 }
-                salesRs.close();
-
-                // Minimal seating config object just for capacity
-                SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
-
-                Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
-                events.add(event);
             }
 
             eventRs.close();
@@ -139,10 +144,11 @@ public class DatabaseConnection {
                 return events;
             }
             String eventQuery = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
-                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.seating_config_id, sc.layout " +
+                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.seating_config_id, sc.layout, b.status " +
                     "FROM Events e " +
                     "JOIN Clients c ON e.client_id = c.client_id " +
                     "JOIN Venues v ON e.venue_id = v.venue_id " +
+                    "JOIN Bookings b ON e.booking_id = b.booking_id " +
                     "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
                     "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
             PreparedStatement eventStmt = conn.prepareStatement(eventQuery);
@@ -164,15 +170,18 @@ public class DatabaseConnection {
                 String venueName = eventRs.getString("venue_name");
                 int seatingConfigID = eventRs.getInt("seating_config_id");
                 String layout = eventRs.getString("layout");
+                String status = eventRs.getString("status");
 
-                // Create minimal seatingConfig object with only layout
-                SeatingConfig seatingConfig = (layout != null)
-                        ? new SeatingConfig(seatingConfigID, 0, layout, venueName, null)
-                        : null;
+                if (!status.equals("Cancelled")) { // Only show events from bookings that aren't cancelled
+                    // Create minimal seatingConfig object with only layout
+                    SeatingConfig seatingConfig = (layout != null)
+                            ? new SeatingConfig(seatingConfigID, 0, layout, venueName, null)
+                            : null;
 
-                Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO,
-                        max_discount, venueID, venueName, null, seatingConfig);
-                events.add(event);
+                    Event event = new Event(bookingID, eventID, name, type, client, start, end, BigDecimal.ZERO, BigDecimal.ZERO,
+                            max_discount, venueID, venueName, null, seatingConfig);
+                    events.add(event);
+                }
             }
 
             eventRs.close();
@@ -415,7 +424,7 @@ public class DatabaseConnection {
 
     public static List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
-        String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date " +
+        String query = "SELECT b.booking_id, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date, b.status " +
                 "FROM Bookings b " +
                 "JOIN Contracts ct ON b.contract_id = ct.contract_id " +
                 "JOIN Clients cl ON ct.client_id = cl.client_id";
@@ -426,6 +435,7 @@ public class DatabaseConnection {
             }
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery(); {
+                LocalDate today = LocalDate.now();
                 while (rs.next()) {
                     int bookingID = rs.getInt("booking_id");
                     String companyName = rs.getString("company_name");
@@ -436,14 +446,22 @@ public class DatabaseConnection {
                     LocalDate signedDate = rs.getDate("signed_date").toLocalDate();
                     LocalDate startDate = rs.getDate("start_date").toLocalDate();
                     LocalDate endDate = rs.getDate("end_date").toLocalDate();
+                    String status = rs.getString("status");
 
                     List<IEvent> events = getEventsForBooking(conn, bookingID);
                     Client client = new Client(0, companyName, contact_FName, contact_LName, email, phoneNumber, null, null, null);
 
-                    Booking booking = new Booking(bookingID, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, null);
+                    // Auto-update status to Completed if confirmed Booking is past end date
+                    if (status.equals("Confirmed") && today.isAfter(endDate)) {
+                        updateBookingStatus(bookingID, "Completed");
+                        status = "Completed";
+                    }
+
+                    Booking booking = new Booking(bookingID, events, client, signedDate, BigDecimal.ZERO, startDate, endDate, status);
                     bookings.add(booking);
                 }
             }
+            rs.close();
         } catch (SQLException e) {
             System.err.println("Failed to get bookings: " + e.getMessage());
         }
@@ -479,6 +497,15 @@ public class DatabaseConnection {
         return events;
     }
 
+    public static void updateBookingStatus(int bookingID, String newStatus) throws SQLException {
+        String updateQuery = "UPDATE Bookings SET status = ? WHERE booking_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, bookingID);
+            stmt.executeUpdate();
+        }
+    }
 
     // Helper class to pass Client info to be stored in the Event table
     public static class ClientInfo {

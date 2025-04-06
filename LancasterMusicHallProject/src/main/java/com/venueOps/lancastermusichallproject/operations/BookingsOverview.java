@@ -9,9 +9,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,6 +30,7 @@ public class BookingsOverview {
     @FXML private TableColumn<Booking, LocalDate> signedDateColumn;
     @FXML private TableColumn<Booking, LocalDate> startDateColumn;
     @FXML private TableColumn<Booking, LocalDate> endDateColumn;
+    @FXML private TableColumn<Booking, String> statusColumn;
     private List<IEvent> events;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -40,6 +44,7 @@ public class BookingsOverview {
         signedDateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSignedDate()));
         startDateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStartDate()));
         endDateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getEndDate()));
+        statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus()));
 
         populateBookingsTable();
 
@@ -184,6 +189,62 @@ public class BookingsOverview {
     }
 
     public void CancelBooking() {
-        System.out.println("Gonna implement this tomorrow");
+        Booking selectedBooking = bookingsTable.getSelectionModel().getSelectedItem();
+        if (selectedBooking == null) {
+            showError("No booking selected");
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.setTitle("Cancel Booking");
+        VBox content = new VBox(10);
+        Label messageLabel = new Label();
+        content.getChildren().add(messageLabel);
+        ButtonType confirmButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        if ("Cancelled".equals(selectedBooking.getStatus())) {
+            messageLabel.setText("This booking is already cancelled");
+            dialog.getDialogPane().getButtonTypes().clear();
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        } else {
+            messageLabel.setText("Are you sure you want to cancel Booking " + selectedBooking.getBookingID() + "?");
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == confirmButton) {
+                    try {
+                        DatabaseConnection.updateBookingStatus(selectedBooking.getBookingID(), "Cancelled");
+                        selectedBooking.setStatus("Cancelled");
+                        bookingsTable.refresh();
+                        messageLabel.setText("Booking " + selectedBooking.getBookingID() + " has been cancelled");
+                    } catch (SQLException e) {
+                        messageLabel.setText("Failed to cancel booking: " + e.getMessage());
+                    }
+                    dialog.getDialogPane().getButtonTypes().clear();
+                    dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                    return null;
+                }
+                return dialogButton; // Close dialog
+            });
+        }
+
+        dialog.getDialogPane().setContent(content);
+        dialog.showAndWait();
+
+        try {
+            DatabaseConnection.updateBookingStatus(selectedBooking.getBookingID(), "Cancelled");
+            selectedBooking.setStatus("Cancelled");
+            bookingsTable.refresh();
+        } catch (SQLException e) {
+            showError("Failed to cancel booking: " + e.getMessage());
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
