@@ -404,8 +404,8 @@ public class DatabaseConnection {
     private static int insertSeatingConfig(Connection conn, SeatingConfig seatingConfig) throws SQLException {
         String insertSql = "INSERT INTO SeatingConfigs (capacity, layout) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-            System.out.println("Inserted capacity: " + seatingConfig.getCapacity());
-            System.out.println("Inserted layout: " + seatingConfig.getLayout());
+            stmt.setInt(1, seatingConfig.getCapacity());
+            stmt.setString(2, seatingConfig.getLayout());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
