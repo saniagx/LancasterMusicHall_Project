@@ -22,6 +22,7 @@ public class Calendar implements ICalendar {
 
     private YearMonth currentYearMonth;
     private List<Booking> bookings = new ArrayList<>();
+    private List<DiaryNote> diaryNotes = new ArrayList<>();
 
     public Calendar() {
         currentYearMonth = YearMonth.now(); // Start with current month

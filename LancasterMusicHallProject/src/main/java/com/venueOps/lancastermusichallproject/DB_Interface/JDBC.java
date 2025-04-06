@@ -1,0 +1,52 @@
+package com.venueOps.lancastermusichallproject.DB_Interface;
+
+import com.venueOps.lancastermusichallproject.operations.Booking;
+import com.venueOps.lancastermusichallproject.operations.IEvent;
+import com.venueOps.lancastermusichallproject.operations.SeatingConfig;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class JDBC {
+    private final Connection connection;
+    private DatabaseMethods databaseMethods;
+
+    public JDBC() throws SQLException, ClassNotFoundException {
+        String host = "sst-stuproj.city.ac.uk";
+        String port = "3306";
+        String dbName = "in2033t02";
+        String user = "in2033t02_d";
+        String password = "R4fN0lxD-YM";
+
+        String url = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+        this.connection = DriverManager.getConnection(url, user, password);
+        this.databaseMethods = new DatabaseMethods();
+    }
+
+    // Fetches all Bookings within the time frame
+    // Bookings contain events, each event has its attributes fetched and set by the database
+    // Each event has a Seating Config and has its attributes fetched and set by the database
+    public List<Booking> getBookings(LocalDate timeframeStart, LocalDate timeframeEnd) {
+        return databaseMethods.getBookings(connection, timeframeStart, timeframeEnd);
+    }
+
+    public boolean isVenueAvailable(Connection connection, LocalDateTime start, LocalDateTime end, String venueName) {
+        return databaseMethods.isVenueAvailable(connection, start, end, venueName);
+    }
+
+    public List<IEvent> getEventsForBooking(Booking booking) {
+        return booking.getEvents();
+    }
+
+    public SeatingConfig getSeatingConfigForEvent(IEvent event) {
+        return event.getSeatingConfig();
+    }
+
+    public List<String> getRestrictedViews(SeatingConfig seatingConfig) {
+        return seatingConfig.getRestrictedViews();
+    }
+}
