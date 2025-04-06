@@ -8,15 +8,15 @@ import java.util.HashMap;
 
 public class ScreenController {
 
-    private static HashMap<String, Pane> screenMap = new HashMap<>();
-    private static HashMap<String, FXMLLoader> loaderMap = new HashMap<>(); // 🔹 Added
     private static Scene main;
+    private static HashMap<String, FXMLLoader> loaderMap = new HashMap<>();
+    private static HashMap<String, Pane> screenMap = new HashMap<>();
 
     public ScreenController(Scene main) {
         ScreenController.main = main;
     }
 
-    // New  method that accepts loader aswell
+    // New method that accepts loader aswell
     public void addScreen(String screenName, Pane screen, FXMLLoader loader) {
         screenMap.put(screenName, screen);
         loaderMap.put(screenName, loader);

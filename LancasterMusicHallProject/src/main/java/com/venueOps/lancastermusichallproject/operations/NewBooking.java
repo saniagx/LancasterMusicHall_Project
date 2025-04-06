@@ -348,7 +348,7 @@ public class NewBooking {
                 throw new Exception("Booking name cannot be empty");
             }
             Booking booking = new Booking(bookingName, events, client, LocalDate.now(), totalCost, startDate, endDate, "Confirmed");
-
+            System.out.println("Booking name = " + booking.getBookingName());
             DatabaseConnection.saveBooking(booking);
 
             Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
