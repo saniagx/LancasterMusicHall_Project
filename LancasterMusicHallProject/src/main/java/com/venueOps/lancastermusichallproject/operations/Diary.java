@@ -72,7 +72,7 @@ public class Diary {
         String dateKey = selectedDate.toString();
         String existingNote = AppData.getNote(dateKey);
 
-        if (existingNote == null) {
+        if (existingNote == null || existingNote.isEmpty()) { // checks if note exists before deleting
             Alert("Error", "No note exists for this date");
             return;
         }
@@ -100,5 +100,12 @@ public class Diary {
     public void refresh() {
         date = AppData.getSelectedDate();
         dateLabel.setText(date.format(formatter));
+
+        String existingNote = AppData.getNote(date.toString());
+        if (existingNote != null) {
+            noteTextArea.setText(existingNote);
+        } else {
+            noteTextArea.clear();
+        }
     }
 }
