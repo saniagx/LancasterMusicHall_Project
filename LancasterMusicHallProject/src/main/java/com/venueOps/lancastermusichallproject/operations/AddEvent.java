@@ -101,6 +101,8 @@ public class AddEvent {
         layoutComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldLayoutValue, newLayoutValue) -> {
             String selectedVenue = venueComboBox.getSelectionModel().getSelectedItem();
             if (selectedVenue != null && newLayoutValue != null) {
+                updateCapacity();
+
                 if (selectedVenue.equals("Main Hall")) {
                     handleMainHallLayout(newLayoutValue);
                 } else if (selectedVenue.equals("Small Hall")) {
@@ -187,6 +189,8 @@ public class AddEvent {
                     new SeatingConfig(0, capacity, getLayout(), venueName, restrictedViews)
             );
 
+            System.out.println("New Seating Config:\nCapacity: " + capacity + "\nLayout: " + getLayout() + "\nVenue: " + venueName + "\nTicket Price: ");
+
             // Add to booking instance
             NewBooking newBookingController = (NewBooking) ScreenController.getController("NewBooking");
             if (newBookingController != null) {
@@ -206,12 +210,15 @@ public class AddEvent {
         }
     }
 
-    private String getLayout() {
+    private String getLayout() throws Exception {
         if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall") && layoutComboBox.getSelectionModel().getSelectedItem().equals("Dinner")) {
             return "Dinner with " + tablesComboBox.getSelectionModel().getSelectedItem() + " tables";
         } else if (venueComboBox.getSelectionModel().getSelectedItem().equals("Rehearsal Space")) {
             return "Rehearsal Space";
         } else {
+            if (layoutComboBox.getSelectionModel().getSelectedItem() == null) {
+                throw new Exception("Layout cannot be null");
+            }
             return layoutComboBox.getSelectionModel().getSelectedItem();
         }
     }

@@ -18,6 +18,7 @@ public class Booking {
     // Constructor for storing in database
     public Booking(String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
+        this.bookingName = bookingName;
         this.bookingID = 0; // Placeholder until Database assigns it
         this.events = events;
         this.client = client;
@@ -31,6 +32,7 @@ public class Booking {
     // Constructor for fetching from database
     public Booking(int bookingID, String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
+        this.bookingName = bookingName;
         this.bookingID = bookingID;
         this.events = events;
         this.client = client;

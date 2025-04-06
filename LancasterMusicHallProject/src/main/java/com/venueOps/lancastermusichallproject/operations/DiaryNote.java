@@ -3,19 +3,11 @@ package com.venueOps.lancastermusichallproject.operations;
 import java.time.LocalDate;
 
 public class DiaryNote {
-    private String text;
     private LocalDate date;
+    private String text;
 
-    public DiaryNote(String text, LocalDate date) {
-        this.text = text;
+    public DiaryNote(LocalDate date, String text) {
         this.date = date;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
         this.text = text;
     }
 
@@ -25,5 +17,13 @@ public class DiaryNote {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

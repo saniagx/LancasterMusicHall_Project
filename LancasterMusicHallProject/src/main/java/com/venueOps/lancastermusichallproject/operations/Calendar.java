@@ -42,7 +42,7 @@ public class Calendar implements ICalendar {
     public void ViewBookings() {
         BookingsOverview bookingsOverviewController = (BookingsOverview) ScreenController.getController("BookingsOverview");
         if (bookingsOverviewController != null) {
-            bookingsOverviewController.refresh();
+            bookingsOverviewController.populateBookingsTable();
         }
         ScreenController.loadScreen("BookingsOverview");
     }
@@ -140,6 +140,7 @@ public class Calendar implements ICalendar {
     // Refresh Calendar
     public void refreshCalendar() {
         updateCalendar();
+        diaryNotes = DatabaseConnection.getDiaryNotes(YearMonth.now().atDay(1), YearMonth.now().atEndOfMonth());
     }
 
     // Interface Methods from ICalendar

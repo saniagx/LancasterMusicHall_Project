@@ -117,7 +117,7 @@ public class DatabaseConnection {
                     salesRs.close();
 
                     // Minimal seating config object just for capacity
-                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
+                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null);
 
                     Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
                     events.add(event);
@@ -406,8 +406,8 @@ public class DatabaseConnection {
     private static int insertSeatingConfig(Connection conn, SeatingConfig seatingConfig) throws SQLException {
         String insertSql = "INSERT INTO SeatingConfigs (capacity, layout) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, seatingConfig.getCapacity());
-            stmt.setString(2, seatingConfig.getLayout());
+            System.out.println("Inserted capacity: " + seatingConfig.getCapacity());
+            System.out.println("Inserted layout: " + seatingConfig.getLayout());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
@@ -437,7 +437,6 @@ public class DatabaseConnection {
             throw e;
         }
     }
-
 
     public static List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
@@ -642,7 +641,7 @@ public class DatabaseConnection {
                     salesRs.close();
 
                     // Minimal seating config object just for capacity
-                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null); // Adjust constructor as needed
+                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null);
 
                     Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
                     events.add(event);
@@ -653,13 +652,42 @@ public class DatabaseConnection {
             stmt.close();
             salesStmt.close();
         } catch (SQLException e) {
-            System.out.println("Failed to fetch events for Usage Chart from database" + e.getMessage());
+            System.out.println("Failed to fetch events for Invoices from database" + e.getMessage());
             return events;
         }
         return events;
+    }
+
+    public static List<DiaryNote> getDiaryNotes(LocalDate timeframeStart, LocalDate timeframeEnd) {
+        List<DiaryNote> diaryNotes = new ArrayList<>();
+        Connection conn = DatabaseConnection.getConnection();
+        try {
+            if (conn == null) {
+                return diaryNotes;
+            }
+            String query = "SELECT noteDate, text " +
+                    "FROM DiaryNotes " +
+                    "WHERE noteDate >= ? AND noteDate <= ? ";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, timeframeStart.toString());
+            stmt.setString(2, timeframeEnd.toString());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Date noteDate = rs.getDate("noteDate");
+                String text = rs.getString("text");
+
+                DiaryNote diaryNote = new DiaryNote(noteDate.toLocalDate(), text);
+                diaryNotes.add(diaryNote);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Failed to fetch events for Invoices from database" + e.getMessage());
+            return diaryNotes;
         }
-
-
+        return diaryNotes;
+    }
 }
 
 
