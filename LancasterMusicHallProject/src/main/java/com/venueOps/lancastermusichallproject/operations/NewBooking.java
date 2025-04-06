@@ -196,6 +196,7 @@ public class NewBooking {
         deleteButton.setStyle("-fx-background-color: #ff4444; -fx-background-radius: 10px; -fx-text-fill: white; -fx-font-weight: bold;");
         deleteButton.setOnAction(e -> {
             events.remove(event);
+            AppData.removeEventFromCurrentBookingEvents(event);
             drawEventsGrid(); // Redraw grid after removal
         });
 
@@ -274,7 +275,13 @@ public class NewBooking {
         return latestDate;
     }
 
-    public void AddEvent() { ScreenController.loadScreen("AddEvent"); }
+    public void AddEvent() {
+        AddEvent addEventController = (AddEvent) ScreenController.getController("AddEvent");
+        if (addEventController != null) {
+            addEventController.refreshAvailableVenues();
+        }
+        ScreenController.loadScreen("AddEvent");
+    }
 
     public void ClearClientFields() {
         companyNameField.setText("");
@@ -318,7 +325,6 @@ public class NewBooking {
             LocalDate endDate = getLatestEndDate(events);
             BigDecimal totalCost = getTotalCost();
             Booking booking = new Booking(events, client, LocalDate.now(), totalCost, startDate, endDate, "Confirmed");
-            AppData.setCurrentBooking(booking);
 
             DatabaseConnection.saveBooking(booking);
 
@@ -326,6 +332,8 @@ public class NewBooking {
             if (calendarController != null) {
                 calendarController.refreshCalendar();
             }
+
+            AppData.clearCurrentBookingEvents();
             ScreenController.loadScreen("Invoice");
         } catch (Exception e) {
             System.err.println("Failed to save booking: " + e.getMessage());
