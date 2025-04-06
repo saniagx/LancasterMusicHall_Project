@@ -39,7 +39,13 @@ public class Calendar implements ICalendar {
 
     public void NewBooking() { ScreenController.loadScreen("NewBooking"); }
 
-    public void ViewBookings() { ScreenController.loadScreen("BookingsOverview"); }
+    public void ViewBookings() {
+        BookingsOverview bookingsOverviewController = (BookingsOverview) ScreenController.getController("BookingsOverview");
+        if (bookingsOverviewController != null) {
+            bookingsOverviewController.refresh();
+        }
+        ScreenController.loadScreen("BookingsOverview");
+    }
 
     @FXML
     private void goToPreviousMonth() {
@@ -72,7 +78,7 @@ public class Calendar implements ICalendar {
             Button dayButton = new Button(String.valueOf(day));
             dayButton.setPrefSize(114, 85);
 
-            // Highlight todays date
+            // Highlight today's date
             if (currentDate.equals(LocalDate.now())) {
                 dayButton.setStyle("-fx-border-color: #3366FF; -fx-border-width: 2px;");
             }

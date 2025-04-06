@@ -200,7 +200,7 @@ public class AddEvent {
             ClearFields();
         } catch (Exception e) {
             showError("Please fill all fields correctly.");
-            System.out.println(e.getMessage());
+            System.err.println("Failed to add event: " + e.getMessage());
         } finally {
             tabPane.getSelectionModel().select(EventDetails_Tab);
         }
