@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.Invoices">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.InvoicePage">
 
     <children>
         <AnchorPane layoutX="128.0" layoutY="73.0" prefHeight="576" prefWidth="1024" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
