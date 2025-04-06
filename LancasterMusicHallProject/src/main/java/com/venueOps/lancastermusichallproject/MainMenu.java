@@ -12,6 +12,13 @@ public class MainMenu {
         ScreenController.loadScreen("UsageChart");
     }
 
+    public void Invoices() {
+        ScreenController.loadScreen("Invoices");
+    }
+    public void Contracts() {
+        ScreenController.loadScreen("Contracts");
+    }
+
     public void Logout() {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");

@@ -17,7 +17,7 @@
                      <Font name="System Bold" size="32.0" />
                   </font>
                </Text>
-               <VBox alignment="CENTER" layoutX="20.0" layoutY="68.0" prefHeight="389.0" prefWidth="261.0" spacing="40.0">
+               <VBox alignment="CENTER" layoutX="20.0" layoutY="68.0" prefHeight="389.0" prefWidth="261.0" spacing="20.0">
                   <children>
                      <Button mnemonicParsing="false" onAction="#Calendar" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Calendar">
                         <font>
@@ -30,6 +30,16 @@
                         </font>
                      </Button>
                      <Button mnemonicParsing="false" onAction="#DailySheet" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Daily Sheet">
+                        <font>
+                           <Font name="System Bold" size="16.0" />
+                        </font>
+                     </Button>
+                     <Button mnemonicParsing="false" onAction="#Invoices" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Invoices">
+                        <font>
+                           <Font name="System Bold" size="16.0" />
+                        </font>
+                     </Button>
+                     <Button mnemonicParsing="false" onAction="#Contracts" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Contracts">
                         <font>
                            <Font name="System Bold" size="16.0" />
                         </font>
