@@ -90,7 +90,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <TextArea layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" />
+            <TextArea fx:id="diaryPreviewArea" layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" editable="false" promptText="Click a date to preview note..." wrapText="true"/>
 
          </children>
       </AnchorPane>

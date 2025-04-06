@@ -12,11 +12,13 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Calendar implements ICalendar {
 
     @FXML private GridPane calendarGrid;
     @FXML private Label monthYearLabel;
+    @FXML private TextArea diaryPreviewArea;
 
     private YearMonth currentYearMonth;
     private List<Booking> bookings = new ArrayList<>();
@@ -103,6 +105,7 @@ public class Calendar implements ICalendar {
                 row++;
             }
         }
+        updateDiaryPreviewPanel();
     }
 
     // Method to show diary when clicking a day
@@ -113,6 +116,18 @@ public class Calendar implements ICalendar {
             diaryController.refresh();
         }
         ScreenController.loadScreen("Diary");
+    }
+
+    // Diary Preview Panel
+    private void updateDiaryPreviewPanel() {
+        if (diaryPreviewArea != null) {
+            StringBuilder preview = new StringBuilder();
+            for (Map.Entry<String, String> entry : AppData.getAllNotes().entrySet()) {
+                preview.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n\n");
+            }
+
+            diaryPreviewArea.setText(preview.isEmpty() ? "No notes found" : preview.toString());
+        }
     }
 
     // Refresh Calendar
