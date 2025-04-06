@@ -283,9 +283,7 @@ public class DatabaseConnection {
             // Insert Events
             insertEvents(conn, booking.getEvents(), clientInfo);
             // Insert Invoices
-            BigDecimal totalPrice = booking.getTotalPrice();
-
-            insertInvoice(conn, booking.getBookingID(), totalPrice);
+            insertInvoice(conn, booking.getBookingID(), booking.getTotalPrice());
             conn.commit();
         } catch (SQLException e) {
             try (Connection conn = DatabaseConnection.getConnection()) {
