@@ -658,12 +658,12 @@ public class DatabaseConnection {
         return events;
     }
 
-    public static List<DiaryNote> getDiaryNotes(LocalDate timeframeStart, LocalDate timeframeEnd) {
-        List<DiaryNote> diaryNotes = new ArrayList<>();
+    public static HashMap<String, String> getDiaryNotes(LocalDate timeframeStart, LocalDate timeframeEnd) {
+        HashMap<String, String> diaryMap = new HashMap<>();
         Connection conn = DatabaseConnection.getConnection();
         try {
             if (conn == null) {
-                return diaryNotes;
+                return diaryMap;
             }
             String query = "SELECT noteDate, text " +
                     "FROM DiaryNotes " +
@@ -676,17 +676,64 @@ public class DatabaseConnection {
                 Date noteDate = rs.getDate("noteDate");
                 String text = rs.getString("text");
 
-                DiaryNote diaryNote = new DiaryNote(noteDate.toLocalDate(), text);
-                diaryNotes.add(diaryNote);
+                diaryMap.put(noteDate.toString(), text);
             }
             rs.close();
             stmt.close();
             conn.close();
         } catch (SQLException e) {
             System.out.println("Failed to fetch events for Invoices from database" + e.getMessage());
-            return diaryNotes;
+            return diaryMap;
         }
-        return diaryNotes;
+        return diaryMap;
+    }
+
+    public static void saveDiaryNote(DiaryNote diaryNote) {
+        Connection conn = DatabaseConnection.getConnection();
+        try {
+            String checkSQL = "SELECT COUNT(*) FROM DiaryNotes WHERE noteDate = ?";
+            PreparedStatement stmt = conn.prepareStatement(checkSQL);
+            stmt.setDate(1, java.sql.Date.valueOf(diaryNote.getDate()));
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            if (count > 0) {
+                // Update existing note
+                String updateSQL = "UPDATE DiaryNotes SET text = ? WHERE noteDate = ?";
+                stmt = conn.prepareStatement(updateSQL);
+                stmt.setString(1, diaryNote.getText());
+                stmt.setDate(2, java.sql.Date.valueOf(diaryNote.getDate()));
+                stmt.executeUpdate();
+            } else {
+                // Insert new note
+                String insertSQL = "INSERT INTO DiaryNotes (noteDate, text) VALUES (?, ?)";
+                stmt = conn.prepareStatement(insertSQL);
+                stmt.setDate(1, java.sql.Date.valueOf(diaryNote.getDate()));
+                stmt.setString(2, diaryNote.getText());
+                stmt.executeUpdate();
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            System.err.println("Error saving diary note: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void deleteNote(DiaryNote diaryNote) {
+        Connection conn = DatabaseConnection.getConnection();
+        try {
+            String deleteSQL = "DELETE FROM DiaryNotes WHERE noteDate = ?";
+            PreparedStatement stmt = conn.prepareStatement(deleteSQL);
+            stmt.setDate(1, java.sql.Date.valueOf(diaryNote.getDate()));
+            stmt.executeUpdate();
+
+            stmt.close();
+        } catch (SQLException e) {
+            System.err.println("Error deleting diary note: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }
 

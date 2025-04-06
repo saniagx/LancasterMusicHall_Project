@@ -15,7 +15,7 @@ public class AppData {
     private static LocalDate selectedDate;
     private static ObservableList<String> companyNames = FXCollections.observableArrayList();
     private static List<IEvent> currentBookingEvents = new ArrayList<>();
-    private static final Map<String, String> notesMap = new HashMap<>();
+    private static Map<String, String> notesMap = new HashMap<>();
     private static InvoiceInfo selectedInvoice;
 
     public static List<String> getVenues() { return VENUES; }
@@ -71,6 +71,11 @@ public class AppData {
     public static void deleteNote(String dateKey) {
         notesMap.remove(dateKey);
     }
+
+    public static void loadNotes(HashMap<String, String> diaryMap) {
+        notesMap = diaryMap;
+    }
+
     public static void setSelectedInvoice(InvoiceInfo invoice) {
         selectedInvoice = invoice;
     }

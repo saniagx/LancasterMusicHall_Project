@@ -1,6 +1,7 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import com.venueOps.lancastermusichallproject.ScreenController;
+import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -48,16 +49,17 @@ public class Diary {
             return;
         }
 
-        String dateKey = selectedDate.toString();
+        String dateKey = selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         AppData.saveNote(dateKey, noteText);
-
-        ScreenController.loadScreen("Calendar");
+        DatabaseConnection.saveDiaryNote(new DiaryNote(selectedDate, noteText));
 
         //refresh
         Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
         if (calendarController != null) {
             calendarController.refreshCalendar();
         }
+
+        ScreenController.loadScreen("Calendar");
     }
 
     // Delete a note
@@ -78,14 +80,15 @@ public class Diary {
         }
 
         AppData.deleteNote(dateKey);
+        DatabaseConnection.deleteNote(new DiaryNote(selectedDate, existingNote));
         noteTextArea.clear();
 
-        ScreenController.loadScreen("Calendar");
         //refresh
         Calendar calendarController = (Calendar) ScreenController.getController("Calendar");
         if (calendarController != null) {
             calendarController.refreshCalendar();
         }
+        ScreenController.loadScreen("Calendar");
     }
 
     // Show alerts for errors (e.g. no date selected, empty note, no note selected to delete, etc.)

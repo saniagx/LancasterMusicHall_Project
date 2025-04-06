@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class Calendar implements ICalendar {
 
     private YearMonth currentYearMonth;
     private List<Booking> bookings = new ArrayList<>();
-    private List<DiaryNote> diaryNotes = new ArrayList<>();
+    private HashMap<String, String> diaryMap = new HashMap<>();
 
     public Calendar() {
         currentYearMonth = YearMonth.now(); // Start with current month
@@ -139,8 +140,9 @@ public class Calendar implements ICalendar {
 
     // Refresh Calendar
     public void refreshCalendar() {
+        diaryMap = DatabaseConnection.getDiaryNotes(LocalDate.now(), YearMonth.now().atEndOfMonth());
+        AppData.loadNotes(diaryMap);
         updateCalendar();
-        diaryNotes = DatabaseConnection.getDiaryNotes(YearMonth.now().atDay(1), YearMonth.now().atEndOfMonth());
     }
 
     // Interface Methods from ICalendar
