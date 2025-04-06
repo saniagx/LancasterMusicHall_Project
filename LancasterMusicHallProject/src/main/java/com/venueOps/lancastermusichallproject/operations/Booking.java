@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Booking {
     private int bookingID;
+    private String bookingName;
     private List<IEvent> events;
     private Client client;
     private LocalDate signedDate;
@@ -15,7 +16,7 @@ public class Booking {
     private String status;
 
     // Constructor for storing in database
-    public Booking(List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
+    public Booking(String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
         this.bookingID = 0; // Placeholder until Database assigns it
         this.events = events;
@@ -28,7 +29,7 @@ public class Booking {
     }
 
     // Constructor for fetching from database
-    public Booking(int bookingID, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
+    public Booking(int bookingID, String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
         this.bookingID = bookingID;
         this.events = events;
@@ -48,6 +49,9 @@ public class Booking {
             event.setBookingID(bookingID);
         }
     }
+
+    public String getBookingName() {return bookingName;}
+    public void setBookingName(String bookingName) {this.bookingName = bookingName;}
 
     public List<IEvent> getEvents() {return events;}
     public void setEvents(List<IEvent> events) {this.events = events;}

@@ -33,17 +33,18 @@
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <TableView fx:id="bookingsTable" prefHeight="385.0" prefWidth="1025.0">
+                              <TableView fx:id="bookingsTable" prefHeight="385.0" prefWidth="1024.0">
                                 <columns>
                                   <TableColumn fx:id="bookingIDColumn" prefWidth="68.0" text="Booking ID" />
-                                  <TableColumn fx:id="companyNameColumn" prefWidth="119.0" text="Company Name" />
-                                    <TableColumn fx:id="contactNameColumn" prefWidth="124.0" text="Contact Name" />
-                                    <TableColumn fx:id="emailColumn" prefWidth="127.0" text="Email" />
-                                    <TableColumn fx:id="phoneColumn" prefWidth="133.0" text="Phone Number" />
-                                    <TableColumn fx:id="signedDateColumn" prefWidth="121.0" text="Signed Date" />
-                                    <TableColumn fx:id="startDateColumn" prefWidth="115.0" text="Start Date" />
-                                    <TableColumn fx:id="endDateColumn" prefWidth="108.0" text="End Date" />
-                                    <TableColumn fx:id="statusColumn" prefWidth="109.0" text="Status" />
+                                    <TableColumn fx:id="bookingNameColumn" prefWidth="112.0" text="Booking Name" />
+                                  <TableColumn fx:id="companyNameColumn" prefWidth="111.0" text="Company Name" />
+                                    <TableColumn fx:id="contactNameColumn" prefWidth="119.0" text="Contact Name" />
+                                    <TableColumn fx:id="emailColumn" prefWidth="120.0" text="Email" />
+                                    <TableColumn fx:id="phoneColumn" prefWidth="126.0" text="Phone Number" />
+                                    <TableColumn fx:id="signedDateColumn" prefWidth="92.0" text="Signed Date" />
+                                    <TableColumn fx:id="startDateColumn" prefWidth="99.0" text="Start Date" />
+                                    <TableColumn fx:id="endDateColumn" prefWidth="93.0" text="End Date" />
+                                    <TableColumn fx:id="statusColumn" prefWidth="84.0" text="Status" />
                                 </columns>
                               </TableView>
                               <Button layoutX="430.0" layoutY="421.0" onAction="#CancelBooking" prefHeight="35" prefWidth="165" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="Cancel Booking" textFill="WHITE">

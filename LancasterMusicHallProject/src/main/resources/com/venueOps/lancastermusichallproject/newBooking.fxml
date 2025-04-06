@@ -147,9 +147,9 @@
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <ScrollPane layoutX="1.0" prefHeight="370.0" prefWidth="1024.0">
+                              <ScrollPane layoutX="1.0" layoutY="52.0" prefHeight="318.0" prefWidth="1024.0">
                                  <content>
-                                    <VBox alignment="TOP_CENTER" prefHeight="368.0" prefWidth="1005.0" spacing="10.0">
+                                    <VBox alignment="TOP_CENTER" prefHeight="310.0" prefWidth="1018.0" spacing="10.0">
                                        <children>
                                           <Label text="CLIENT">
                                              <font>
@@ -188,6 +188,11 @@
                                     <Font name="System Bold" size="24.0" />
                                  </font>
                               </Button>
+                              <TextField fx:id="bookingNameTextField" alignment="CENTER" layoutX="401.0" layoutY="7.0" promptText="Enter Booking Name">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </TextField>
                            </children>
                         </AnchorPane>
                      </content></Tab>

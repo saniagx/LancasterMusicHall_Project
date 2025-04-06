@@ -23,6 +23,7 @@ public class BookingsOverview {
     // Bookings tab attributes
     @FXML private TableView<Booking> bookingsTable;
     @FXML private TableColumn<Booking, Integer> bookingIDColumn;
+    @FXML private TableColumn<Booking, String> bookingNameColumn;
     @FXML private TableColumn<Booking, String> companyNameColumn;
     @FXML private TableColumn<Booking, String> contactNameColumn;
     @FXML private TableColumn<Booking, String> emailColumn;
@@ -37,6 +38,7 @@ public class BookingsOverview {
 
     @FXML public void initialize() {
         bookingIDColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getBookingID()).asObject());
+        bookingNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookingName()));
         companyNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClient().getCompanyName()));
         contactNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClient().getContactFirstName() + " " + cellData.getValue().getClient().getContactLastName()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClient().getEmail()));
@@ -68,7 +70,9 @@ public class BookingsOverview {
 
     public void refresh() {
         eventsTab.setDisable(false);
-        drawEventsGrid();
+        if (bookingsTable.getSelectionModel().getSelectedItem() != null) {
+            drawEventsGrid();
+        }
     }
 
     private void drawEventsGrid() {

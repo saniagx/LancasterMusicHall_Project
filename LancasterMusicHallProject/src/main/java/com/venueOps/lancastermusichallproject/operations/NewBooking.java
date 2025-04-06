@@ -39,7 +39,8 @@ public class NewBooking {
     private ObservableList<String> allCompanies; // Full list from database
     private ObservableList<String> filteredCompanies; // Filtered list for ListView
 
-    // Contract tab attributes
+    // Confirm details tab attributes
+    @FXML private TextField bookingNameTextField;
     @FXML private Text clientText;
     @FXML private Text venuesText;
 
@@ -284,16 +285,16 @@ public class NewBooking {
     }
 
     public void ClearClientFields() {
-        companyNameField.setText("");
-        contactFNameField.setText("");
-        contactLNameField.setText("");
-        emailField.setText("");
-        phoneField.setText("");
-        addressField.setText("");
-        cityField.setText("");
-        postcodeField.setText("");
+        companyNameField.setText(null);
+        contactFNameField.setText(null);
+        contactLNameField.setText(null);
+        emailField.setText(null);
+        phoneField.setText(null);
+        addressField.setText(null);
+        cityField.setText(null);
+        postcodeField.setText(null);
         clientListView.getSelectionModel().clearSelection();
-        filterCompanies("");
+        filterCompanies(null);
     }
 
     public void FillContract() {
@@ -319,12 +320,34 @@ public class NewBooking {
 
     public void ConfirmBooking() {
         try {
-            Client client = new Client(0, companyNameField.getText(), contactFNameField.getText(), contactLNameField.getText(),
-                    emailField.getText(), phoneField.getText(), addressField.getText(), cityField.getText(), postcodeField.getText());
+            if (events.isEmpty()) {
+                throw new Exception("Must add events");
+            }
+
+            // Create client
+            String companyName = companyNameField.getText();
+            String contactFirstName = contactFNameField.getText();
+            String contactLastName = contactLNameField.getText();
+            String email = emailField.getText();
+            String phone = phoneField.getText();
+            String address = addressField.getText();
+            String city = cityField.getText();
+            String postcode = postcodeField.getText();
+
+            if (companyName.isEmpty() || contactFirstName.isEmpty() || contactLastName.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty() || city.isEmpty() || postcode.isEmpty()) {
+                throw new Exception("Client fields cannot be empty");
+            }
+            Client client = new Client(0, companyName, contactFirstName, contactLastName, email, phone, address, city, postcode);
+
+            // Create booking
             LocalDate startDate = getEarliestStartDate(events);
             LocalDate endDate = getLatestEndDate(events);
             BigDecimal totalCost = getTotalCost();
-            Booking booking = new Booking(events, client, LocalDate.now(), totalCost, startDate, endDate, "Confirmed");
+            String bookingName = bookingNameTextField.getText();
+            if (bookingName.isEmpty()) {
+                throw new Exception("Booking name cannot be empty");
+            }
+            Booking booking = new Booking(bookingName, events, client, LocalDate.now(), totalCost, startDate, endDate, "Confirmed");
 
             DatabaseConnection.saveBooking(booking);
 
@@ -334,11 +357,12 @@ public class NewBooking {
             }
 
             AppData.clearCurrentBookingEvents();
-            ScreenController.loadScreen("Invoice");
+            clearAll();
+            ScreenController.loadScreen("Calendar"); // Change this to the Invoice screen when its complete
         } catch (Exception e) {
+            showError("Failed to save booking, please fill in all fields correctly: " + e.getMessage());
             System.err.println("Failed to save booking: " + e.getMessage());
         } finally {
-            clearAll();
             tabPane.getSelectionModel().select(events_Tab);
         }
     }
@@ -347,5 +371,12 @@ public class NewBooking {
         ClearClientFields();
         events.clear();
         refresh();
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
