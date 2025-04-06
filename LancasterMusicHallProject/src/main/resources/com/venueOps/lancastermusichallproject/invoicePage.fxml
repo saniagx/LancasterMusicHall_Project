@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
@@ -23,7 +25,7 @@
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Button>
-            <Label layoutY="72.0" text="Booking Name: ">
+            <Label layoutX="24.0" layoutY="72.0" text="Booking Name: ">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
@@ -33,12 +35,12 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="20.0" layoutY="479.0" text="Lancaster Music Hall">
+            <Label layoutX="68.0" layoutY="486.0" text="Lancaster Music Hall">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label layoutX="20.0" layoutY="504.0" prefHeight="29.0" prefWidth="257.0" text="5374 Main Street, CityCounty WC2N 5DN" />
+            <Label layoutX="68.0" layoutY="506.0" prefHeight="29.0" prefWidth="257.0" text="5374 Main Street, City, County WC2N 5DN" />
             <Label layoutX="22.0" layoutY="119.0" prefHeight="26.0" prefWidth="174.0" text="Invoice Details:">
                <font>
                   <Font name="System Bold" size="20.0" />
@@ -96,6 +98,11 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
+            <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="19.0" layoutY="487.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@assets/lancastercirclelogo.png" />
+               </image>
+            </ImageView>
 
             </children>
         </AnchorPane>

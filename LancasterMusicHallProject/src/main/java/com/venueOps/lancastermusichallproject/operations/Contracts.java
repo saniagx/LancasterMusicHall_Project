@@ -8,15 +8,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 //Class to view all the existing Contracts for LMH
 public class Contracts {
 
-    @FXML
-    private TableView<IEvent> contractTable;
+    @FXML private TableView<IEvent> contractTable;
     // Attributes for individual fields in the table, to be set based on event data held
 
     @FXML private TableColumn<Event, Integer> Booking_ID;
@@ -26,6 +28,26 @@ public class Contracts {
 
     //Attribute to view the contract, only visible when a corresponding event exists
     @FXML Button viewContracts;
+
+    //Attributes to view details on the Individual Contracts Page
+    @FXML Label booking_ID;
+
+    //Attributes for Table on Individual Contracts Page
+    //Attributes for eventOverviewTable
+    @FXML private TableView<IEvent> eventOverviewTable;
+    @FXML private TableColumn<Event, Integer> booking_Name;
+    @FXML private TableColumn<Event, Date> start_Time;
+    @FXML private TableColumn<Event, Date> end_Time;
+    @FXML private TableColumn<Event, String> total_Price;
+    @FXML private TableColumn<Event, Button> status;
+    //Attributes for clientOverviewTable
+    @FXML private TableView<IEvent> clientOverviewTable;
+    @FXML private TableColumn<Event, Integer> client_Company;
+    @FXML private TableColumn<Event, String> client_Name;
+    @FXML private TableColumn<Event, String> client_Tel;
+    @FXML private TableColumn<Event, Button> client_Email;
+
+    @FXML Button exportPDF;
 
     //Holds the events
     private ArrayList<IEvent> events;
@@ -58,4 +80,10 @@ public class Contracts {
     public void BackButton() {
         ScreenController.loadScreen("MainMenu");
     }
+
+    public void exportPDF() {
+        //needs editing
+        ScreenController.loadScreen("MainMenu");
+    }
+
 }
