@@ -1,9 +1,10 @@
-package com.venueOps.lancastermusichallproject.DB_Interface;
+package com.venueOps.lancastermusichallproject.database;
 
 import com.venueOps.lancastermusichallproject.operations.Booking;
 import com.venueOps.lancastermusichallproject.operations.IEvent;
 import com.venueOps.lancastermusichallproject.operations.SeatingConfig;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -30,11 +31,16 @@ public class JDBC {
     // Fetches all Bookings within the time frame
     // Bookings contain events, each event has its attributes fetched and set by the database
     // Each event has a Seating Config and has its attributes fetched and set by the database
-    public List<Booking> getBookings(LocalDate timeframeStart, LocalDate timeframeEnd) {
+    public List<Booking> getBookings(LocalDate timeframeStart, LocalDate timeframeEnd) throws Exception {
         return databaseMethods.getBookings(connection, timeframeStart, timeframeEnd);
     }
 
-    public boolean isVenueAvailable(Connection connection, LocalDateTime start, LocalDateTime end, String venueName) {
+    public boolean addFilmBooking(String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime,
+                                  BigDecimal ticketPrice, double maxDiscount, String venueName) throws Exception {
+        return databaseMethods.addFilmBooking(connection, eventName, startDateTime, endDateTime, ticketPrice, maxDiscount, venueName);
+    }
+
+    public boolean isVenueAvailable(LocalDateTime start, LocalDateTime end, String venueName) throws Exception {
         return databaseMethods.isVenueAvailable(connection, start, end, venueName);
     }
 

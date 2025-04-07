@@ -1,4 +1,4 @@
-package com.venueOps.lancastermusichallproject.DB_Interface;
+package com.venueOps.lancastermusichallproject.database;
 
 import com.venueOps.lancastermusichallproject.operations.Booking;
 import com.venueOps.lancastermusichallproject.operations.IEvent;
@@ -11,11 +11,12 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseMethods implements DatabaseInterface {
 
-    public List<Booking> getBookings(Connection conn, LocalDate timeframeStart, LocalDate timeframeEnd) {
+    public List<Booking> getBookings(Connection conn, LocalDate timeframeStart, LocalDate timeframeEnd) throws Exception {
         List<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.booking_id, b.booking_name, cl.company_name, cl.contact_first_name, cl.contact_last_name, " +
                 "ct.signed_date, b.start_date, b.end_date, b.status " +
@@ -53,25 +54,77 @@ public class DatabaseMethods implements DatabaseInterface {
             rs.close();
         } catch (SQLException e) {
             System.err.println("Failed to get bookings: " + e.getMessage());
+            throw e;
         }
         return bookings;
     }
 
-    public boolean isVenueAvailable(Connection conn, LocalDateTime start, LocalDateTime end, String venueName) {
-        List<Booking> bookings = getBookings(conn, start.toLocalDate(), end.toLocalDate());
-        for (Booking booking : bookings) {
-            for (IEvent event : booking.getEvents()) {
-                if (event.getVenueName().equals(venueName)) {
-                    LocalDateTime eventStart = event.getEventStart();
-                    LocalDateTime eventEnd = event.getEventEnd();
+    public boolean addFilmBooking(Connection conn, String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime, BigDecimal ticketPrice, double maxDiscount, String venueName) throws Exception{
+        try {
+            if (conn == null) {
+                return false;
+            }
+            int capacity;
+            String layout;
+            int venueID;
+            if (venueName.equals("Small Hall")) {
+                capacity = 95;
+                layout = "Default";
+                venueID = 1;
+            } else if (venueName.equals("Main Hall")) {
+                capacity = 285;
+                layout = "No Balconies";
+                venueID = 0;
+            } else {
+                throw new Exception("Invalid venue: " + venueName);
+            }
 
-                    if (start.isBefore(eventEnd) && end.isAfter(eventStart)) {
-                        return false; // Overlap so venue is not available
+            SeatingConfig seatingConfig = new SeatingConfig(0, capacity, layout, venueName, new ArrayList<>());
+
+            IEvent event = new Event(0, 0, eventName, "Event", "temp", startDateTime,
+                    endDateTime, BigDecimal.ZERO, ticketPrice, maxDiscount, venueID, venueName, new HashMap<>(), seatingConfig);
+            List<IEvent> events = List.of(event);
+
+            Client client = new Client(0, "Lancaster's Music Hall", "Joe", "Lancaster",
+                    "JoeLancaster@email.com", "020 7946 5374", "5374 Main Street", "City, County", "WC2N 5DN");
+
+            Booking booking = new Booking(0, eventName, events, client, LocalDate.now(), BigDecimal.ZERO,
+                    event.getEventStart().toLocalDate(), event.getEventEnd().toLocalDate(), "Confirmed");
+
+            try {
+                DatabaseConnection.saveBooking(booking);
+            } catch (Exception e) {
+                System.err.println("Failed to save film booking: " + e.getMessage());
+                throw e;
+            }
+            return true;
+        } catch (Exception e) {
+            System.err.println("Failed to add film: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean isVenueAvailable(Connection conn, LocalDateTime start, LocalDateTime end, String venueName) throws Exception {
+        try {
+            List<Booking> bookings = getBookings(conn, start.toLocalDate(), end.toLocalDate());
+            for (Booking booking : bookings) {
+                for (IEvent event : booking.getEvents()) {
+                    if (event.getVenueName().equals(venueName)) {
+                        LocalDateTime eventStart = event.getEventStart();
+                        LocalDateTime eventEnd = event.getEventEnd();
+
+                        if (start.isBefore(eventEnd) && end.isAfter(eventStart)) {
+                            return false; // Overlap so venue is not available
+                        }
                     }
                 }
             }
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Failed to check venue availability: " + e.getMessage());
+            throw e;
         }
-        return true;
     }
 
     // HELPERS

@@ -15,4 +15,6 @@ module com.venueOps.lancastermusichallproject {
     exports com.venueOps.lancastermusichallproject.operations;
     exports com.venueOps.lancastermusichallproject.DB_Interface;
     opens com.venueOps.lancastermusichallproject.DB_Interface to javafx.fxml;
+    exports com.venueOps.lancastermusichallproject.database;
+    opens com.venueOps.lancastermusichallproject.database to javafx.fxml;
 }
