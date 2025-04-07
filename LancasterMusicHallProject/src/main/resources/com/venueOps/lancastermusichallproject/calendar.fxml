@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -17,13 +18,13 @@
          <children>
             <HBox alignment="CENTER" layoutX="37.0" layoutY="90.0" prefHeight="35.0" prefWidth="800.0">
                <children>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Mon" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Tue" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Wed" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Thu" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Fri" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Sat" styleClass="calendar-day-header" />
-                  <Label alignment="CENTER" prefWidth="114.0" text="Sun" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Mon" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Tue" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Wed" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Thu" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Fri" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Sat" />
+                  <Label alignment="CENTER" prefWidth="114.0" styleClass="calendar-day-header" text="Sun" />
                </children>
             </HBox>
             <!-- Title -->
@@ -43,31 +44,27 @@
             <!-- Navigation Controls -->
             <HBox alignment="CENTER" layoutX="811.0" layoutY="90.0" prefHeight="35.0" prefWidth="237.0" spacing="10">
                <children>
-                  <Button onAction="#goToPreviousMonth" text="❮" styleClass="nav-button" />
-                  <Label fx:id="monthYearLabel" text="April 2025" styleClass="title" />
-                  <Button onAction="#goToNextMonth" text="❯" styleClass="nav-button" />
+                  <Button onAction="#goToPreviousMonth" styleClass="nav-button" text="❮" />
+                  <Label fx:id="monthYearLabel" styleClass="title" text="April 2025" />
+                  <Button onAction="#goToNextMonth" styleClass="nav-button" text="❯" />
                </children>
             </HBox>
 
             <!-- Grid container for calendar -->
             <GridPane fx:id="calendarGrid" hgap="15" layoutX="37.0" layoutY="125.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: transparent;" vgap="15">
             </GridPane>
-            <Button layoutX="855.0"
-                    layoutY="142.0"
-                    onAction="#NewBooking"
-                    prefHeight="35"
-                    prefWidth="150.0"
-                    text="New Booking"
-                    styleClass="sidebar-button" />
-            <Button layoutX="855.0"
-                    layoutY="189.0"
-                    onAction="#ViewBookings"
-                    prefHeight="35"
-                    prefWidth="150.0"
-                    text="View Bookings"
-                    styleClass="sidebar-button" />
-            <TextArea fx:id="diaryPreviewArea" editable="false" layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" promptText="Click a date to preview note..." wrapText="true" styleClass="diary-preview" />
-
+            <Button layoutX="855.0" layoutY="144.0" onAction="#NewBooking" prefHeight="35" prefWidth="150.0" styleClass="sidebar-button" text="New Booking" />
+            <Button layoutX="855.0" layoutY="194.0" onAction="#ViewBookings" prefHeight="35" prefWidth="150.0" styleClass="sidebar-button" text="View Bookings" />
+            <VBox alignment="TOP_CENTER" layoutX="847.0" layoutY="270.0" spacing="20.0">
+               <children>
+                  <AnchorPane prefHeight="260.0" prefWidth="165.0" style="-fx-background-color: #f4f4f4; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                     <children>
+                        <Label layoutX="37.0" layoutY="6.0" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #444;" text="Diary Preview" />
+                        <TextArea fx:id="diaryPreviewArea" editable="false" layoutX="10.0" layoutY="37.0" prefHeight="210.0" prefWidth="145.0" promptText="Click a date to preview note..." style="-fx-background-radius: 8px; -fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 8px;" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
    </children>
