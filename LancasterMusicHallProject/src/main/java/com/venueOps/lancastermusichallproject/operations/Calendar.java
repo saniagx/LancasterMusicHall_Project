@@ -79,6 +79,8 @@ public class Calendar implements ICalendar {
 
             Button dayButton = new Button(String.valueOf(day));
             dayButton.setPrefSize(100, 80);
+            dayButton.setOnMouseEntered(e -> dayButton.setStyle(dayButton.getStyle() + "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.1, 0, 2);"));
+            dayButton.setOnMouseExited(e -> dayButton.setStyle(dayButton.getStyle().replaceAll("-fx-effect:.*?;", "")));
 
             // Highlight today's date
             if (currentDate.equals(LocalDate.now())) {
@@ -92,7 +94,7 @@ public class Calendar implements ICalendar {
                         -fx-text-fill: #333333;
                     """);
             }
-            
+
             // Color if booking exists
             int bookedVenues = 0;
             for (String venue : AppData.getVenues()) {
