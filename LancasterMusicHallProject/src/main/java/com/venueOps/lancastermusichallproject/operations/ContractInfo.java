@@ -8,6 +8,8 @@ public class ContractInfo {
     //related to the booking
     private int bookingID;
     private String bookingName;
+    private LocalDate bookingStartDate;
+    private LocalDate bookingEndDate;
 
     //the bottom 3 need to be added to the UI somehow (maybe client ID is not needed)
     private int contractID;
@@ -24,7 +26,9 @@ public class ContractInfo {
     private String clientTelephone;
     private String clientEmail;
 
-    public ContractInfo(int bookingID, String bookingName, int contractID, int clientID, LocalDate signedDate, BigDecimal totalPrice, String status, String companyName, String clientName, String clientTelephone, String clientEmail) {
+    public ContractInfo(int bookingID, String bookingName, int contractID, int clientID, LocalDate signedDate, BigDecimal totalPrice,
+                        String status, String companyName, String clientName, String clientTelephone, String clientEmail,
+                        LocalDate bookingStartDate, LocalDate bookingEndDate) {
         this.bookingID = bookingID;
         this.bookingName = bookingName;
         this.contractID = contractID;
@@ -36,6 +40,8 @@ public class ContractInfo {
         this.clientName = clientName;
         this.clientTelephone = clientTelephone;
         this.clientEmail = clientEmail;
+        this.bookingStartDate = bookingStartDate;
+        this.bookingEndDate = bookingEndDate;
     }
 
     public int getBookingID() {
@@ -81,5 +87,8 @@ public class ContractInfo {
     public String getClientEmail() {
         return clientEmail;
     }
+
+    public LocalDate getBookingStartDate() { return bookingStartDate; }
+    public LocalDate getBookingEndDate() { return bookingEndDate; }
 }
 

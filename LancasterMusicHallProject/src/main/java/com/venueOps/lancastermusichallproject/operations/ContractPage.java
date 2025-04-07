@@ -1,10 +1,19 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import com.venueOps.lancastermusichallproject.ScreenController;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -15,6 +24,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,44 +33,107 @@ public class ContractPage {
 
     @FXML Label booking_ID;
 
-    @FXML private TableView<VenueTable> eventOverviewTable;
+    @FXML private TableView<ContractInfo> bookingOverviewTable;
 
-    @FXML private TableColumn<VenueTable, String> bookingNameColumn;
-    @FXML private TableColumn<VenueTable, Date> startTimeColumn;
-    @FXML private TableColumn<VenueTable, Date> endTimeColumn;
-    @FXML private TableColumn<VenueTable, BigDecimal> totalPriceColumn;
-    @FXML private TableColumn<VenueTable, String> statusColumn;
+    @FXML private TableColumn<ContractInfo, String> booking_Name;
+    @FXML private TableColumn<ContractInfo, LocalDate> start_Time;
+    @FXML private TableColumn<ContractInfo, LocalDate> end_Time;
+    @FXML private TableColumn<ContractInfo, BigDecimal> total_Price;
+    @FXML private TableColumn<ContractInfo, String> status;
 
-    @FXML private TableView<VenueTable> clientOverviewTable;
+    @FXML private TableView<ContractInfo> clientOverviewTable;
 
-    @FXML private TableColumn<VenueTable, String> companyNameColumn;
-    @FXML private TableColumn<VenueTable, String> clientNameColumn;
-    @FXML private TableColumn<VenueTable, String> clientTelColumn;
-    @FXML private TableColumn<VenueTable, String> clientEmailColumn;
+    @FXML private TableColumn<ContractInfo, String> client_Company;
+    @FXML private TableColumn<ContractInfo, String> client_Name;
+    @FXML private TableColumn<ContractInfo, String> client_Tel;
+    @FXML private TableColumn<ContractInfo, String> client_Email;
 
 
     @FXML
     private void initialize() {
-        bookingNameColumn.setCellValueFactory(new PropertyValueFactory<>("booking_Name"));
-        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("start_Time"));
-        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("end_Time"));
-        totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("total_Price"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status_Column"));
+        booking_Name.setCellValueFactory(new PropertyValueFactory<>("bookingName"));
+        start_Time.setCellValueFactory(new PropertyValueFactory<>("bookingStartDate"));
+        end_Time.setCellValueFactory(new PropertyValueFactory<>("bookingEndDate"));
+        total_Price.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+        status.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        companyNameColumn.setCellValueFactory(new PropertyValueFactory<>("clientCompanyName"));
-        clientNameColumn.setCellValueFactory(new PropertyValueFactory<>("clientName"));
-        clientTelColumn.setCellValueFactory(new PropertyValueFactory<>("clientTel"));
-        clientEmailColumn.setCellValueFactory(new PropertyValueFactory<>("clientEmail"));
+        client_Company.setCellValueFactory(new PropertyValueFactory<>("companyName"));
+        client_Name.setCellValueFactory(new PropertyValueFactory<>("clientName"));
+        client_Tel.setCellValueFactory(new PropertyValueFactory<>("clientTelephone"));
+        client_Email.setCellValueFactory(new PropertyValueFactory<>("clientEmail"));
+
+        ContractInfo contract = AppData.getSelectedContract();
+        if (contract != null) {
+            Refresh();
+        }
     }
 
+    public void Refresh() {
+        ContractInfo contract = AppData.getSelectedContract();
+        if (contract == null) return;
+
+        booking_ID.setText(String.valueOf(contract.getBookingID()));
+
+        ObservableList<ContractInfo> eventData = FXCollections.observableArrayList(contract);
+        bookingOverviewTable.setItems(eventData);
+
+        ObservableList<ContractInfo> clientData = FXCollections.observableArrayList(contract);
+        clientOverviewTable.setItems(clientData);
+    }
 
     @FXML
     public void BackButton() {
         ScreenController.loadScreen("Contracts");
     }
 
+    public void exportPDF() {
+        try {
+            ContractInfo contract = AppData.getSelectedContract();
+            // define path
+            String folderPath = "Contracts";
+            java.io.File folder = new java.io.File(folderPath);
 
+            // create the folder if it doesn't exist
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
 
+            // set PDF dest
+            int counter = 1;
+            String baseName = "Contract_" + contract.getBookingID();
+            String dest = folderPath + "/" + baseName + ".pdf";
+            java.io.File file = new java.io.File(dest);
 
+            while (file.exists()) {
+                dest = folderPath + "/" + baseName + "(" + counter++ + ").pdf";
+                file = new java.io.File(dest);
+            }
 
+            // write the pdf
+            PdfWriter writer = new PdfWriter(dest);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            String dateToday = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"));
+            Text boldDateText = new Text("Date Exported: " + dateToday + "\n").setBold();
+            Paragraph dateParagraph = new Paragraph(boldDateText).setTextAlignment(TextAlignment.LEFT);
+            document.add(dateParagraph);
+
+            document.add(new Paragraph("Booking ID: " + contract.getBookingID()));
+            document.add(new Paragraph("Booking Name: " + contract.getBookingName()));
+            document.add(new Paragraph("Start Date: " + contract.getBookingStartDate()));
+            document.add(new Paragraph("End Date: " + contract.getBookingEndDate()));
+            document.add(new Paragraph("Total Price: " + contract.getTotalPrice()));
+            document.add(new Paragraph("Status: " + contract.getStatus()));
+            document.add(new Paragraph("Company: " + contract.getCompanyName()));
+            document.add(new Paragraph("Client: " + contract.getClientName()));
+            document.add(new Paragraph("Telephone: " + contract.getClientTelephone()));
+            document.add(new Paragraph("Email: " + contract.getClientEmail()));
+
+            document.close();
+            System.out.println("PDF exported to: " + dest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

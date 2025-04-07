@@ -27,9 +27,9 @@
                         <TableView fx:id="contractTable" layoutY="-1.0" prefHeight="489.0" prefWidth="975.0">
                             <columns>
                                 <TableColumn fx:id="Booking_ID" editable="false" maxWidth="130.0" prefWidth="130.0" text="Booking ID" />
-                                <TableColumn fx:id="Event_Name" editable="false" maxWidth="340.0" prefWidth="340.0" text="Event Name" />
+                                <TableColumn fx:id="Booking_Name" editable="false" maxWidth="340.0" prefWidth="340.0" text="Booking Name" />
                                 <TableColumn fx:id="Client_Name" editable="false" maxWidth="375.0" prefWidth="375.0" text="Client Name" />
-                                <TableColumn fx:id="Contract" editable="false" maxWidth="130.0" prefWidth="130.0" text="Invoice" />
+                                <TableColumn fx:id="Contract" editable="false" maxWidth="130.0" prefWidth="130.0" text="Contract" />
                             </columns>
                         </TableView>
                     </children>

@@ -159,7 +159,7 @@ public class DailySheet {
     public void Export() {
         try {
             // Create directory if it doesn't exist
-            String directoryPath = "dailySheets";
+            String directoryPath = "DailySheets";
             File directory = new File(directoryPath);
             if (!directory.exists()) {
                 directory.mkdirs();

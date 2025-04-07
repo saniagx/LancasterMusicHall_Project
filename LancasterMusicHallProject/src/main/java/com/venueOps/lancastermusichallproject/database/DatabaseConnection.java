@@ -282,8 +282,9 @@ public class DatabaseConnection {
 
             // Insert Events
             insertEvents(conn, booking.getEvents(), clientInfo);
-            // Insert Invoices
+            // Insert Invoice
             insertInvoice(conn, booking.getBookingID(), booking.getTotalPrice());
+
             conn.commit();
         } catch (SQLException e) {
             try (Connection conn = DatabaseConnection.getConnection()) {
@@ -631,11 +632,12 @@ public class DatabaseConnection {
     public static List<ContractInfo> getContracts() {
         List<ContractInfo> contracts = new ArrayList<>();
 
-        String sql = "SELECT b.booking_id, b.booking_name, b.start_date, b.end_date, ct.total_price, b.status, cl.company_name, CONCAT(cl.contact_first_name, '', cl.contact_last_name) AS client_name, cl.phone_number, cl.email"
-        + "FROM Bookings b " + "JOIN Contracts ct ON b.contract_id = ct.contract.id "
-        + "JOIN Clients cl ON ct.client_id = cl.client_id " + "WHERE b.status='confirmed'";
-
-
+        String sql = "SELECT b.booking_id, b.booking_name, b.start_date, b.end_date, ct.signed_date, ct.total_price, b.status, cl.client_id, cl.company_name, " +
+                "CONCAT(cl.contact_first_name, ' ', cl.contact_last_name) AS client_name, cl.phone_number, cl.email, b.contract_id " +
+                "FROM Bookings b " +
+                "JOIN Contracts ct ON b.contract_id = ct.contract_id " +
+                "JOIN Clients cl ON ct.client_id = cl.client_id " +
+                "WHERE b.status='confirmed'";
         try {
             Connection conn = getConnection();
             if (conn == null) {
@@ -647,17 +649,19 @@ public class DatabaseConnection {
 
             while (rs.next()) {
                 ContractInfo contract = new ContractInfo(
-                        rs.getInt("bookingID"),
-                        rs.getString("bookingName"),
-                        rs.getInt("contractID"),
-                        rs.getInt("clientID"),
-                        rs.getDate("signedDate").toLocalDate(),
+                        rs.getInt("booking_id"),
+                        rs.getString("booking_name"),
+                        rs.getInt("contract_id"),
+                        rs.getInt("client_id"),
+                        rs.getDate("signed_date").toLocalDate(),
                         rs.getBigDecimal("total_price"),
                         rs.getString("status"),
-                        rs.getString("companyName"),
-                        rs.getString("clientName"),
-                                rs.getString("clientTelephone"),
-                                rs.getString("clientEmail")
+                        rs.getString("company_name"),
+                        rs.getString("client_name"),
+                        rs.getString("phone_number"),
+                        rs.getString("email"),
+                        rs.getDate("start_date").toLocalDate(),
+                        rs.getDate("end_date").toLocalDate()
                 );
                 contracts.add(contract);
             }

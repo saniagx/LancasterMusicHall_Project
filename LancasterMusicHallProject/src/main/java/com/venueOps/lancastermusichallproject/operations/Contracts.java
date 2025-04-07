@@ -20,11 +20,11 @@ import java.util.List;
 //Class to view all the existing Contracts for LMH
 public class Contracts {
 
-    @FXML private TableView<IEvent> contractTable;
+    @FXML private TableView<ContractInfo> contractTable;
     // Attributes for individual fields in the table, to be set based on event data held
 
     @FXML private TableColumn<ContractInfo, Integer> Booking_ID;
-    @FXML private TableColumn<ContractInfo, String> Event_Name;
+    @FXML private TableColumn<ContractInfo, String> Booking_Name;
     @FXML private TableColumn<ContractInfo, String> Client_Name;
     @FXML private TableColumn<ContractInfo, Button> Contract;
 
@@ -44,15 +44,20 @@ public class Contracts {
     @FXML private void initialize() throws Exception {
 
         //we only need these four attributes/columns for events in contracts
-        Booking_ID.setCellValueFactory(new PropertyValueFactory<ContractInfo, Integer>("Booking ID"));
-        Event_Name.setCellValueFactory(new PropertyValueFactory<ContractInfo, String>("Event Name"));
-        Client_Name.setCellValueFactory(new PropertyValueFactory<ContractInfo, String>("Client Name"));
+        Booking_ID.setCellValueFactory(new PropertyValueFactory<>("bookingID"));
+        Booking_Name.setCellValueFactory(new PropertyValueFactory<>("bookingName"));
+        Client_Name.setCellValueFactory(new PropertyValueFactory<>("clientName"));
 
 
         Contract.setCellValueFactory(cellData -> {
             Button button = new Button("View");
             button.setOnAction(e -> {
                 AppData.setSelectedContract(cellData.getValue());
+                ContractPage controller = (ContractPage) ScreenController.getController("ContractPage");
+                if (controller != null) {
+                    controller.Refresh();
+                }
+
                 ScreenController.loadScreen("ContractPage");
             });
             return new SimpleObjectProperty<>(button);
@@ -65,8 +70,8 @@ public class Contracts {
 
     //populate the contract table with events
     public void populateContractTable() {
-        //List<ContractInfo> contractList = DatabaseConnection.getContracts();
-        //contractTable.setItems(FXCollections.observableArrayList(contractList));
+        List<ContractInfo> contractList = DatabaseConnection.getContracts();
+        contractTable.setItems(FXCollections.observableArrayList(contractList));
     }
     public void BackButton() {
         ScreenController.loadScreen("MainMenu");

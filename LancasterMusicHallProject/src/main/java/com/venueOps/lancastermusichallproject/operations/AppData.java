@@ -87,4 +87,5 @@ public class AppData {
     public static InvoiceInfo getSelectedInvoice() {
         return selectedInvoice;
     }
+    public static ContractInfo getSelectedContract() {return selectedContract;}
 }
