@@ -3,6 +3,7 @@ package com.venueOps.lancastermusichallproject.operations;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import javafx.scene.image.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
@@ -13,11 +14,9 @@ import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -59,6 +58,18 @@ public class InvoicePage {
         try {
             Refresh();
             InvoiceInfo invoice = AppData.getSelectedInvoice();
+
+            // Validation
+            if (invoiceID.getText() == null || invoiceID.getText().isEmpty()) {
+                sendAlert("Export Failed", "No invoice selected to export!");
+                return;
+            }
+
+            if (venueTable.getItems().isEmpty()) {
+                sendAlert("Export Failed", "This invoice has no venues. Cannot export.");
+                return;
+            }
+
             // define path
             String folderPath = "Invoices";
             java.io.File folder = new java.io.File(folderPath);
@@ -111,7 +122,7 @@ public class InvoicePage {
             document.add(venueTablePDF);
             document.close();
 
-            System.out.println("PDF exported to: " + dest);
+            sendAlert("Export Successful", "Invoice exported to:\n" + dest);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,6 +165,16 @@ public class InvoicePage {
         // fetch venues from DB based on invoice's bookingId
         List<VenueTable> venues = DatabaseConnection.getVenuesForInvoice(invoice.getBookingId());
         venueTable.setItems(FXCollections.observableArrayList(venues));
+    }
+
+    private void sendAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/lancastercirclelogo.png").toExternalForm()));
+        alert.showAndWait();
     }
 
 

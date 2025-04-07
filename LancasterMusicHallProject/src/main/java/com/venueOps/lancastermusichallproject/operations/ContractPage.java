@@ -15,13 +15,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -131,9 +130,19 @@ public class ContractPage {
             document.add(new Paragraph("Email: " + contract.getClientEmail()));
 
             document.close();
-            System.out.println("PDF exported to: " + dest);
+            sendAlert("Export Successful", "The contract has been exported as a PDF.");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/lancastercirclelogo.png").toExternalForm()));
+        alert.showAndWait();
     }
 }
