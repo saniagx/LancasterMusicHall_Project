@@ -36,6 +36,8 @@ public class UsageChart {
     @FXML private Label eventEnd_Text;
     @FXML private Label eventTicketSales_Label;
     @FXML private Label eventTicketSales_Text;
+    @FXML private Label eventTicketRevenue_Label;
+    @FXML private Label eventTicketRevenue_Text;
 
     private final List<String> venues = List.of(
             "Main Hall", "Small Hall", "Rehearsal Space"
@@ -319,18 +321,25 @@ public class UsageChart {
         eventStart_Text.setText(event.getEventStart().format(formatter));
         eventEnd_Text.setText(event.getEventEnd().format(formatter));
 
-        if (event.getVenueID() == 2) {
+        if (event.getVenueID() == 2) { // Ticket sale info not applicable to Rehearsal Space
             eventTicketSales_Label.setVisible(false);
             eventTicketSales_Text.setVisible(false);
+            eventTicketRevenue_Label.setVisible(false);
+            eventTicketRevenue_Text.setVisible(false);
         } else {
             eventTicketSales_Label.setVisible(true);
             eventTicketSales_Text.setVisible(true);
+            eventTicketRevenue_Label.setVisible(true);
+            eventTicketRevenue_Text.setVisible(true);
 
             int totalTicketsSold = event.getTotalTicketsSold();
             int totalTicketsCapacity = event.getSeatingConfig().getCapacity() * event.getDaysWithTicketSales();
 
             double salesPercentage = totalTicketsCapacity == 0 ? 0 : ((double) totalTicketsSold / totalTicketsCapacity)*100;
             eventTicketSales_Text.setText(totalTicketsSold + " / " + totalTicketsCapacity + "\t\t" + String.format("%.2f", salesPercentage) + "%");
+
+            double ticketRevenue = event.getTotalTicketsSold() * event.getTicketPrice().doubleValue();
+            eventTicketRevenue_Text.setText(String.format("£%.2f", ticketRevenue));
         }
     }
 
