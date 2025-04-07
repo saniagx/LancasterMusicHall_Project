@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.venueOps.lancastermusichallproject.Launcher
+Main-Class: com.venueOps.lancastermusichallproject.operationsDB_interfac
+ e.JDBC
 
