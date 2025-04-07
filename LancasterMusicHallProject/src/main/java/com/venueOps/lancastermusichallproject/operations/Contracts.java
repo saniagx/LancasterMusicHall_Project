@@ -82,4 +82,8 @@ public class Contracts {
         ScreenController.loadScreen("MainMenu");
     }
 
+    public void refreshContracts() {
+        populateContractTable();
+    }
+
 }
