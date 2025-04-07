@@ -45,6 +45,14 @@ public class MainMenu {
         ScreenController.loadScreen("DailySheet");
     }
 
+    public void Reviews() {
+        Reviews Reviewscontroller = (Reviews) ScreenController.getController("Reviews");
+        if (Reviewscontroller != null) {
+            Reviewscontroller.Refresh();
+        }
+        ScreenController.loadScreen("Reviews");
+    }
+
     public void Logout() {
         DatabaseConnection.closeConnection();
         ScreenController.loadScreen("Login");

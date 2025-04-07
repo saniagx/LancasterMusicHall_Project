@@ -18,6 +18,7 @@ public class AppData {
     private static Map<String, String> notesMap = new HashMap<>();
     private static InvoiceInfo selectedInvoice;
     private static ContractInfo selectedContract;
+    private static Event selectedEvent;
 
     public static List<String> getVenues() { return VENUES; }
 
@@ -88,4 +89,12 @@ public class AppData {
         return selectedInvoice;
     }
     public static ContractInfo getSelectedContract() {return selectedContract;}
+
+    public static void setSelectedEvent(Event event) {
+        AppData.selectedEvent = event;
+    }
+
+    public static Event getSelectedEvent() {
+        return selectedEvent;
+    }
 }

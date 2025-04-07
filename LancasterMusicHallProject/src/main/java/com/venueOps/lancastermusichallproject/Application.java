@@ -77,6 +77,11 @@ public class Application extends javafx.application.Application {
         sc.addScreen("DailySheet", dailySheetLoader.load(), dailySheetLoader);
         FXMLLoader addEventLoader = new FXMLLoader(getClass().getResource("addEvent.fxml"));
         sc.addScreen("AddEvent", addEventLoader.load(), addEventLoader);
+        FXMLLoader reviewsLoader = new FXMLLoader(getClass().getResource("reviews.fxml"));
+        sc.addScreen("Reviews", reviewsLoader.load(), reviewsLoader);
+        FXMLLoader reviewsPageLoader = new FXMLLoader(getClass().getResource("reviewspage.fxml"));
+        sc.addScreen("ReviewsPage", reviewsPageLoader.load(), reviewsPageLoader);
+
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));

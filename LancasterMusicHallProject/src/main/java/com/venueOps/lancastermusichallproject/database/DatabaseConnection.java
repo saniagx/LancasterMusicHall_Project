@@ -543,43 +543,7 @@ public class DatabaseConnection {
     }
 
     public static Client getClientDetailsByBookingId(int bookingId) {
-        Client client = null;
-        String sql = """
-        SELECT c.client_id, c.company_name, c.contact_first_name, c.contact_last_name,
-               c.email, c.phone_number, binfo.address, binfo.city, binfo.postcode
-        FROM Bookings b
-        JOIN Contracts ct ON b.contract_id = ct.contract_id
-        JOIN Clients c ON ct.client_id = c.client_id
-        JOIN Billing_Info binfo ON c.client_id = binfo.client_id
-        WHERE b.booking_id = ?
-    """;
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, bookingId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                client = new Client(
-                        rs.getInt("client_id"),
-                        rs.getString("company_name"),
-                        rs.getString("contact_first_name"),
-                        rs.getString("contact_last_name"),
-                        rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("address"),
-                        rs.getString("city"),
-                        rs.getString("postcode")
-                );
-            }
-
-            rs.close();
-        } catch (SQLException e) {
-            System.err.println("Error fetching client by booking ID: " + e.getMessage());
-        }
-
-        return client;
+        return null;
     }
 
     public static List<InvoiceInfo> getInvoices() {
@@ -685,6 +649,79 @@ public class DatabaseConnection {
             stmt.executeUpdate();
         }
     }
+
+    public static List<ReviewsInfo> getReviewsForEvent(int bookingId, int eventId) {
+        List<ReviewsInfo> reviews = new ArrayList<>();
+        String sql = "SELECT reviewer_name, rating, comment, date_posted " +
+                "FROM Reviews " +
+                "WHERE booking_id = ? AND event_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, bookingId);
+            stmt.setInt(2, eventId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewsInfo review = new ReviewsInfo(
+                        bookingId,
+                        eventId,
+                        rs.getString("reviewer_name"),
+                        rs.getInt("rating"),
+                        rs.getString("comment"),
+                        rs.getDate("date_posted").toLocalDate()
+                );
+                reviews.add(review);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching reviews for event: " + e.getMessage());
+        }
+
+        return reviews;
+    }
+
+
+    public static List<Event> getAllEvents() {
+        List<Event> events = new ArrayList<>();
+        String query = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
+                "v.name as venue_name, e.client_id, c.company_name AS client_name " +
+                "FROM Events e " +
+                "JOIN Clients c ON e.client_id = c.client_id " +
+                "JOIN Venues v ON e.venue_id = v.venue_id " +
+                "JOIN Bookings b ON e.booking_id = b.booking_id " +
+                "WHERE b.status != 'Cancelled'";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Event event = new Event(
+                        rs.getInt("booking_id"),
+                        rs.getInt("event_id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getString("client_name"),
+                        rs.getTimestamp("start").toLocalDateTime(),
+                        rs.getTimestamp("end").toLocalDateTime(),
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO,
+                        rs.getDouble("max_discount"),
+                        rs.getInt("venue_id"),
+                        rs.getString("venue_name"),
+                        null,
+                        null
+                );
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching events for Reviews: " + e.getMessage());
+        }
+
+        return events;
+    }
+
 
     // Helper class to pass Client info to be stored in the Event table
     public static class ClientInfo {

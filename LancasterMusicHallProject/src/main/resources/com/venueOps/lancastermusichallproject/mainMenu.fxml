@@ -10,14 +10,14 @@
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.MainMenu">
    <children>
       <StackPane prefHeight="540.0" prefWidth="960.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <AnchorPane maxHeight="470.0" maxWidth="300.0" prefHeight="470.0" prefWidth="300.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px; -fx-border-radius: 20px;" StackPane.alignment="CENTER">
+         <AnchorPane maxHeight="526.0" maxWidth="300.0" prefHeight="444.0" prefWidth="300.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px; -fx-border-radius: 20px;" StackPane.alignment="CENTER">
             <children>
-               <Text layoutX="64.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Main Menu" wrappingWidth="175.0">
+               <Text layoutX="64.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Main Menu" wrappingWidth="175.0">
                   <font>
                      <Font name="System Bold" size="32.0" />
                   </font>
                </Text>
-               <VBox alignment="CENTER" layoutX="20.0" layoutY="68.0" prefHeight="389.0" prefWidth="261.0" spacing="20.0">
+               <VBox alignment="CENTER" layoutX="20.0" layoutY="83.0" prefHeight="389.0" prefWidth="261.0" spacing="20.0">
                   <children>
                      <Button mnemonicParsing="false" onAction="#Calendar" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Calendar">
                         <font>
@@ -44,6 +44,12 @@
                            <Font name="System Bold" size="16.0" />
                         </font>
                      </Button>
+                     <Button mnemonicParsing="false" onAction="#Reviews" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Reviews">
+                        <font>
+                           <Font name="System Bold" size="16.0" />
+                        </font>
+                     </Button>
+
                      <Button mnemonicParsing="false" onAction="#Logout" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F8F8F8;" text="Log Out">
                         <font>
                            <Font name="System Bold" size="16.0" />
