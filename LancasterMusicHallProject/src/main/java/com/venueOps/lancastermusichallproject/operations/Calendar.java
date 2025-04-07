@@ -78,13 +78,21 @@ public class Calendar implements ICalendar {
             LocalDate currentDate = currentYearMonth.atDay(day);
 
             Button dayButton = new Button(String.valueOf(day));
-            dayButton.setPrefSize(114, 85);
+            dayButton.setPrefSize(100, 80);
 
             // Highlight today's date
             if (currentDate.equals(LocalDate.now())) {
-                dayButton.setStyle("-fx-border-color: #3366FF; -fx-border-width: 2px;");
+                dayButton.setStyle("""
+                        -fx-background-color: #ffffff;
+                        -fx-background-radius: 12;
+                        -fx-border-radius: 12;
+                        -fx-border-color: #CCCCCC;
+                        -fx-font-size: 16px;
+                        -fx-font-weight: bold;
+                        -fx-text-fill: #333333;
+                    """);
             }
-
+            
             // Color if booking exists
             int bookedVenues = 0;
             for (String venue : AppData.getVenues()) {
@@ -93,16 +101,26 @@ public class Calendar implements ICalendar {
                 }
             }
 
+            String baseStyle = """
+                -fx-background-color: #ffffff;
+                -fx-background-radius: 12;
+                -fx-border-radius: 12;
+                -fx-border-color: #CCCCCC;
+                -fx-font-size: 16px;
+                -fx-font-weight: bold;
+                -fx-text-fill: #333333;
+                """;
+
             if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
-                // Green for good availability
-                dayButton.setStyle("-fx-background-color: #B9FFC2;");
-            } else if (bookedVenues >= AppData.getVenues().size() - 3 && bookedVenues < AppData.getVenues().size()) {
-                // Yellow for limited availability
-                dayButton.setStyle("-fx-background-color: #F0D680;");
+                baseStyle += "-fx-background-color: #b9ffc2;";  // light green
+            } else if (bookedVenues >= AppData.getVenues().size() - 3) {
+                baseStyle += "-fx-background-color: #f0d680;";  // light yellow
             } else if (bookedVenues == AppData.getVenues().size()) {
-                // Red for no availability
-                dayButton.setStyle("-fx-background-color: #F08080;");
+                baseStyle += "-fx-background-color: #f08080;";  // light red
             }
+
+            dayButton.setStyle(baseStyle);
+
 
             // Click day to add diary note
             dayButton.setOnAction(e -> openDiary(currentDate));
