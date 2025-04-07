@@ -28,6 +28,7 @@ public class Application extends javafx.application.Application {
             sc = new ScreenController(scene);
             initializeScreens();
             ScreenController.loadScreen("Startup"); // Startup screen is loaded on startup
+            scene.getStylesheets().add(getClass().getResource("css.css").toExternalForm());
 
             URL imageUrl = getClass().getResource("assets/LMHLogo.png");
             Image LMHlogo = new Image(imageUrl.toExternalForm());
@@ -37,7 +38,7 @@ public class Application extends javafx.application.Application {
             stage.setResizable(false);
 
             stage.setScene(scene);
-            // stage.centerOnScreen(); try centering?
+            //stage.centerOnScreen();
             stage.show();
 
             if (skipStartup) {

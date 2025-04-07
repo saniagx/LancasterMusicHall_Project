@@ -17,13 +17,13 @@
          <children>
             <HBox alignment="CENTER" layoutX="37.0" layoutY="90.0" prefHeight="35.0" prefWidth="800.0">
                <children>
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Mon" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Tue" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Wed" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Thu" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Fri" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Sat" />
-                  <Label alignment="CENTER" prefWidth="114.0" style="     -fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: #333;     -fx-border-color: transparent transparent #cccccc transparent;   -fx-border-width: 0 0 2px 0;   -fx-border-insets: 0 15 0 15;  -fx-padding: 0 0 4px 0; " text="Sun" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Mon" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Tue" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Wed" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Thu" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Fri" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Sat" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Sun" styleClass="calendar-day-header" />
                </children>
             </HBox>
             <!-- Title -->
@@ -43,9 +43,9 @@
             <!-- Navigation Controls -->
             <HBox alignment="CENTER" layoutX="811.0" layoutY="90.0" prefHeight="35.0" prefWidth="237.0" spacing="10">
                <children>
-                  <Button onAction="#goToPreviousMonth" style=" -fx-background-color: transparent; -fx-font-size: 16px; -fx-text-fill: #333;-fx-cursor: hand;" text="❮" />
-                  <Label fx:id="monthYearLabel" alignment="CENTER" style="-fx-font-size: 20px;-fx-font-weight: bold;-fx-text-fill: #222;" text="April 2025" />
-                  <Button onAction="#goToNextMonth" style="-fx-background-color: transparent; -fx-font-size: 16px; -fx-text-fill: #333; -fx-cursor: hand;" text="❯" />
+                  <Button onAction="#goToPreviousMonth" text="❮" styleClass="nav-button" />
+                  <Label fx:id="monthYearLabel" text="April 2025" styleClass="title" />
+                  <Button onAction="#goToNextMonth" text="❯" styleClass="nav-button" />
                </children>
             </HBox>
 
