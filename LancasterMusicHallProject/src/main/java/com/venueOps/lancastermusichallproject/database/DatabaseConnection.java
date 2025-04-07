@@ -556,6 +556,10 @@ public class DatabaseConnection {
             i.issue_date,
             i.due_date,
             i.total_price,
+            c.email,
+            bi.address,
+            bi.city,
+            bi.postcode,
             GROUP_CONCAT(e.name SEPARATOR ', ') AS event_names,
             CONCAT(c.contact_first_name, ' ', c.contact_last_name) AS client_name
         FROM Invoices i
@@ -563,6 +567,7 @@ public class DatabaseConnection {
         JOIN Events e ON e.booking_id = b.booking_id
         JOIN Contracts ct ON b.contract_id = ct.contract_id
         JOIN Clients c ON ct.client_id = c.client_id
+        JOIN Billing_Info bi ON bi.client_id = c.client_id
         GROUP BY i.invoice_id;
         """;
 
@@ -583,7 +588,11 @@ public class DatabaseConnection {
                         rs.getDate("due_date").toLocalDate(),
                         rs.getBigDecimal("total_price"),
                         rs.getString("event_names"),
-                        rs.getString("client_name")
+                        rs.getString("client_name"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("postcode"),
+                        rs.getString("email")
                 );
                 invoices.add(invoice);
             }
