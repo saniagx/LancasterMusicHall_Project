@@ -37,6 +37,7 @@ public class Application extends javafx.application.Application {
             stage.setResizable(false);
 
             stage.setScene(scene);
+            // stage.centerOnScreen(); try centering?
             stage.show();
 
             if (skipStartup) {
