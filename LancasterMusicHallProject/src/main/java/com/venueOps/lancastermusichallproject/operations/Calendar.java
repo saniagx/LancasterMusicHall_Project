@@ -10,10 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Calendar implements ICalendar {
 
@@ -151,9 +148,15 @@ public class Calendar implements ICalendar {
     private void updateDiaryPreviewPanel() {
         if (diaryPreviewArea != null) {
             StringBuilder preview = new StringBuilder();
-            for (Map.Entry<String, String> entry : AppData.getAllNotes().entrySet()) {
-                preview.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n\n");
-            }
+            preview.append("Notes for upcoming dates: \n\n");
+
+            AppData.getAllNotes().entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey()) // Sort notes by soonest first
+                    .forEach(entry -> {
+                        LocalDate date = LocalDate.parse(entry.getKey());
+                        String formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")); // Format dates
+                        preview.append(formattedDate).append(": ").append(entry.getValue()).append("\n\n");
+                    });
 
             diaryPreviewArea.setText(preview.isEmpty() ? "No notes found" : preview.toString());
         }
@@ -161,7 +164,7 @@ public class Calendar implements ICalendar {
 
     // Refresh Calendar
     public void refreshCalendar() {
-        diaryMap = DatabaseConnection.getDiaryNotes(LocalDate.now(), YearMonth.now().atEndOfMonth());
+        diaryMap = DatabaseConnection.getDiaryNotes(LocalDate.now(), YearMonth.now().atEndOfMonth().plusMonths(1));
         AppData.loadNotes(diaryMap);
         updateCalendar();
     }
