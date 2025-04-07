@@ -369,6 +369,7 @@ public class NewBooking {
 
     public void clearAll() {
         ClearClientFields();
+        bookingNameTextField.clear();
         events.clear();
         refresh();
     }
