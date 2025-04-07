@@ -1,4 +1,4 @@
-package com.venueOps.lancastermusichallproject.database;
+package com.venueOps.lancastermusichallproject.operationsDB_interface;
 
 import com.venueOps.lancastermusichallproject.operations.Booking;
 
@@ -42,10 +42,10 @@ public interface DatabaseInterface {
     /**
      * Returns true if a venue can be used between the given time frame
      *
-     * @param conn
-     * @param start
-     * @param end
-     * @param venueName
+     * @param conn Connection variable for the database
+     * @param start LocalDateTime determining the start of the timeframe to search between
+     * @param end LocalDateTime determining the end of the timeframe to search between
+     * @param venueName Name of the venue
      * @return
      * @throws Exception
      */

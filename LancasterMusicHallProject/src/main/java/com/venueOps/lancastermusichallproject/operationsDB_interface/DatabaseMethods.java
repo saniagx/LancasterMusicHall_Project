@@ -1,5 +1,6 @@
-package com.venueOps.lancastermusichallproject.database;
+package com.venueOps.lancastermusichallproject.operationsDB_interface;
 
+import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import com.venueOps.lancastermusichallproject.operations.Booking;
 import com.venueOps.lancastermusichallproject.operations.IEvent;
 import com.venueOps.lancastermusichallproject.operations.Event;
