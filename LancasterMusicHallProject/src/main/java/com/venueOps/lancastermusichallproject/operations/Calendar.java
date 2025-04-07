@@ -110,12 +110,12 @@ public class Calendar implements ICalendar {
                 -fx-text-fill: #333333;
                 """;
 
-            if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
-                baseStyle += "-fx-background-color: #b9ffc2;";  // light green
+            if (bookedVenues == AppData.getVenues().size()) {
+                baseStyle += "-fx-background-color: #f08080;";  // light red - all venues booked
             } else if (bookedVenues >= AppData.getVenues().size() - 3) {
-                baseStyle += "-fx-background-color: #f0d680;";  // light yellow
-            } else if (bookedVenues == AppData.getVenues().size()) {
-                baseStyle += "-fx-background-color: #f08080;";  // light red
+                baseStyle += "-fx-background-color: #f0d680;";  // light yellow - nearly full (within 3 of max)
+            } else if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
+                baseStyle += "-fx-background-color: #b9ffc2;";  // light green - some venues booked
             }
 
             dayButton.setStyle(baseStyle);
