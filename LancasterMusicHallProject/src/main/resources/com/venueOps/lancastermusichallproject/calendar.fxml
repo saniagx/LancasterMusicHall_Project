@@ -52,16 +52,20 @@
             <!-- Grid container for calendar -->
             <GridPane fx:id="calendarGrid" hgap="15" layoutX="37.0" layoutY="125.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: transparent;" vgap="15">
             </GridPane>
-            <Button layoutX="855.0" layoutY="142.0" onAction="#NewBooking" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="New Booking" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Button>
-            <Button layoutX="855.0" layoutY="189.0" onAction="#ViewBookings" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="View Bookings" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Button>
+            <Button layoutX="855.0"
+                    layoutY="142.0"
+                    onAction="#NewBooking"
+                    prefHeight="35"
+                    prefWidth="150.0"
+                    text="New Booking"
+                    styleClass="sidebar-button" />
+            <Button layoutX="855.0"
+                    layoutY="189.0"
+                    onAction="#ViewBookings"
+                    prefHeight="35"
+                    prefWidth="150.0"
+                    text="View Bookings"
+                    styleClass="sidebar-button" />
             <TextArea fx:id="diaryPreviewArea" editable="false" layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" promptText="Click a date to preview note..." wrapText="true" styleClass="diary-preview" />
 
          </children>

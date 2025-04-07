@@ -68,5 +68,21 @@
     -fx-padding: 10;
 }
 
+.sidebar-button {
+    -fx-background-color: #122023;
+    -fx-text-fill: white;
+    -fx-background-radius: 20px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #1c2f33;
+}
+
+
 
 
