@@ -10,10 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Calendar implements ICalendar {
 
@@ -78,11 +75,21 @@ public class Calendar implements ICalendar {
             LocalDate currentDate = currentYearMonth.atDay(day);
 
             Button dayButton = new Button(String.valueOf(day));
-            dayButton.setPrefSize(114, 85);
+            dayButton.setPrefSize(100, 80);
+            dayButton.setOnMouseEntered(e -> dayButton.setStyle(dayButton.getStyle() + "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.1, 0, 2);"));
+            dayButton.setOnMouseExited(e -> dayButton.setStyle(dayButton.getStyle().replaceAll("-fx-effect:.*?;", "")));
 
             // Highlight today's date
             if (currentDate.equals(LocalDate.now())) {
-                dayButton.setStyle("-fx-border-color: #3366FF; -fx-border-width: 2px;");
+                dayButton.setStyle("""
+                        -fx-background-color: #ffffff;
+                        -fx-background-radius: 12;
+                        -fx-border-radius: 12;
+                        -fx-border-color: #CCCCCC;
+                        -fx-font-size: 16px;
+                        -fx-font-weight: bold;
+                        -fx-text-fill: #333333;
+                    """);
             }
 
             // Color if booking exists
@@ -93,16 +100,26 @@ public class Calendar implements ICalendar {
                 }
             }
 
+            String baseStyle = """
+                -fx-background-color: #ffffff;
+                -fx-background-radius: 12;
+                -fx-border-radius: 12;
+                -fx-border-color: #CCCCCC;
+                -fx-font-size: 16px;
+                -fx-font-weight: bold;
+                -fx-text-fill: #333333;
+                """;
+
             if (bookedVenues > 0 && bookedVenues < AppData.getVenues().size()) {
-                // Green for good availability
-                dayButton.setStyle("-fx-background-color: #B9FFC2;");
-            } else if (bookedVenues >= AppData.getVenues().size() - 3 && bookedVenues < AppData.getVenues().size()) {
-                // Yellow for limited availability
-                dayButton.setStyle("-fx-background-color: #F0D680;");
+                baseStyle += "-fx-background-color: #b9ffc2;";  // light green
+            } else if (bookedVenues >= AppData.getVenues().size() - 3) {
+                baseStyle += "-fx-background-color: #f0d680;";  // light yellow
             } else if (bookedVenues == AppData.getVenues().size()) {
-                // Red for no availability
-                dayButton.setStyle("-fx-background-color: #F08080;");
+                baseStyle += "-fx-background-color: #f08080;";  // light red
             }
+
+            dayButton.setStyle(baseStyle);
+
 
             // Click day to add diary note
             dayButton.setOnAction(e -> openDiary(currentDate));
@@ -131,9 +148,15 @@ public class Calendar implements ICalendar {
     private void updateDiaryPreviewPanel() {
         if (diaryPreviewArea != null) {
             StringBuilder preview = new StringBuilder();
-            for (Map.Entry<String, String> entry : AppData.getAllNotes().entrySet()) {
-                preview.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n\n");
-            }
+            preview.append("Notes for upcoming dates: \n\n");
+
+            AppData.getAllNotes().entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey()) // Sort notes by soonest first
+                    .forEach(entry -> {
+                        LocalDate date = LocalDate.parse(entry.getKey());
+                        String formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")); // Format dates
+                        preview.append(formattedDate).append(": ").append(entry.getValue()).append("\n\n");
+                    });
 
             diaryPreviewArea.setText(preview.isEmpty() ? "No notes found" : preview.toString());
         }
@@ -141,7 +164,7 @@ public class Calendar implements ICalendar {
 
     // Refresh Calendar
     public void refreshCalendar() {
-        diaryMap = DatabaseConnection.getDiaryNotes(LocalDate.now(), YearMonth.now().atEndOfMonth());
+        diaryMap = DatabaseConnection.getDiaryNotes(LocalDate.now(), YearMonth.now().atEndOfMonth().plusMonths(1));
         AppData.loadNotes(diaryMap);
         updateCalendar();
     }

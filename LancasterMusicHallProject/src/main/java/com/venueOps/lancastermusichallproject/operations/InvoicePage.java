@@ -57,6 +57,8 @@ public class InvoicePage {
     @FXML
     public void exportPDF() {
         try {
+            Refresh();
+            InvoiceInfo invoice = AppData.getSelectedInvoice();
             // define path
             String folderPath = "Invoices";
             java.io.File folder = new java.io.File(folderPath);
@@ -68,7 +70,7 @@ public class InvoicePage {
 
             // set PDF dest
             int counter = 1;
-            String baseName = "Invoice_" + invoiceID.getText();
+            String baseName = "Invoice_" + invoice.getInvoiceId();
             String dest = folderPath + "/" + baseName + ".pdf";
             java.io.File file = new java.io.File(dest);
 
@@ -87,11 +89,11 @@ public class InvoicePage {
             Paragraph dateParagraph = new Paragraph(boldDateText).setTextAlignment(TextAlignment.LEFT);
             document.add(dateParagraph);
 
-            document.add(new Paragraph("Invoice ID: " + invoiceID.getText()));
-            document.add(new Paragraph("Booking Name: " + bookingName.getText()));
-            document.add(new Paragraph("Date Issued: " + dateIssued.getText()));
-            document.add(new Paragraph("Due Date: " + dueDate.getText()));
-            document.add(new Paragraph("Client: " + billingName.getText()));
+            document.add(new Paragraph("Invoice ID: " + invoice.getInvoiceId()));
+            document.add(new Paragraph("Booking Name: " + invoice.getEventNames()));
+            document.add(new Paragraph("Date Issued: " + invoice.getIssueDate()));
+            document.add(new Paragraph("Due Date: " + invoice.getDueDate()));
+            document.add(new Paragraph("Client: " + invoice.getClientName()));
             document.add(new Paragraph("Email: " + billingEmail.getText()));
             document.add(new Paragraph("Address: " + billingAddress.getText()));
             document.add(new Paragraph("Total Price: " + totalPrice.getText()));

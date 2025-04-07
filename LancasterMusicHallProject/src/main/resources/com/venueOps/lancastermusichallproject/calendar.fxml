@@ -12,49 +12,20 @@
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #122023;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.venueOps.lancastermusichallproject.operations.Calendar">
    <children>
 
-      <!-- White card in the center -->
+      <!-- Day Row -->
       <AnchorPane layoutX="128" layoutY="73" prefHeight="576" prefWidth="1024" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20px;">
          <children>
             <HBox alignment="CENTER" layoutX="37.0" layoutY="90.0" prefHeight="35.0" prefWidth="800.0">
                <children>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Mon">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Tue">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Wed">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Thu">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Fri">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefWidth="114.0" text="Sat">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="114.0" text="Sun">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
+                  <Label alignment="CENTER" prefWidth="114.0" text="Mon" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Tue" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Wed" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Thu" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Fri" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Sat" styleClass="calendar-day-header" />
+                  <Label alignment="CENTER" prefWidth="114.0" text="Sun" styleClass="calendar-day-header" />
                </children>
             </HBox>
-
             <!-- Title -->
             <Text layoutX="437.0" layoutY="59.0" text="Calendar">
                <font>
@@ -70,15 +41,16 @@
             </Button>
 
             <!-- Navigation Controls -->
-            <HBox alignment="CENTER" layoutX="848.0" layoutY="95.0" prefHeight="25.0" prefWidth="165.0" spacing="10">
+            <HBox alignment="CENTER" layoutX="811.0" layoutY="90.0" prefHeight="35.0" prefWidth="237.0" spacing="10">
                <children>
-                  <Button onAction="#goToPreviousMonth" text="&lt;" />
-                  <Label fx:id="monthYearLabel" alignment="CENTER" text="Month Year" />
-                  <Button alignment="CENTER_RIGHT" onAction="#goToNextMonth" text="&gt;" />
-               </children></HBox>
+                  <Button onAction="#goToPreviousMonth" text="❮" styleClass="nav-button" />
+                  <Label fx:id="monthYearLabel" text="April 2025" styleClass="title" />
+                  <Button onAction="#goToNextMonth" text="❯" styleClass="nav-button" />
+               </children>
+            </HBox>
 
             <!-- Grid container for calendar -->
-            <GridPane fx:id="calendarGrid" hgap="5" layoutX="37.0" layoutY="125.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: #f9f9f9;" vgap="5">
+            <GridPane fx:id="calendarGrid" hgap="15" layoutX="37.0" layoutY="125.0" prefHeight="425.0" prefWidth="800" style="-fx-background-color: transparent;" vgap="15">
             </GridPane>
             <Button layoutX="855.0" layoutY="142.0" onAction="#NewBooking" prefHeight="35" prefWidth="150.0" style="-fx-background-color: #122023; -fx-background-radius: 29px;" text="New Booking" textFill="WHITE">
                <font>
@@ -90,7 +62,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            <TextArea fx:id="diaryPreviewArea" layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" editable="false" promptText="Click a date to preview note..." wrapText="true"/>
+            <TextArea fx:id="diaryPreviewArea" editable="false" layoutX="847.0" layoutY="238.0" prefHeight="313.0" prefWidth="165.0" promptText="Click a date to preview note..." wrapText="true" styleClass="diary-preview" />
 
          </children>
       </AnchorPane>

@@ -52,7 +52,6 @@ public class Invoices {
     @FXML private void initialize() throws Exception {
 
         //we only need these four attributes/columns for events in invoices
-        System.out.println("Booking_ID is: " + Booking_ID);
         Booking_ID.setCellValueFactory(new PropertyValueFactory<>("bookingId"));
         Event_Name.setCellValueFactory(new PropertyValueFactory<>("eventNames"));
         Client_Name.setCellValueFactory(new PropertyValueFactory<>("clientName"));

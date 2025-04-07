@@ -3,6 +3,7 @@ package com.venueOps.lancastermusichallproject.operations;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,6 +144,13 @@ public class Event implements IEvent {
 
     // Calculate the number of days tickets were being sold
     public int getDaysWithTicketSales() {
+        if (dailyTicketSales.isEmpty()) {
+            // For upcoming events, return the number of days between start and end dates
+            LocalDate startDate = eventStart.toLocalDate();
+            LocalDate endDate = eventEnd.toLocalDate();
+            return (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        }
+
         int days = 0;
         for (Integer tickets : dailyTicketSales.values()) {
             if (tickets != -1) {
