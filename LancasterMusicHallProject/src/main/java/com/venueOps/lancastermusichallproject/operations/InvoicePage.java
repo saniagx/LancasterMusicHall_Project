@@ -139,11 +139,9 @@ public class InvoicePage {
         billingName.setText(invoice.getClientName());
 
         // fetch billing info
-        Client client = DatabaseConnection.getClientDetailsByBookingId(invoice.getBookingId());
-        if (client != null) {
-            billingAddress.setText(client.getAddress() + ", " + client.getCity() + ", " + client.getPostcode());
-            billingEmail.setText(client.getEmail());
-        }
+        //Client client = DatabaseConnection.getClientDetailsByBookingId(invoice.getBookingId());
+        billingAddress.setText(invoice.getClientAddress() + ", " + invoice.getClientCity() + ", " + invoice.getClientPostcode());
+        billingEmail.setText(invoice.getClientEmail());
 
         // total price
         totalPrice.setText("£" + invoice.getTotalPrice().toPlainString());

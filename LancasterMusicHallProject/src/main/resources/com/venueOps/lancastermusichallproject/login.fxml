@@ -46,7 +46,6 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#SkipLogin" text="Skip Login (Temporary)" />
 
          </VBox>
       </StackPane>
