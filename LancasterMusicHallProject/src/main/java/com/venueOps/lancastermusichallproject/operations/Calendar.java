@@ -131,8 +131,9 @@ public class Calendar implements ICalendar {
     private void updateDiaryPreviewPanel() {
         if (diaryPreviewArea != null) {
             StringBuilder preview = new StringBuilder();
+            preview.append("Notes for upcoming dates: \n\n");
             for (Map.Entry<String, String> entry : AppData.getAllNotes().entrySet()) {
-                preview.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n\n");
+                preview.append(entry.getKey()).append(": \n").append(entry.getValue()).append("\n\n");
             }
 
             diaryPreviewArea.setText(preview.isEmpty() ? "No notes found" : preview.toString());
