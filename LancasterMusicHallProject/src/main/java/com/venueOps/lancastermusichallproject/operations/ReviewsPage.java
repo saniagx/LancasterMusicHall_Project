@@ -12,6 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -94,10 +96,18 @@ public class ReviewsPage {
 
             document.add(table);
             document.close();
-
-            System.out.println("PDF exported to: " + dest);
+            sendAlert("Export Successful", "The reviews for this Event have been exported as a PDF");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private void sendAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/lancastercirclelogo.png").toExternalForm()));
+        alert.showAndWait();
     }
 }

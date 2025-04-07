@@ -4,9 +4,11 @@ import com.venueOps.lancastermusichallproject.ScreenController;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -33,6 +35,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.UnitValue;
+import javafx.stage.Stage;
 
 public class DailySheet {
     // Attributes for grid objects, to be disabled if the corresponding 'Used' attribute is false
@@ -242,8 +245,7 @@ public class DailySheet {
             }
 
             document.close();
-            System.out.println("PDF exported successfully to " + fileName);
-
+            sendAlert("Export Successful", "The Daily Sheet has been exported as a PDF");
         } catch (Exception e) {
             System.err.println("Error exporting to PDF: " + e.getMessage());
         }
@@ -350,6 +352,15 @@ public class DailySheet {
         gridPane.add(seatingField, 1, 3);
 
         return gridPane;
+    }
+    private void sendAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/lancastercirclelogo.png").toExternalForm()));
+        alert.showAndWait();
     }
 
     public void Refresh() {
