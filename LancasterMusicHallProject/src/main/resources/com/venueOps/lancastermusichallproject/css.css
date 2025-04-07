@@ -56,3 +56,17 @@
     -fx-border-insets: 0 15 0 15;
     -fx-padding: 0 0 4px 0;
 }
+
+/* Diary preview */
+.diary-preview {
+    -fx-background-color: #f3f3f3;
+    -fx-background-radius: 12px;
+    -fx-border-color: #cccccc;
+    -fx-boder-radius: 12px;
+    -fx-font-size: 15px;
+    -fx-text-fill: #333;
+    -fx-padding: 10;
+}
+
+
+
