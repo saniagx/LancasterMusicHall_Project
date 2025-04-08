@@ -7,6 +7,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that stores attributes for an Event
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @author Meer Ali
+ * @version 7.0 April 7 2025
+ */
 public class Event implements IEvent {
     private int bookingID;
     private int eventID;
@@ -126,12 +133,19 @@ public class Event implements IEvent {
     //@Override
     //public int getSeatingConfigID() { return seatingConfigID; }
 
-    // Get ticket sales for specific day
+    /**
+     * Returns number of tickets sold for the event at a given date
+     * @param date date to get ticket sales for
+     * @return number of tickets
+     */
     public int getTicketsSoldForDay(LocalDate date) {
         return dailyTicketSales.getOrDefault(date, -1);
     }
 
-    // Helper for getting total tickets sold for event
+    /**
+     * Returns total number of tickets sold for the event
+     * @return total number of tickets sold
+     */
     public int getTotalTicketsSold() {
         int total = 0;
         for (Integer tickets : dailyTicketSales.values()) {
@@ -142,7 +156,10 @@ public class Event implements IEvent {
         return total;
     }
 
-    // Calculate the number of days tickets were being sold
+    /**
+     * Returns number of days tickets were being sold for
+     * @return number of days tickets were being sold for
+     */
     public int getDaysWithTicketSales() {
         if (dailyTicketSales.isEmpty()) {
             // For upcoming events, return the number of days between start and end dates

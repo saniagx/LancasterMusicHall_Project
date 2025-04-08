@@ -12,6 +12,12 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/** Screen Controller for Calendar
+ * Shows diary notes and venue availability
+ * @author Meer Ali
+ * @author Neil Daya
+ * @version 4.0 April 7 2025
+ */
 public class Calendar implements ICalendar {
 
     @FXML private GridPane calendarGrid;
@@ -57,6 +63,10 @@ public class Calendar implements ICalendar {
         updateCalendar();
     }
 
+    /**
+     * Draws all the buttons for each day of the current month shown in the Calendar
+     *  Fetches all bookings from the database and colours the buttons depending on venue availability
+     */
     private void updateCalendar() {
         bookings = DatabaseConnection.getBookings();
 
@@ -144,7 +154,9 @@ public class Calendar implements ICalendar {
         ScreenController.loadScreen("Diary");
     }
 
-    // Diary Preview Panel
+    /**
+     * Gets the notes from AppData and loads them into the preview screen
+     */
     private void updateDiaryPreviewPanel() {
         if (diaryPreviewArea != null) {
             StringBuilder preview = new StringBuilder();
@@ -190,6 +202,13 @@ public class Calendar implements ICalendar {
         return bookings;
     }
 
+    /**
+     * Returns true if the venue is available between the given time frame
+     * @param start start of the time frame
+     * @param end end of the time frame
+     * @param venueName name of the venue to check availability for
+     * @return
+     */
     @Override
     public boolean isVenueAvailable(LocalDateTime start, LocalDateTime end, String venueName) {
         for (Booking booking : bookings) {

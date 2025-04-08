@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class stores data to be passed between screens
+ * @author Neil Daya
+ * @author Meer Ali
+ * @version 5.0 April 7 2025
+ */
 public class AppData {
     private static final List<String> VENUES = List.of("Main Hall", "Small Hall", "Rehearsal Space", "The Green Room",
             "Bronte Boardroom", "Dickens Den", "Poe Parlor", "Globe Room", "Chekhov Chamber");

@@ -3,6 +3,14 @@ package com.venueOps.lancastermusichallproject;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 import com.venueOps.lancastermusichallproject.operations.*;
 
+/**
+ * Screen Controller class for the Main Menu screen
+ * Shows all buttons linking to other key parts of the application
+ * @author Neil Daya
+ * @author Meer Ali
+ * @author Sania Ghori
+ * @version 8.0 April 7 2025
+ */
 public class MainMenu {
 
     public MainMenu() {}

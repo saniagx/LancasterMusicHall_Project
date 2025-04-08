@@ -5,6 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/** Interface for events
+ * @author Neil Daya
+ * @author Meer Ali
+ * @version 3.0 April 2 2025
+ */
 public interface IEvent {
 
     // Getters and setters for each attribute

@@ -21,6 +21,12 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
+/**
+ * Screen Controller for the Usage Chart
+ * Shows the user events within a 3-week timeframe, showing information about each event through clickable, coloured bars
+ * @author Neil Daya
+ * @version 7.0 April 7 2025
+ */
 public class UsageChart {
     // Chart attributes
     @FXML private TableView<String> venueTable;
@@ -57,6 +63,10 @@ public class UsageChart {
 
     public UsageChart() {}
 
+    /**
+     * FXML initialiser method
+     * Populates the venues table and draws the timeline, chart and events
+     */
     @FXML
     public void initialize() {
         eventDetails_VBox.setVisible(false);
@@ -110,7 +120,9 @@ public class UsageChart {
         Refresh();
     }
 
-    // Draws background
+    /**
+     * Draws the background of the chart
+     */
     private void drawChartBase() {
         for (int i = 0; i < 22; i++) {
             if (i % 2 == 0) {
@@ -129,7 +141,9 @@ public class UsageChart {
         }
     }
 
-    // Draws the timeline
+    /**
+     * Draws the timeline, showing a timeframe between last Monday and next Monday
+     */
     private void drawTimeline() {
         double dayWidth = cell_width;
 
@@ -173,7 +187,9 @@ public class UsageChart {
         }
     }
 
-    // Draw bars for each event
+    /**
+     * Draws the events as bars on top of the background
+     */
     private void drawEvents() {
         clickableBars.clear();
         drawChartBase();
@@ -307,13 +323,22 @@ public class UsageChart {
         }
     }
 
+    /**
+     * Helper method which gets the width of the host of an event's name to help check if it needs to be truncated on the bar
+     * @param text client name to be checked
+     * @param font font of the text
+     * @return width of the client name
+     */
     private double getTextWidth(String text, Font font) {
         Text tempText = new Text(text);
         tempText.setFont(font);
         return tempText.getBoundsInLocal().getWidth();
     }
 
-    // Set text fields to the event's information
+    /**
+     * Displays the information of the clicked bar
+     * @param event the event that has been selected
+     */
     private void displayEventDetails(Event event) {
         eventDetails_VBox.setVisible(true);
         eventName_Label.setText(event.getEventName());
@@ -343,7 +368,9 @@ public class UsageChart {
         }
     }
 
-    // Hide and reset event detail fields
+    /**
+     * Clear event details when the bar is deselected
+     */
     private void clearEventDetails() {
         eventDetails_VBox.setVisible(false);
         eventName_Label.setText("");
@@ -353,7 +380,10 @@ public class UsageChart {
         eventTicketSales_Text.setText("");
     }
 
-    // Adjust boundaries of timeline
+    /**
+     * Adjusts the dates on the timeline according to the navigation buttons
+     * @param weeks determines whether to shift right or left
+     */
     public void changeWeek(int weeks) {
         currentMonday = currentMonday.plusWeeks(weeks);
         prevMonday = currentMonday.minusWeeks(1);
@@ -385,6 +415,9 @@ public class UsageChart {
         drawTimeline();
     }
 
+    /**
+     * Helper class to make event bars clickable
+     */
     private static class ClickableBar {
         private final double x;
         private final double y;
@@ -400,6 +433,12 @@ public class UsageChart {
             this.event = event;
         }
 
+        /**
+         * Checks if mouse is within the clickable bar
+         * @param mouseX mouse X position
+         * @param mouseY mouse Y position
+         * @return
+         */
         public boolean contains(double mouseX, double mouseY) {
             return mouseX >= x && mouseX <= (x + width) && mouseY >= y && mouseY <= (y + height);
         }

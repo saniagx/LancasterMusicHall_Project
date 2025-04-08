@@ -37,6 +37,15 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.UnitValue;
 import javafx.stage.Stage;
 
+/**
+ * Screen Controller for the Daily Sheet screen
+ * Shows all events occurring today
+ * @author Neil Daya
+ * @author Eman Al-Said
+ * @author Meer Ali
+ * @author Sania Ghori
+ * @version 7.0 April 7 2025
+ */
 public class DailySheet {
     // Attributes for grid objects, to be disabled if the corresponding 'Used' attribute is false
     @FXML GridPane mainHall_grid;
@@ -78,6 +87,11 @@ public class DailySheet {
 
     public DailySheet() {}
 
+    /**
+     * FXML initialiser method
+     * Fetches today's events from the database and loads their information to the screen
+     * @throws Exception
+     */
     @FXML private void initialize() throws Exception {
         date = LocalDateTime.now();
         disableByDefault();
@@ -90,7 +104,9 @@ public class DailySheet {
     public void setDate(LocalDateTime date) { this.date = date; }
     public LocalDateTime getDate() { return date; }
 
-    // By default, assumes all venues are unused
+    /**
+     * Disable all fields by default
+     */
     public void disableByDefault() {
         // Grid panes
         mainHall_grid.setDisable(true);
@@ -105,7 +121,10 @@ public class DailySheet {
         chekhovChamber_button.setDisable(true);
     }
 
-    // Iterates through events and fills in information for each venue
+    /**
+     * Fills the event details with the fetched information
+     * @throws Exception
+     */
     public void initialiseEvents() throws Exception {
         for (Event event : events) {
             switch (event.getVenueID()) {
@@ -159,6 +178,9 @@ public class DailySheet {
         ScreenController.loadScreen("MainMenu");
     }
 
+    /**
+     * Exports to PDF
+     */
     public void Export() {
         try {
             // Create directory if it doesn't exist
@@ -251,7 +273,10 @@ public class DailySheet {
         }
     }
 
-    // Display meeting room pane and fill the screen with the list of meetings that occurred in that room
+    /**
+     * Opens the meeting room pane for the selected venue and populates it with its meetings data
+     * @param venue name of the selected meeting room
+     */
     public void OpenMeetingRoomPane(String venue) {
         meetingRoom_pane.getChildren().clear();
 
@@ -317,14 +342,22 @@ public class DailySheet {
         OpenMeetingRoomPane("Chekhov Chamber");
     }
 
-    // Fetch list of meetings for given venue
+    /**
+     * Gets list of meeting events for selected venue
+     * @param venue name of meeting room to fetch meetings for
+     * @return list of meetings occurring in the given room
+     */
     private List<Event> getMeetingEventsForVenue(String venue) {
         return events.stream()
                 .filter(event -> event.getEventType().equals("Meeting") && event.getVenueName().equals(venue))
                 .collect(Collectors.toList());
     }
 
-    // Details of meetings in the meeting pane are shown as a grid
+    /**
+     * Creates the Grid Pane containing meeting room information
+     * @param event meeting event to be displayed
+     * @return Grid Pane containing meeting room information
+     */
     private GridPane createMeetingGridPane(Event event) {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);

@@ -19,6 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Screen Controller for the Add Event screen
+ * From this screen, the user can add an event to a booking and configure its seating configuration
+ * @author Neil Daya
+ * @author Meer Ali
+ * @version 3.0 April 6 2025
+ */
 public class AddEvent {
     // Event Details tab attributes
     @FXML private TextField eventNameField;
@@ -60,6 +67,11 @@ public class AddEvent {
     private List<String> smallHall_Layouts = List.of("Default", "Dinner");
     private List<String> meeting_Layouts = List.of("Classroom", "Boardroom", "Presentation");
 
+    /**
+     * FXML initialiser method
+     *  Clears all fields, sets default values and populates any combo boxes
+     *  Also handles any listeners
+     */
     @FXML
     public void initialize() {
         ClearFields();
@@ -150,6 +162,10 @@ public class AddEvent {
         });
     }
 
+    /**
+     * Attempts to store the event into the current booking instance
+     * Goes back to the booking screen when successful
+     */
     public void Submit() {
         try {
             String name = eventNameField.getText();
@@ -217,6 +233,11 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Returns the venue layout depending on the selected venue
+     * @return name of the layout
+     * @throws Exception
+     */
     private String getLayout() throws Exception {
         if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall") && layoutComboBox.getSelectionModel().getSelectedItem().equals("Dinner")) {
             return "Dinner with " + tablesComboBox.getSelectionModel().getSelectedItem() + " tables";
@@ -230,6 +251,11 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Returns the event type depending on the selected venue
+     * @param selectedVenue selected venue
+     * @return event type
+     */
     private String getEventType(String selectedVenue) {
         if (halls.contains(selectedVenue)) {
             return "Event";
@@ -241,6 +267,13 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Calculates the cost of an event
+     * @param venueName name of the venue
+     * @param startDate start date
+     * @param endDate end date
+     * @return cost
+     */
     private BigDecimal calculateCost(String venueName, LocalDateTime startDate, LocalDateTime endDate) {
         double VAT = 0.2;
         Duration duration = Duration.between(startDate, endDate);
@@ -371,6 +404,9 @@ public class AddEvent {
     Image smallHall_default = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/SmallHall_Default.png").toExternalForm());
     Image smallHall_dinner = new Image(getClass().getResource("/com/venueOps/lancastermusichallproject/assets/SmallHall_Dinner.png").toExternalForm());
 
+    /**
+     * Populates the seat row combo boxes with seat numbers
+     */
     public void populateRows() {
         int seatCount;
         if (venueComboBox.getSelectionModel().getSelectedItem().equals("Main Hall")) {
@@ -448,6 +484,11 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Loads the correct seat map for the Main Hall depending on the selected layout
+     * Disables any rows that are unavailable on the seat map
+     * @param layout name of the layout to be shown
+     */
     private void handleMainHallLayout(String layout) {
         if (layout == null) {
             return;
@@ -507,6 +548,11 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Loads the correct seat map for the Small Hall depending on the selected layout
+     * Disables any rows that are unavailable on the seat map
+     * @param layout name of the layout to be shown
+     */
     private void handleSmallHallLayout(String layout) {
         if (layout == null) {
             return;
@@ -539,6 +585,10 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Loads the correct seat map for the Main Hall dining configuration depending on the selected layout
+     * @param layout number of tables to show
+     */
     private void handleTablesLayout(Integer layout) {
         if (layout == null) {
             return;
@@ -567,6 +617,9 @@ public class AddEvent {
         }
     }
 
+    /**
+     * Enables editing for the lists of unavailable seats and restricted seats
+     */
     private void enableListManagement() {
         chooseListComboBox.setDisable(false);
         updateListButton.setDisable(false);
@@ -576,6 +629,9 @@ public class AddEvent {
         clearRestrictedViews_Button.setDisable(false);
     }
 
+    /**
+     * Disables editing for the lists of unavailable seats and restricted seats
+     */
     private void disableListManagement() {
         chooseListComboBox.setDisable(true);
         updateListButton.setDisable(true);
@@ -585,6 +641,9 @@ public class AddEvent {
         clearRestrictedViews_Button.setDisable(true);
     }
 
+    /**
+     * Populates the selected list with the seat numbers that have been selected
+     */
     public void UpdateList() {
         // Get selected seats from all CheckComboBoxes
         ObservableList<String> selectedSeats = FXCollections.observableArrayList();
@@ -610,6 +669,9 @@ public class AddEvent {
         updateCapacity();
     }
 
+    /**
+     * Clears the list of unavailable seats
+     */
     public void ClearUnavailableSeats() {
         unavailableSeats.clear();
         // Uncheck all seats in CheckComboBoxes
@@ -619,6 +681,9 @@ public class AddEvent {
         updateCapacity();
     }
 
+    /**
+     * Clears the list of seats with restricted views
+     */
     public void ClearRestrictedViews() {
         restrictedViews.clear();
         // Uncheck all seats in CheckComboBoxes
@@ -627,6 +692,9 @@ public class AddEvent {
         }
     }
 
+    /**
+     *  Updates the capacity value of the venue as well as the label displaying it
+     */
     private void updateCapacity() {
         if (venueComboBox.getSelectionModel().getSelectedItem() == null || layoutComboBox.getSelectionModel().getSelectedItem() == null) {
             return;
@@ -765,6 +833,9 @@ public class AddEvent {
         capacityLabel.setText("Capacity: " + capacity);
     }
 
+    /**
+     * Disables certain combo boxes and text fields by default
+     */
     private void disableByDefault() {
         // Disable layout tabs by default
         SeatingConfig_Tab.setDisable(true);
@@ -779,6 +850,9 @@ public class AddEvent {
         maxDiscountText.setVisible(false);
     }
 
+    /**
+     * Resets all fields
+     */
     public void ClearFields() {
         eventNameField.setText("");
         startDatePicker.setValue(LocalDate.now());
@@ -795,6 +869,10 @@ public class AddEvent {
         maxDiscountField.setText("");
     }
 
+    /**
+     * Ensures the combo box for venues only shows venues that are available between the dates set by the date pickers
+     * @return list of available venues
+     */
     public List<String> getAvailableVenues() {
         List<String> availableVenues = new ArrayList<>();
         Calendar calendarController = (Calendar) ScreenController.getController("Calendar");

@@ -18,6 +18,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Screen Controller for the New Booking screen
+ * Lets the user add a new booking and save it to the database
+ * @author Neil Daya
+ * @version 4.0 April 7 2025
+ */
 public class NewBooking {
     @FXML TabPane tabPane;
     @FXML Tab events_Tab;
@@ -46,6 +52,10 @@ public class NewBooking {
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    /**
+     * FXML initialiser method
+     * Refreshes all tabs and populates the client list
+     */
     @FXML public void initialize() {
         events = new ArrayList<>();
         refresh();
@@ -79,6 +89,9 @@ public class NewBooking {
         events.add(event);
     }
 
+    /**
+     * Draws the events grid
+     */
     private void drawEventsGrid() {
         eventsGridPane.getChildren().clear();
         eventsGridPane.getColumnConstraints().clear();
@@ -100,6 +113,11 @@ public class NewBooking {
         }
     }
 
+    /**
+     * Creates the card containing event information
+     * @param event the event to be displayed
+     * @return AnchorPane displaying the event details
+     */
     private AnchorPane createEventCard(IEvent event) {
         AnchorPane card = new AnchorPane();
         card.setPrefSize(240, 120);
@@ -206,6 +224,10 @@ public class NewBooking {
         return card;
     }
 
+    /**
+     * Filters the list of companies depending on the text entered into the company name field
+     * @param searchText user input into the company name field
+     */
     private void filterCompanies(String searchText) {
         filteredCompanies.clear();
         if (searchText == null || searchText.isEmpty()) {
@@ -220,6 +242,10 @@ public class NewBooking {
         }
     }
 
+    /**
+     * Fills out client details depending on the company the user selects
+     * @param companyName
+     */
     private void populateFields(String companyName) {
         Client client = DatabaseConnection.getClientDetails(companyName);
         if (client != null) {
@@ -248,6 +274,11 @@ public class NewBooking {
         return totalCost;
     }
 
+    /**
+     * Determines the booking start date by getting the start date of the earliest event
+     * @param events list of the booking's events
+     * @return earliest date
+     */
     private LocalDate getEarliestStartDate(List<IEvent> events) {
         if (events == null || events.isEmpty()) {
             return LocalDate.now();
@@ -262,6 +293,11 @@ public class NewBooking {
         return earliestDate;
     }
 
+    /**
+     * Determines the booking end date by getting the end date of the latest event
+     * @param events list of the booking's events
+     * @return latest date
+     */
     private LocalDate getLatestEndDate(List<IEvent> events) {
         if (events == null || events.isEmpty()) {
             return LocalDate.now();
@@ -284,6 +320,9 @@ public class NewBooking {
         ScreenController.loadScreen("AddEvent");
     }
 
+    /**
+     * Clears all text fields
+     */
     public void ClearClientFields() {
         companyNameField.setText(null);
         contactFNameField.setText(null);
@@ -297,6 +336,9 @@ public class NewBooking {
         filterCompanies(null);
     }
 
+    /**
+     * Fills the contract with the details filled out on the events and client details tab
+     */
     public void FillContract() {
         clientText.setText("This is a booking made on " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " by: \n" +
                 companyNameField.getText() + "\n" + emailField.getText() + "\n");
@@ -318,6 +360,9 @@ public class NewBooking {
         venuesText.setText(venuesTextBuilder.toString());
     }
 
+    /**
+     * Attempts to save the booking in the database then returns to the Calendar if successful
+     */
     public void ConfirmBooking() {
         try {
             if (events.isEmpty()) {

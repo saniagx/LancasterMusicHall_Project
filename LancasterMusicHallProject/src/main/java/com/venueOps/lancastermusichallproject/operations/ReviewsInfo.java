@@ -2,6 +2,11 @@ package com.venueOps.lancastermusichallproject.operations;
 
 import java.time.LocalDate;
 
+/**
+ * Class that stores attributes for a review
+ * @author Meer Ali
+ * @version 1.0 April 7 2025
+ */
 public class ReviewsInfo {
     private int bookingId;
     private int eventId;

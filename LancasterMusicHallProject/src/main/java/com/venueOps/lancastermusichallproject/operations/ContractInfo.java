@@ -3,6 +3,12 @@ package com.venueOps.lancastermusichallproject.operations;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Class that stores attributes for a contract
+ * @author Sania Ghori
+ * @author Neil Daya
+ * @version 2.0 April 7 2025
+ */
 public class ContractInfo {
 
     //related to the booking

@@ -11,6 +11,14 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * JavaFX Application class
+ * Runs on launch
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @author Meer Ali
+ * @version 17.0 April 7 2025
+ */
 public class Application extends javafx.application.Application {
     static ScreenController sc;
 
@@ -22,6 +30,11 @@ public class Application extends javafx.application.Application {
         launch(args);
     }
 
+    /**
+     * Initialises and shows the screen
+     * @param stage
+     * @throws IOException
+     */
     public void start(Stage stage) throws IOException {
         try {
             Scene scene = new Scene(new AnchorPane(), 1280, 720);
@@ -53,6 +66,10 @@ public class Application extends javafx.application.Application {
         }
     }
 
+    /**
+     * Initialises and loads all the different screens within the application
+     * @throws IOException
+     */
     public void initializeScreens() throws IOException {
         // Loaders for screens that require data to be passed between other screens
         FXMLLoader calendarLoader = new FXMLLoader(getClass().getResource("calendar.fxml"));
@@ -81,7 +98,6 @@ public class Application extends javafx.application.Application {
         sc.addScreen("Reviews", reviewsLoader.load(), reviewsLoader);
         FXMLLoader reviewsPageLoader = new FXMLLoader(getClass().getResource("reviewspage.fxml"));
         sc.addScreen("ReviewsPage", reviewsPageLoader.load(), reviewsPageLoader);
-
 
         sc.addScreen("Startup", FXMLLoader.load(getClass().getResource("startup.fxml")));
         sc.addScreen("Login", FXMLLoader.load(getClass().getResource("login.fxml")));

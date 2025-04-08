@@ -13,10 +13,23 @@ import com.venueOps.lancastermusichallproject.operations.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.shape.Rectangle;
 
+/**
+ * This class connects the application to the database, handling the fetching, storing, deleting and updating of data
+ * @author Neil Daya
+ * @author Meer Ali
+ * @author Sania Ghori
+ * @version 6.0 April 7 2025
+ */
 public class DatabaseConnection {
     private static Connection connection;
 
+
+    /**
+     * Attempts to connect to the database using credentials from the .env
+     * @return the connection variable used to perform database operations
+     */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -52,6 +65,9 @@ public class DatabaseConnection {
         return connection;
     }
 
+    /**
+     * Closes the database connection
+     */
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -63,7 +79,12 @@ public class DatabaseConnection {
         }
     }
 
-    // Fetches all events for specific time frame
+    /**
+     * Fetches all events within a given time frame. Used in the Usage Chart
+     * @param start start of time frame
+     * @param end end date of time frame
+     * @return list of events occurring between the start and end dates to be displayed on the usage chart
+     */
     public static ArrayList<Event> getEventsForUsageChart(LocalDate start, LocalDate end) {
         ArrayList<Event> events = new ArrayList<>();
 
@@ -136,7 +157,11 @@ public class DatabaseConnection {
         return events;
     }
 
-    // Fetches all events for specific day
+    /**
+     * Fetches events for the daily sheet
+     * @param date  the date the database fetches events for, by default set to today's date
+     * @return  list of events occurring on the date to be displayed on the daily sheet
+     */
     public static ArrayList<Event> getEventsForDailySheet(LocalDateTime date) {
         ArrayList<Event> events = new ArrayList<>();
 
@@ -195,7 +220,10 @@ public class DatabaseConnection {
         return events;
     }
 
-    // Fetches all company names
+    /**
+     * Fetches all company names for the Client details tab in the New Booking screen
+     * @return  list of company names to be displayed on the Client details tab
+     */
     public static ObservableList<String> getCompanyNames() {
         ObservableList<String> companies = FXCollections.observableArrayList();
         try {
@@ -216,6 +244,11 @@ public class DatabaseConnection {
         return companies;
     }
 
+    /**
+     * Fetches the client details for a given company
+     * @param companyName name of the company to get details for
+     * @return Client object containing all the client's details
+     */
     public static Client getClientDetails(String companyName) {
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -249,6 +282,11 @@ public class DatabaseConnection {
         return null;
     }
 
+    /**
+     * Saves a booking to the database along with its Event information, Seating Configurations, Contract and Invoice
+     * Rolls back if unsuccessful
+     * @param booking the booking to be stored
+     */
     public static void saveBooking(Booking booking) {
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -297,6 +335,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Updates or inserts the Client table in the database depending on if their details already existed or not
+     * @param conn connection variable for the database
+     * @param client client object to be updated or inserted
+     * @return ClientInfo object containing clientID and companyName to be used when saving the booking
+     * @throws SQLException
+     */
     private static ClientInfo upsertClient(Connection conn, Client client) throws SQLException {
         String checkSql = "SELECT client_id FROM Clients WHERE company_name = ? AND email = ?";
         try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
@@ -313,6 +358,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Inserts the given Client into the database
+     * @param conn connection variable for the database
+     * @param client client object to be inserted
+     * @return ClientInfo object containing clientID and companyName to be used when saving the booking
+     * @throws SQLException
+     */
     private static ClientInfo insertClient(Connection conn, Client client) throws SQLException {
         String insertSql = "INSERT INTO Clients (company_name, contact_first_name, contact_last_name, phone_number, email) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -329,6 +381,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Updates the details of the given Client to its new details
+     * @param conn connection variable for the database
+     * @param clientID unique identifier for the client
+     * @param client client object containing the new details
+     * @throws SQLException
+     */
     private static void updateClient(Connection conn, int clientID, Client client) throws SQLException {
         String updateSql = "UPDATE Clients SET contact_first_name = ?, contact_last_name = ?, phone_number = ?, email = ? " +
                 "WHERE client_id = ?";
@@ -342,6 +401,15 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Inserts a booking's contract into the database
+     * @param conn connection variable for the database
+     * @param clientID unique identifier for the client
+     * @param totalPrice total price of the booking
+     * @param signedDate date the contract was made
+     * @return the contract id to be saved with the booking
+     * @throws SQLException
+     */
     private static int insertContract(Connection conn, int clientID, BigDecimal totalPrice, LocalDate signedDate) throws SQLException {
         String insertSql = "INSERT INTO Contracts (client_id, signed_date, total_price, status) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -356,6 +424,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Inserts an invoice into the database into the database
+     * @param conn connection variable for the database
+     * @param bookingId unique identifier for the booking
+     * @param totalPrice total price of all the events in the booking
+     * @throws SQLException
+     */
     private static void insertInvoice(Connection conn, int bookingId, BigDecimal totalPrice) throws SQLException {
         String sql = "INSERT INTO Invoices (booking_id, issue_date, due_date, total_price) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -367,7 +442,13 @@ public class DatabaseConnection {
         }
     }
 
-
+    /**
+     * Inserts the given booking's events into the database
+     * @param conn connection variable for the database
+     * @param events list of events to be stored
+     * @param clientInfo client who hired the venue
+     * @throws SQLException
+     */
     private static void insertEvents(Connection conn, List<IEvent> events, ClientInfo clientInfo) throws SQLException {
         String insertSql = "INSERT INTO Events (booking_id, event_id, name, type, host, start, end, price, ticket_price, max_discount, venue_id, client_id, seating_config_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -404,6 +485,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Inserts an event's seating configuration into the database
+     * @param conn connection variable for the database
+     * @param seatingConfig seating configuration object containing seating information
+     * @return seating configuration unique identifier to be used to link to the event
+     * @throws SQLException
+     */
     private static int insertSeatingConfig(Connection conn, SeatingConfig seatingConfig) throws SQLException {
         String insertSql = "INSERT INTO SeatingConfigs (capacity, layout) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -423,6 +511,13 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Inserts all restricted seats belonging to a given seating configuration into the database
+     * @param conn connection variable for the database
+     * @param seatingConfigId unique identifier to link a restricted seat to the seating configuration it belongs to
+     * @param restrictedViews list of seats with restricted views
+     * @throws SQLException
+     */
     private static void insertRestrictedViews(Connection conn, int seatingConfigId, ObservableList<String> restrictedViews) throws SQLException {
         if (restrictedViews == null || restrictedViews.isEmpty()) return;
         String insertSql = "INSERT INTO RestrictedViews (seating_config_id, seat_number) VALUES (?, ?)";
@@ -439,6 +534,10 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Fetches all bookings
+     * @return list of all bookings to be used in the calendar and bookings overview
+     */
     public static List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.booking_id, b.booking_name, cl.company_name, cl.contact_first_name, cl.contact_last_name, cl.email, cl.phone_number, ct.signed_date, b.start_date, b.end_date, b.status " +
@@ -487,6 +586,13 @@ public class DatabaseConnection {
         return bookings;
     }
 
+    /**
+     * Fetches all the events that belong to a booking for the view events tab in bookings overview
+     * @param conn connection variable for the database
+     * @param bookingID unique identifier for a booking
+     * @return list of events belonging to a booking
+     * @throws SQLException
+     */
     private static List<IEvent> getEventsForBooking(Connection conn, int bookingID) throws SQLException {
         List<IEvent> events = new ArrayList<>();
         String eventsQuery = "SELECT e.name, e.type, e.start, e.end, e.ticket_price, e.max_discount, e.venue_id, v.name AS venue_name " +
@@ -516,6 +622,11 @@ public class DatabaseConnection {
         return events;
     }
 
+    /**
+     * Fetches all venues for a given invoice for the invoice page
+     * @param bookingId unique identifier for the given invoice
+     * @return list of all venues for the given invoice
+     */
     public static List<VenueTable> getVenuesForInvoice(int bookingId) {
         List<VenueTable> venueList = new ArrayList<>();
         String sql = """
@@ -542,10 +653,10 @@ public class DatabaseConnection {
         return venueList;
     }
 
-    public static Client getClientDetailsByBookingId(int bookingId) {
-        return null;
-    }
-
+    /**
+     * Fetches all invoices to be displayed on the invoices screen
+     * @return list of invoices
+     */
     public static List<InvoiceInfo> getInvoices() {
         List<InvoiceInfo> invoices = new ArrayList<>();
 
@@ -604,6 +715,10 @@ public class DatabaseConnection {
         return invoices;
     }
 
+    /**
+     * Fetches all contracts to be displayed on the contracts screen
+     * @return list of contracts
+     */
     public static List<ContractInfo> getContracts() {
         List<ContractInfo> contracts = new ArrayList<>();
 
@@ -648,7 +763,12 @@ public class DatabaseConnection {
         return contracts;
     }
 
-
+    /**
+     * Updates a booking's status to the given status string
+     * @param bookingID unique identifier for a booking
+     * @param newStatus status that the booking's status will change to
+     * @throws SQLException
+     */
     public static void updateBookingStatus(int bookingID, String newStatus) throws SQLException {
         String updateQuery = "UPDATE Bookings SET status = ? WHERE booking_id = ?";
         try (Connection conn = getConnection();
@@ -659,6 +779,12 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Fetches all the reviews for an event from the database
+     * @param bookingId unique identifier for a booking
+     * @param eventId identifier to determine which event to get reviews for
+     * @return list of reviews to be displayed on the reviews screen
+     */
     public static List<ReviewsInfo> getReviewsForEvent(int bookingId, int eventId) {
         List<ReviewsInfo> reviews = new ArrayList<>();
         String sql = "SELECT reviewer_name, rating, comment, date_posted " +
@@ -690,7 +816,10 @@ public class DatabaseConnection {
         return reviews;
     }
 
-
+    /**
+     * Fetches all events from the database
+     * @return list of events to be displayed on the reviews screen so user can pick an event to view reviews for
+     */
     public static List<Event> getAllEvents() {
         List<Event> events = new ArrayList<>();
         String query = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
@@ -731,8 +860,10 @@ public class DatabaseConnection {
         return events;
     }
 
-
-    // Helper class to pass Client info to be stored in the Event table
+    /**
+     * Helper class to store clientID and companyName
+     *  Used while saving a booking and for contract details
+     */
     public static class ClientInfo {
         private int clientID;
         private String companyName;
@@ -751,76 +882,12 @@ public class DatabaseConnection {
         }
     }
 
-
-    //get events for the invoice(and contracts) table
-    //without date parameters
-
-    public static ArrayList<Event> getEventsForInvoicesAndContracts() {
-        ArrayList<Event> events = new ArrayList<>();
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            if (conn == null) {
-                return events;
-            }
-            String query = "SELECT e.booking_id, e.event_id, e.name, e.type, e.start, e.end, e.max_discount, e.venue_id, " +
-                    "v.name as venue_name, e.client_id, c.company_name AS client_name, sc.seating_config_id, sc.layout, b.status " +
-                    "FROM Events e " +
-                    "JOIN Clients c ON e.client_id = c.client_id " +
-                    "JOIN Venues v ON e.venue_id = v.venue_id " +
-                    "JOIN Bookings b ON e.booking_id = b.booking_id " +
-                    "LEFT JOIN SeatingConfigs sc ON e.seating_config_id = sc.seating_config_id " +
-                    "WHERE DATE(e.start) <= ? AND ? <= DATE(e.end)";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
-
-            // Fetch daily ticket sales for each event
-            String salesQuery = "SELECT event_date, tickets_sold FROM DailyTicketSales WHERE event_id = ?";
-            PreparedStatement salesStmt = conn.prepareStatement(salesQuery);
-
-            while (rs.next()) {
-                int bookingID = rs.getInt("booking_id");
-                int eventID = rs.getInt("event_id");
-                String name = rs.getString("name");
-                String type = rs.getString("type");
-                String client = rs.getString("client_name");
-                LocalDateTime startTimestamp = rs.getTimestamp("start").toLocalDateTime();
-                LocalDateTime endTimestamp = rs.getTimestamp("end").toLocalDateTime();
-                double max_discount = Double.parseDouble(rs.getString("max_discount"));
-                int venueID = rs.getInt("venue_id");
-                String venueName = rs.getString("venue_name");
-                int capacity = rs.getInt("capacity");
-                String status = rs.getString("status");
-
-                if (!status.equals("Cancelled")) { // Only show events from bookings that aren't cancelled
-                    // Fetch daily ticket sales for this event
-                    Map<LocalDate, Integer> dailyTicketSales = new HashMap<>();
-                    salesStmt.setInt(1, eventID);
-                    ResultSet salesRs = salesStmt.executeQuery();
-                    while (salesRs.next()) {
-                        LocalDate eventDate = salesRs.getDate("event_date").toLocalDate();
-                        int ticketsSold = salesRs.getInt("tickets_sold");
-                        dailyTicketSales.put(eventDate, ticketsSold);
-                    }
-                    salesRs.close();
-
-                    // Minimal seating config object just for capacity
-                    SeatingConfig seatingConfig = new SeatingConfig(0, capacity, null, venueName, null);
-
-                    Event event = new Event(bookingID, eventID, name, type, client, startTimestamp, endTimestamp, BigDecimal.ZERO, BigDecimal.ZERO, max_discount, venueID, venueName, dailyTicketSales, seatingConfig);
-                    events.add(event);
-                }
-            }
-
-            rs.close();
-            stmt.close();
-            salesStmt.close();
-        } catch (SQLException e) {
-            System.out.println("Failed to fetch events for Invoices from database" + e.getMessage());
-            return events;
-        }
-        return events;
-    }
-
+    /**
+     * Gets all diary notes from within a given time frame
+     * @param timeframeStart start date of time frame
+     * @param timeframeEnd end date of time frame
+     * @return HashMap mapping the date to its note
+     */
     public static HashMap<String, String> getDiaryNotes(LocalDate timeframeStart, LocalDate timeframeEnd) {
         HashMap<String, String> diaryMap = new HashMap<>();
         Connection conn = DatabaseConnection.getConnection();
@@ -851,6 +918,10 @@ public class DatabaseConnection {
         return diaryMap;
     }
 
+    /**
+     * Stores a given note in the database
+     * @param diaryNote the note to be stored
+     */
     public static void saveDiaryNote(DiaryNote diaryNote) {
         Connection conn = DatabaseConnection.getConnection();
         try {
@@ -884,6 +955,10 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Deletes a given note from the database
+     * @param diaryNote the note to be deleted
+     */
     public static void deleteNote(DiaryNote diaryNote) {
         Connection conn = DatabaseConnection.getConnection();
         try {

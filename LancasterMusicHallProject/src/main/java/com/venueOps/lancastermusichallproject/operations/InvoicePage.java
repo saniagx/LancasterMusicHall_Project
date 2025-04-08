@@ -23,6 +23,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Screen Controller class for the InvoicePage screen
+ * Shows all the details about a selected invoice
+ * @author Meer Ali
+ * @author Neil Daya
+ * @version 2.0 April 7 2025
+ */
 public class InvoicePage {
     @FXML private Label bookingName;
     @FXML private Label invoiceID;
@@ -37,6 +44,10 @@ public class InvoicePage {
     @FXML private TableColumn<VenueTable, String> venueColumn;
     @FXML private TableColumn<VenueTable, BigDecimal> priceColumn;
 
+    /**
+     * FXML initialiser method
+     * Loads invoice details
+     */
     @FXML
     private void initialize() {
         venueColumn.setCellValueFactory(new PropertyValueFactory<>("venueName"));
@@ -53,6 +64,9 @@ public class InvoicePage {
         ScreenController.loadScreen("Invoices");
     }
 
+    /**
+     * Exports to PDF
+     */
     @FXML
     public void exportPDF() {
         try {
@@ -128,6 +142,9 @@ public class InvoicePage {
         }
     }
 
+    /**
+     * Refreshes the screen and refetches details from the database
+     */
     public void Refresh() {
         InvoiceInfo invoice = AppData.getSelectedInvoice();
         if (invoice == null) return;
@@ -151,6 +168,10 @@ public class InvoicePage {
         venueTable.getItems().setAll(venueList);
     }
 
+    /**
+     * Loads invoice information from the database
+     * @param invoice
+     */
     public void loadInvoiceDetails(InvoiceInfo invoice) {
         // Set details
         invoiceID.setText(String.valueOf(invoice.getInvoiceId()));

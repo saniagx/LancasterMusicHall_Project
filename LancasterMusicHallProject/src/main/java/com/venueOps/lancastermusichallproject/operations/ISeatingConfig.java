@@ -3,6 +3,12 @@ package com.venueOps.lancastermusichallproject.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface for Seating Configurations
+ * @author Meer Ali
+ * @author Neil Daya
+ * @version 2.0 April 5 2025
+ */
 public interface ISeatingConfig{
 
     int getSeatingConfigID();

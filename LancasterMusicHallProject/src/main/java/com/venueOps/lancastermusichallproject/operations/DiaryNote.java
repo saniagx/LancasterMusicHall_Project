@@ -2,6 +2,11 @@ package com.venueOps.lancastermusichallproject.operations;
 
 import java.time.LocalDate;
 
+/**
+ * Class that stores attributes for a Diary Note
+ * @author Neil Daya
+ * @version 1.0 April 6 2025
+ */
 public class DiaryNote {
     private LocalDate date;
     private String text;

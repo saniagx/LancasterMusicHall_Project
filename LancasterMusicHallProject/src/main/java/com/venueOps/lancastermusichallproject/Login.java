@@ -10,6 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.venueOps.lancastermusichallproject.database.DatabaseConnection;
 
+/**
+ * Screen Controller for the Login screen
+ * Only lets the user enter the main part of the application upon successful authorisation
+ * @author Meer Ali
+ * @version 2.0 March 17 2025
+ */
 public class Login {
     @FXML
     private TextField usernameField;
@@ -28,6 +34,12 @@ public class Login {
         }
     }
 
+    /**
+     * Authenticates the user's input based off the Users table in the database
+     * @param username
+     * @param password
+     * @return
+     */
     private boolean authenticateUser(String username, String password) {
         String query = "SELECT password FROM Users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -54,7 +66,9 @@ public class Login {
         alert.showAndWait();
     }
 
-    // TEMPORARY
+    /**
+     * Temporary debugging method used when running the software offline
+     */
     public void SkipLogin() {
         ScreenController.loadScreen("MainMenu");
     }

@@ -6,6 +6,12 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 
+/**
+ * Class that manages and handles the loading of all screens
+ * @author Neil Daya
+ * @author Meer Ali
+ * @version 2.0 April 6 2025
+ */
 public class ScreenController {
 
     private static Scene main;
@@ -16,12 +22,25 @@ public class ScreenController {
         ScreenController.main = main;
     }
 
-    // New method that accepts loader aswell
+    /**
+     * Initialises a screen with a loader
+     * @param screenName name of the screen to be added
+     * @param screen screen object
+     * @param loader loader object
+     * @see javafx.stage.Screen
+     * @see FXMLLoader
+     */
     public void addScreen(String screenName, Pane screen, FXMLLoader loader) {
         screenMap.put(screenName, screen);
         loaderMap.put(screenName, loader);
     }
 
+    /**
+     * Initialises a screen without a loader
+     * @param screenName name of the screen to be added
+     * @param screen screen object
+     * @see javafx.stage.Screen
+     */
     public void addScreen(String screenName, Pane screen) {
         screenMap.put(screenName, screen);
     }
@@ -30,7 +49,12 @@ public class ScreenController {
         main.setRoot(screenMap.get(screenName));
     }
 
-    // retrieve controller from stored FXMLLoader
+    /**
+     * Gets the controller object for the given screen
+     * @param screenName name of the screen to get the controller for
+     * @return Controller for the given screen
+     * @see ScreenController
+     */
     public static Object getController(String screenName) {
         FXMLLoader loader = loaderMap.get(screenName);
         if (loader != null) {

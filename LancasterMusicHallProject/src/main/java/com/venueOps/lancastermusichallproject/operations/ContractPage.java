@@ -28,6 +28,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+/**
+ * Screen Controller class for the ContractPage screen
+ * Shows all of a contract's details
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @version 2.0 April 7 2025
+ */
 public class ContractPage {
 
     @FXML Label booking_ID;
@@ -47,7 +55,10 @@ public class ContractPage {
     @FXML private TableColumn<ContractInfo, String> client_Tel;
     @FXML private TableColumn<ContractInfo, String> client_Email;
 
-
+    /**
+     * FXML initialiser method
+     * Populates the screen with contract information
+     */
     @FXML
     private void initialize() {
         booking_Name.setCellValueFactory(new PropertyValueFactory<>("bookingName"));
@@ -85,6 +96,9 @@ public class ContractPage {
         ScreenController.loadScreen("Contracts");
     }
 
+    /**
+     * Exports the contract to PDF
+     */
     public void exportPDF() {
         try {
             ContractInfo contract = AppData.getSelectedContract();

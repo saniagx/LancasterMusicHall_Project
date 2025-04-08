@@ -4,6 +4,12 @@ import javafx.collections.ObservableList;
 
 import java.util.List;
 
+/**
+ * Class which stores attributes about an Event's Seating Configuration
+ * @author Meer Ali
+ * @author Neil Daya
+ * @version 4.0 April 5 2025
+ */
 public class SeatingConfig implements ISeatingConfig {
     private int seatingConfigID;
     private int capacity;

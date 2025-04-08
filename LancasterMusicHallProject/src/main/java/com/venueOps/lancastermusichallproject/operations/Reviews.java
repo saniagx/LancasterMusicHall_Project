@@ -12,6 +12,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
 
+/**
+ *  Screen Controller for the Reviews screen
+ * @author Meer Ali
+ * @version 1.0 April 7 2025
+ */
 public class Reviews {
 
     @FXML private TableView<Event> reviewTable;
@@ -20,6 +25,10 @@ public class Reviews {
     @FXML private TableColumn<Event, String> Event_Name;
     @FXML private TableColumn<Event, Button> View_Button;
 
+    /**
+     * FXML initialiser method
+     * Populates the table with all the events
+     */
     @FXML
     private void initialize() {
         Booking_ID.setCellValueFactory(new PropertyValueFactory<>("bookingID"));
@@ -42,6 +51,9 @@ public class Reviews {
         populateReviewTable();
     }
 
+    /**
+     * Fetches all events from the database to be shown in the reviews table
+     */
     private void populateReviewTable() {
         List<Event> events = DatabaseConnection.getAllEvents(); // You should create this method
         reviewTable.setItems(FXCollections.observableArrayList(events));

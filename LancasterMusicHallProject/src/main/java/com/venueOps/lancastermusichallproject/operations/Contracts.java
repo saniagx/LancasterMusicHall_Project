@@ -17,7 +17,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//Class to view all the existing Contracts for LMH
+/**
+ * Screen Controller class to display a list of all contracts
+ * @author Sania Ghori
+ * @author Neil Daya
+ * @version 3.0 April 7 2025
+ */
 public class Contracts {
 
     @FXML private TableView<ContractInfo> contractTable;
@@ -40,7 +45,12 @@ public class Contracts {
     private ArrayList<IEvent> events;
 
     public Contracts(){}
-    //initialise
+
+    /**
+     * FXML initialiser method
+     * Populates table with contracts
+     * @throws Exception
+     */
     @FXML private void initialize() throws Exception {
 
         //we only need these four attributes/columns for events in contracts
@@ -66,19 +76,12 @@ public class Contracts {
         populateContractTable();
     }
 
-
-
     //populate the contract table with events
     public void populateContractTable() {
         List<ContractInfo> contractList = DatabaseConnection.getContracts();
         contractTable.setItems(FXCollections.observableArrayList(contractList));
     }
     public void BackButton() {
-        ScreenController.loadScreen("MainMenu");
-    }
-
-    public void exportPDF() {
-        //needs editing
         ScreenController.loadScreen("MainMenu");
     }
 

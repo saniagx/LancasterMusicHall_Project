@@ -4,6 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Class that stores attributes for a booking
+ * @author Neil Daya
+ * @version 2.0 April 6 2025
+ */
 public class Booking {
     private int bookingID;
     private String bookingName;
@@ -15,7 +20,17 @@ public class Booking {
     private LocalDate endDate;
     private String status;
 
-    // Constructor for storing in database
+    /**
+     * Constructor for storing booking details in the database
+     * @param bookingName name of the booking
+     * @param events list of events for the booking
+     * @param client client who made the booking
+     * @param signed_date date booking was made
+     * @param total_price total price of the booking
+     * @param start_date start date of the first event
+     * @param end_date end date of the last event
+     * @param status confirmed / completed / cancelled
+     */
     public Booking(String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
         this.bookingName = bookingName;
@@ -29,7 +44,18 @@ public class Booking {
         this.status = status;
     }
 
-    // Constructor for fetching from database
+    /**
+     * Constructor for loading booking details from the database
+     * @param bookingID unique identifier assigned by the database
+     * @param bookingName name of the booking
+     * @param events list of events for the booking
+     * @param client client who made the booking
+     * @param signed_date date booking was made
+     * @param total_price total price of the booking
+     * @param start_date start date of the first event
+     * @param end_date end date of the last event
+     * @param status confirmed / completed / cancelled
+     */
     public Booking(int bookingID, String bookingName, List<IEvent> events, Client client, LocalDate signed_date, BigDecimal total_price,
                    LocalDate start_date, LocalDate end_date, String status) {
         this.bookingName = bookingName;

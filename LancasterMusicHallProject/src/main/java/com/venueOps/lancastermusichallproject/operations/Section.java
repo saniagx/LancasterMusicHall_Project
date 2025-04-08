@@ -5,6 +5,14 @@ import java.util.ArrayList;
 // These are section objects (named after Main Hall, Meeting Room etc.)
 // Which can contain their own array of seats
 
+/**
+ * @Deprecated
+ * Class which stores attributes about a seat's Section
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @author Meer Ali
+ * @version 3.0
+ */
 public class Section {
 
     // Declare Section Name

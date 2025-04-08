@@ -3,6 +3,12 @@ package com.venueOps.lancastermusichallproject.operations;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Class to store attributes about an invoice
+ * @author Meer Ali
+ * @author Neil Daya
+ * @version 2.0 April 7 2025
+ */
 public class InvoiceInfo {
     private int invoiceId;
     private int bookingId;

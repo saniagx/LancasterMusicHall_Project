@@ -19,6 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Screen Controller for the ReviewsPage screen
+ * Shows a review for a selected event
+ * @author Meer Ali
+ * @version 1.0 April 7 2025
+ */
 public class ReviewsPage {
 
     @FXML private TableView<ReviewsInfo> reviewsTable;
@@ -53,6 +59,9 @@ public class ReviewsPage {
         ScreenController.loadScreen("Reviews");
     }
 
+    /**
+     * Exports to PDF
+     */
     @FXML
     public void exportPDF() {
         try {

@@ -1,5 +1,10 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+/**
+ * Class that stores attributes for a Client
+ * @author Neil Daya
+ * @version 1.0 April 4 2025
+ */
 public class Client {
     private int clientID;
     private String companyName;

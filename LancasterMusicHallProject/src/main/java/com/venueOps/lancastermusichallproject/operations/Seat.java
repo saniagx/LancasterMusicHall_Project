@@ -1,5 +1,13 @@
 package com.venueOps.lancastermusichallproject.operations;
 
+/**
+ * @Deprecated
+ * Class which stores attributes about a seat
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @author Meer Ali
+ * @version 2.0 March 3 2025
+ */
 public class Seat {
 
     //attributes for each seat

@@ -1,6 +1,12 @@
 package com.venueOps.lancastermusichallproject.operations;
 
 import java.math.BigDecimal;
+
+/**
+ * Class that stores information about a Venue
+ * @author Meer Ali
+ * @version 1.0 April 6 2025
+ */
 public class VenueTable {
     private final String venueName;
     private final BigDecimal price;

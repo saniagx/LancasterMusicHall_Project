@@ -12,6 +12,14 @@ import java.util.Map;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+/**
+ * Screen Controller for the Diary
+ * Lets the user write notes and store them in the database
+ * @author Meer Ali
+ * @author Neil Daya
+ * @author Sania Ghori
+ * @version 5.0 April 6 2025
+ */
 public class Diary {
     @FXML private Label dateLabel;
 
@@ -34,7 +42,9 @@ public class Diary {
         ScreenController.loadScreen("Calendar");
     }
 
-    // Add a new note
+    /**
+     * Adds a new note to the database
+     */
     public void addNote() {
         LocalDate selectedDate = AppData.getSelectedDate();
         String noteText = noteTextArea.getText().trim();
@@ -62,7 +72,9 @@ public class Diary {
         ScreenController.loadScreen("Calendar");
     }
 
-    // Delete a note
+    /**
+     * Deletes a note from the database
+     */
     public void deleteNote() {
         LocalDate selectedDate = AppData.getSelectedDate();
 

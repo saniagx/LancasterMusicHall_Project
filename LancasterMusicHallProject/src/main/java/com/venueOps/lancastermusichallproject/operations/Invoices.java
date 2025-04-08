@@ -28,7 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//Class to view all the existing Invoices for LMH
+/**
+ * Screen Controller class for the Invoices screen
+ * Shows a list of all invoices
+ * @author Meer Ali
+ * @author Sania Ghori
+ * @version 3.0 April 7 2025
+ */
 public class Invoices {
 
     @FXML private TableView<InvoiceInfo> invoiceTable;
@@ -48,7 +54,11 @@ public class Invoices {
     //constructor
     public Invoices(){}
 
-    //initialise
+    /**
+     * FXML initialiser method
+     * Populates the table with invoices
+     * @throws Exception
+     */
     @FXML private void initialize() throws Exception {
 
         //we only need these four attributes/columns for events in invoices
@@ -79,7 +89,9 @@ public class Invoices {
     //display the correct invoice based on booking id.
 
 
-    //populate the invoice table with events
+    /**
+     * Populates invoice table with invoices fetched from the database
+     */
     public void populateInvoiceTable() {
         List<InvoiceInfo> invoiceList = DatabaseConnection.getInvoices();
         invoiceTable.setItems(FXCollections.observableArrayList(invoiceList));

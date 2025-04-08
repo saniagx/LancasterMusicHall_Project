@@ -19,6 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Screen Controller for the Bookings Overview screen
+ * Shows the list of all bookings and a tab for that booking's events
+ * @author Neil Daya
+ * @version 1.0 April 6 2025
+ */
 public class BookingsOverview {
     // Bookings tab attributes
     @FXML private TableView<Booking> bookingsTable;
@@ -36,6 +42,10 @@ public class BookingsOverview {
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    /**
+     * FXML initialiser method
+     * Populates the table and draws the GridPane for events
+     */
     @FXML public void initialize() {
         bookingIDColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getBookingID()).asObject());
         bookingNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookingName()));
@@ -58,6 +68,9 @@ public class BookingsOverview {
         });
     }
 
+    /**
+     * Fetches bookings from the database and populates the table with them
+     */
     public void populateBookingsTable() {
         bookingsTable.getItems().clear();
         List<Booking> bookings = DatabaseConnection.getBookings();
@@ -75,6 +88,9 @@ public class BookingsOverview {
         }
     }
 
+    /**
+     * Draws the events for each booking as cards
+     */
     private void drawEventsGrid() {
         eventsGridPane.getChildren().clear();
         eventsGridPane.getColumnConstraints().clear();
@@ -96,6 +112,11 @@ public class BookingsOverview {
         }
     }
 
+    /**
+     * Creates the cards for each event to be displayed on the events tab
+     * @param event the event to be displayed
+     * @return AnchorPane card containing event information
+     */
     private AnchorPane createEventCard(IEvent event) {
         AnchorPane card = new AnchorPane();
         card.setPrefSize(240, 120);
@@ -197,6 +218,10 @@ public class BookingsOverview {
         ScreenController.loadScreen("Calendar");
     }
 
+    /**
+     * Gets the selected booking and gives the user prompts to cancel the booking
+     * Upon success, the booking's status is set to cancelled
+     */
     public void CancelBooking() {
         Booking selectedBooking = bookingsTable.getSelectionModel().getSelectedItem();
         if (selectedBooking == null) {

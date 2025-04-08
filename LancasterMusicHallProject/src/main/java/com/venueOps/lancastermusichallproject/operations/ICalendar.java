@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface for the Calendar
+ * @author Neil Daya
+ * @version 3.0 April 6 2025
+ */
 public interface ICalendar {
 
     void addBooking(Booking booking);
